@@ -1,0 +1,13 @@
+%% Recorrido por puntos · patos (CU-10) · Tabla 1 y 6.2
+flowchart TD
+  A([Abrir recorrido]) --> B[Plan de muestreo:<br/>comercial 2 galpones × 5 puntos × 5 aves = 50<br/>traspatio 1 × 3 × 5 = 15 · sin corral 1 a 3 puntos]
+  B --> C[Seleccionar galpón y punto]
+  C --> D[Para cada ave del punto:<br/>registrar indicadores animales<br/>CC, plumaje, ojos, cojera, limpieza…]
+  D --> E[Indicadores del recurso en el punto:<br/>cama, bebederos, comederos]
+  E --> F{¿Duda sobre un indicador?}
+  F -- Sí --> G[Botón ? · Ficha del indicador<br/>en capa superpuesta, sin salir del punto]
+  G --> D
+  F -- No --> H{¿Quedan puntos?}
+  H -- Sí --> C
+  H -- No --> I[Consolidar puntajes por indicador<br/>y alertas por galpón]
+  I --> J([Volver a la lista de chequeo])

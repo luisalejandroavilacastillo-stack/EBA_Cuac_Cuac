@@ -1,0 +1,46 @@
+%% Vista 1 · Roles y usuarios (RF02, RF03)
+classDiagram
+  class Rol {
+    <<enumeration>>
+    inspector
+    coordinador
+    productor
+    admin
+  }
+  class Usuario {
+    +nombre
+    +rol
+    +documento
+    +correo
+    +estado Activo|Inactivo|Pendiente
+    +historial
+    +inactivar(motivo)
+    +eliminar()
+  }
+  class Permisos {
+    +PERMISOS: Map~Rol, Modulo[]~
+    +puede(rol, modulo) bool
+  }
+  class Modulo {
+    <<enumeration>>
+    inicio
+    fincas
+    evaluaciones
+    reportes
+    asistente
+    usuarios
+    parametros
+    bitacora
+    ayuda
+    cuenta
+  }
+  class vUsuarios {
+    <<vista>>
+    +render()
+    +eliminarOInactivar()
+  }
+  Usuario --> Rol
+  Permisos --> Rol
+  Permisos --> Modulo
+  vUsuarios ..> Usuario
+  note for Permisos "inspector y coordinador: todos menos administración\nproductor: sin reportes\nadmin: todo"

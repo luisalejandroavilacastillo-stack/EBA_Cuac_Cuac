@@ -1,0 +1,34 @@
+{
+  "name": "eba-plataforma",
+  "version": "0.6.0",
+  "description": "EBA Cuac Cuac · Plataforma de evaluación del bienestar animal en patos y gansos (Metodología ICA v1.0, 2024)",
+  "private": true,
+  "workspaces": [
+    "packages/norma",
+    "apps/api",
+    "apps/web"
+  ],
+  "engines": {
+    "node": ">=24.15.0"
+  },
+  "scripts": {
+    "build:norma": "npm run build -w @eba/norma",
+    "postinstall": "npm run build:norma",
+    "dev": "npm run build:norma && concurrently -n api,web -c green,yellow \"npm run dev -w @eba/api\" \"npm start -w @eba/web\"",
+    "dev:api": "npm run dev -w @eba/api",
+    "dev:web": "npm start -w @eba/web",
+    "build": "npm run build:norma && npm run build -w @eba/web",
+    "test": "npm run build:norma && npm test -w @eba/norma && npm test -w @eba/api && npm test -w @eba/web -- --watch=false",
+    "db:up": "docker compose up -d mariadb mailpit",
+    "db:down": "docker compose down",
+    "start:api": "npm start -w @eba/api",
+    "dev:red": "npm run build:norma && concurrently -n api,web -c green,yellow \"npm run dev -w @eba/api\" \"npm run start:red -w @eba/web\"",
+    "docker:subir": "docker compose up -d --build",
+    "docker:bajar": "docker compose down",
+    "docker:estado": "docker compose ps",
+    "docker:logs": "docker compose logs -f --tail=100 api web"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}

@@ -1,0 +1,26 @@
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Office: archivos temporales de bloqueo
+~$*
+.~lock.*#
+
+# Base de datos local y respaldos
+*.dump
+*.backup
+pgdata/
+
+# Salidas temporales de pruebas
+pruebas/salida/
+*.log

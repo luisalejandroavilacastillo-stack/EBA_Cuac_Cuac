@@ -1,0 +1,14 @@
+%% Asistente de la norma (CU-22)
+flowchart TD
+  A([Cualquier rol pulsa el botón flotante]) --> B[Panel flotante sobre la pantalla actual<br/>con sugerencias según el rol]
+  B --> C[Usuario escribe la pregunta]
+  C --> D{¿La pregunta trata<br/>de la norma o de la evaluación?}
+  D -- No --> E[Respuesta: solo puedo ayudar<br/>con la norma ICA y la evaluación]
+  D -- Sí --> F{¿Modo IA configurado<br/>por el administrador?}
+  F -- No --> G[Respuesta local:<br/>temas, fichas técnicas, numeral y página]
+  F -- Sí --> H["Construir prompt según el rol<br/>contexto de la pantalla sin datos personales<br/>(sin documento, correo ni teléfono)"]
+  H --> I[Servicio de IA] --> J{¿Respondió?}
+  J -- No --> G
+  J -- Sí --> K[Respuesta con cita del numeral y página]
+  E & G & K --> L[Bitácora: consulta registrada<br/>sin el texto de la pregunta]
+  L --> M([El panel se actualiza al cambiar de pantalla])

@@ -1,0 +1,12 @@
+%% Estados de una evaluación (visita)
+stateDiagram-v2
+    [*] --> Programada : Nueva inspección / seguimiento programado al cierre
+    Programada --> Programada : reprogramar(fecha ≥ hoy) [visita > 0]
+    Programada --> EnProceso : primer dato registrado
+    EnProceso --> Finalizada : finalizar() sin pendientes y con firmas
+    Finalizada --> [*]
+    EnProceso : En proceso
+    note right of Finalizada
+        Resultado provisional si hay documentos pendientes
+        (1 día hábil); definitivo al entregarlos o al vencer.
+    end note

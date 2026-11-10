@@ -1,0 +1,106 @@
+%% Modelo de dominio v0.24 (vista general)
+classDiagram
+  direction LR
+  class Usuario {
+    +nombre
+    +rol
+    +documento
+    +correo
+    +estado
+  }
+  class Finca {
+    +id FIN-AAAA-NNNNN
+    +nombre
+    +depto
+    +mpio
+    +vereda
+    +area
+    +estado ACTIVA|INACTIVA
+  }
+  class PersonaResponsable {
+    +nombre
+    +tipoDoc
+    +doc
+    +correo
+    +tel
+    +autoriza
+  }
+  class EspecieFinca {
+    +sp pato|ganso
+    +proposito
+    +sistema
+    +conCorral
+    +permanencia
+    +cama
+    +bebedero
+  }
+  class LoteInventario {
+    +cat
+    +n
+    +edad
+    +peso
+  }
+  class ProcesoSeguimiento {
+    +id PRC
+    +estado
+    +max 3..5
+    +ampliado
+  }
+  class Evaluacion {
+    +id EVA
+    +fecha
+    +estado
+    +visita
+    +pobEsp
+    +segFecha
+  }
+  class Respuesta {
+    +code
+    +total
+    +part
+    +extra
+    +porPunto
+    +g
+  }
+  class RecorridoGanso {
+    +aves
+    +pts
+    +gal
+    +trat
+  }
+  class PlanMejora {
+    +accion
+    +responsable
+    +plazo
+  }
+  class Firma {
+    +rol
+    +nombre
+    +fecha
+  }
+  class Indicador {
+    +code
+    +sp
+    +medida MBA|MBR|MBG
+    +numeral
+    +tabla
+    +regla
+  }
+  class Bitacora {
+    +t
+    +u
+    +accion
+  }
+  Usuario "1" --> "*" Finca : registra
+  Finca "1" *-- "1" PersonaResponsable
+  Finca "1" *-- "1..2" EspecieFinca
+  EspecieFinca "1" *-- "*" LoteInventario
+  Finca "1" --> "*" ProcesoSeguimiento : por especie
+  ProcesoSeguimiento "1" *-- "1..6" Evaluacion : visita 0 + seguimientos
+  Evaluacion "1" *-- "*" Respuesta
+  Evaluacion "1" *-- "0..1" RecorridoGanso
+  Evaluacion "1" *-- "*" PlanMejora
+  Evaluacion "1" *-- "*" Firma
+  Respuesta "*" --> "1" Indicador
+  Evaluacion ..> Evaluacion : base / anterior
+  Usuario "1" --> "*" Bitacora

@@ -1,0 +1,11 @@
+**/node_modules
+**/dist
+**/.angular
+**/coverage
+.git
+.env
+.env.*
+!.env.example
+_to_delete
+docs
+*.code-workspace

@@ -1,0 +1,69 @@
+%% Vista 6 · Seguimiento, reportes y tablero (RF27 a RF36, RF40)
+classDiagram
+  class ProcesoSeguimiento {
+    +id PRC
+    +visitas
+    +usados
+    +max
+    +estado
+    +ampliado
+    +estadoProceso(pid)
+    +ampliarProceso(pid, motivo)
+  }
+  class EstadoProceso {
+    <<enumeration>>
+    En curso
+    Seguimiento programado
+    En seguimiento
+    Requiere ampliación
+    Cumplido
+    Cerrado sin cumplir
+  }
+  class ReglaCumplimiento {
+    +puntajeMin 90
+    +sinCeros
+    +sinPendientes
+    +verificarCumplimiento(ev)
+  }
+  class Programacion {
+    +fechaSugeridaSeguimiento(ev)
+    +avisoFechaSeguimiento(ev, fecha)
+    +programarSeguimiento(pid, fecha)
+    +reprogramarSeguimiento(ev, fecha)
+    +crearSeguimiento(pid)
+    +crearProceso(finca, sp)
+  }
+  class Flujo {
+    +ESTADOS_FLUJO
+    +estadoEspecie(f, sp)
+    +pasoContinuar(ev)
+    +siguientePendiente(ev)
+    +contarEstados(fs)
+  }
+  class vInicio {
+    <<vista solo lectura>>
+    +KPI
+    +MiTrabajo
+    +TareasPendientes
+    +graficas
+  }
+  class vReportes {
+    <<vista>>
+    +filtros
+    +csvSinDatosPersonales
+    +imprimir
+    +compararVisitas()
+  }
+  class Bitacora {
+    +t
+    +u
+    +accion
+    +log(accion)
+  }
+  ProcesoSeguimiento --> EstadoProceso
+  ProcesoSeguimiento ..> ReglaCumplimiento
+  Programacion ..> ProcesoSeguimiento
+  Programacion ..> Bitacora
+  Flujo ..> ProcesoSeguimiento
+  vInicio ..> Flujo
+  vReportes ..> ProcesoSeguimiento

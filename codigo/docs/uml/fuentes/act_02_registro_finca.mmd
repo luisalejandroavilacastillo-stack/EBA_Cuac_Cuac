@@ -1,0 +1,10 @@
+%% Registro de finca (CU-04)
+flowchart TD
+  A([Inspector / Coordinador / Admin<br/>pulsa Registrar finca]) --> B[Datos de la finca:<br/>nombre, departamento, municipio,<br/>vereda, área]
+  B --> C[Persona responsable:<br/>nombre, tipo y número de documento,<br/>correo, teléfono, autorización Ley 1581]
+  C --> D[Especies: marcar Patos y/o Gansos<br/>y escribir el número de aves de cada una]
+  D --> E[El sistema muestra el tramo por especie<br/>Traspatio &lt;200 · Comercial ≥200]
+  E --> F{¿Datos válidos?<br/>al menos una especie con aves &gt; 0,<br/>documento y correo válidos}
+  F -- No --> G[Mostrar error en el campo] --> B
+  F -- Sí --> H["Crear finca FIN-AAAA-NNNNN ACTIVA<br/>valores por defecto por especie:<br/>Carne · Semi-intensivo · con corral<br/>(patos: permanencia y cama)"]
+  H --> I[Registrar en bitácora] --> J([Ficha de la finca<br/>cada especie en Por iniciar])

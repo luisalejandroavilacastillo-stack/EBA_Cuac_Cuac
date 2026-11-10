@@ -1,0 +1,35 @@
+%% Vista 2 · Autenticación y sesión (RF01, RF04)
+classDiagram
+  class Sesion {
+    +rol
+    +inicio
+    +ultimaActividad
+    +LIMITE 15 min
+    +iniciarSesion(rol)
+    +cerrarSesion(motivo)
+    +tic()
+  }
+  class vIngreso {
+    <<vista>>
+    +formIngreso
+    +formCodigo
+    +formRecuperar
+    +intentos
+  }
+  class CodigoDobleFactor {
+    +6 dígitos
+    +validar()
+  }
+  class Recuperacion {
+    +correo
+    +enviarEnlace()
+  }
+  class vCuenta {
+    <<vista>>
+    +datos
+    +sesionesActivas
+  }
+  vIngreso ..> CodigoDobleFactor
+  vIngreso ..> Recuperacion
+  vIngreso ..> Sesion : iniciarSesion
+  vCuenta ..> Sesion

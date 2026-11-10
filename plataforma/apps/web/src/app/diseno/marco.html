@@ -1,0 +1,14 @@
+<aside class="menu">
+  <a class="marca" routerLink="/inicio"><img src="logo-eba-blanco.svg" alt="EBA Cuac Cuac"></a>
+  <nav>
+    @for (o of opciones(); track o.ruta) {
+      <a [routerLink]="'/' + o.ruta" routerLinkActive="activo">{{ o.texto }}</a>
+    }
+  </nav>
+  <label class="rol">Perfil (temporal)
+    <select [value]="rol()" (change)="cambiarRol($any($event.target).value)">
+      @for (r of roles; track r.valor) { <option [value]="r.valor">{{ r.texto }}</option> }
+    </select>
+  </label>
+</aside>
+<main><router-outlet /></main>

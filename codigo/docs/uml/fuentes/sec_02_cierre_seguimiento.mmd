@@ -1,0 +1,24 @@
+%% Secuencia: finalizar una visita que no cumple y programar el seguimiento
+sequenceDiagram
+    autonumber
+    actor I as Inspector
+    participant V as resultado.js
+    participant S as seguimiento.js
+    participant D as localStorage (eba7.*)
+    participant B as Bitácora
+    I->>V: abrir cierre
+    V->>S: verificarCumplimiento(ev)
+    S-->>V: cumple = false
+    V->>S: fechaSugeridaSeguimiento(ev)
+    S-->>V: plazo más lejano + 1 día (o +30)
+    I->>V: ajustar fecha acordada con el productor
+    V->>S: avisoFechaSeguimiento(ev, fecha)
+    S-->>V: aviso no bloqueante (si es antes del plazo)
+    I->>V: Finalizar (firmas completas)
+    V->>D: ev.estado = Finalizada
+    V->>S: programarSeguimiento(proceso, fecha)
+    S->>S: estadoProceso(pid) · ¿puedeSeguimiento?
+    S->>S: evaluacionDesde(ultima) · visita N, estado Programada
+    S->>D: guardar EVALS
+    S->>B: «Seguimiento N programado para …»
+    V-->>I: «Seguimiento N de M programado» + Reprogramar

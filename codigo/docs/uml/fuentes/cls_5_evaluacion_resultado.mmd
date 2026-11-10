@@ -1,0 +1,111 @@
+%% Vista 5 · Evaluación y resultado (RF13 a RF23)
+classDiagram
+  class Evaluacion {
+    +id
+    +finca
+    +sp
+    +fecha
+    +inspector
+    +estado
+    +apertura
+    +pobEsp pato y ganso
+    +resp
+    +obs
+    +firmas
+    +plan
+    +rg
+    +proceso
+    +visita
+    +base
+    +anterior
+    +segFecha
+  }
+  class Apertura {
+    +atiende
+    +bebederos
+    +comederos
+    +puntosSC
+    +avesPuntoSC
+  }
+  class Contexto {
+    +f
+    +e
+    +pob
+    +pobFinca
+    +nEsp
+    +tramo
+    +plan
+    +ap
+    +contexto(ev)
+  }
+  class Respuesta {
+    +total
+    +part
+    +extra
+    +porPunto
+    +g por galpón
+  }
+  class RecorridoGanso {
+    +aves[pt]: m, ok
+    +pts[pt]: agua, com, beb
+    +gal
+    +trat
+    +derivarGansos(ev)
+  }
+  class Calculo {
+    +aplica()
+    +calcular()
+    +resultado()
+    +avance()
+    +alertasGalpon()
+    +ccNivel()
+    +marcarHuevo()
+  }
+  class Resultado {
+    +total
+    +med
+    +nivel
+    +pendientes
+    +provisional
+  }
+  class PlanMejora {
+    +code
+    +accion
+    +responsable
+    +plazo
+  }
+  class vApertura {
+    <<vista>>
+  }
+  class vRecorrido {
+    <<vista patos>>
+  }
+  class vRecorridoGanso {
+    <<vista gansos>>
+  }
+  class vIndicador {
+    <<vista>>
+    +btnFicha()
+    +abrirIndicadorFlotante()
+  }
+  class vCierre {
+    <<vista>>
+    +bloqueSeg
+  }
+  class FichaIndicador {
+    <<capa>>
+    +fichaIndicador(code)
+  }
+  Evaluacion *-- Apertura
+  Evaluacion *-- "*" Respuesta
+  Evaluacion *-- "0..1" RecorridoGanso
+  Evaluacion *-- "*" PlanMejora
+  Calculo ..> Contexto
+  Calculo ..> Resultado
+  RecorridoGanso ..> Respuesta : deriva
+  vApertura ..> Evaluacion
+  vRecorrido ..> Respuesta
+  vRecorridoGanso ..> RecorridoGanso
+  vIndicador ..> FichaIndicador
+  vRecorrido ..> FichaIndicador
+  vCierre ..> Calculo

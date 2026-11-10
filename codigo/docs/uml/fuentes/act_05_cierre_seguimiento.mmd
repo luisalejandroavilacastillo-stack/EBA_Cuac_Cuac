@@ -1,0 +1,25 @@
+%% Cierre de la visita y seguimiento automático (CU-15, CU-17, CU-18, CU-19)
+flowchart TD
+  A([Abrir cierre]) --> B{¿Hay indicadores pendientes?}
+  B -- Sí --> X[Ir al siguiente pendiente] --> FIN([Fin])
+  B -- No --> C[Calcular resultado:<br/>MBA, MBR, MBG ponderados por tramo,<br/>nivel según Tabla 2]
+  C --> D[Plan de mejora con acción, responsable y plazo<br/>para cada indicador bajo]
+  D --> E{¿Cumple?}
+  E -- Sí --> F[Firmas · Finalizar]
+  F --> G[Proceso Cumplido]:::ok --> FIN
+  E -- No --> H["Bloque Seguimiento programado:<br/>fecha sugerida = plazo más lejano + 1 día<br/>sin plazos → +30 días"]
+  H --> I{¿La fecha es antes del plazo<br/>del plan de mejora?}
+  I -- Sí --> J[Aviso no bloqueante] --> K
+  I -- No --> K[Firmas · Finalizar]
+  K --> L{¿Seguimientos usados &lt; máximo?<br/>3, ampliable a 5}
+  L -- Sí --> M[Crear visita N de M Programada<br/>retomando las respuestas anteriores]:::seg
+  M --> N[Especie en Seguimiento programado]
+  N --> O{¿Cambia la fecha acordada?}
+  O -- Sí --> P[Reprogramar: fecha ≥ hoy,<br/>queda en bitácora] --> N
+  O -- No --> Q([El día de la visita:<br/>Iniciar seguimiento])
+  L -- No --> R{¿Coordinador amplía<br/>con motivo?}
+  R -- Sí --> M
+  R -- No --> S[Proceso Cerrado sin cumplir]:::err --> FIN
+  classDef ok fill:#e6f4ea,stroke:#2f855a
+  classDef err fill:#fde8e8,stroke:#c53030
+  classDef seg fill:#e8f0fe,stroke:#2b6cb0

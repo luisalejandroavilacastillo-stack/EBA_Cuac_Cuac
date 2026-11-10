@@ -1,0 +1,8 @@
+%% Ficha del indicador durante la evaluación (CU-13)
+flowchart TD
+  A([Inspector en un punto o indicador]) --> B[Pulsa ? junto al indicador]
+  B --> C["Capa superpuesta #capa-ficha:<br/>pregunta, método, cálculo, escala<br/>solo del indicador actual"]
+  C --> D{Acción}
+  D -- Esc / Cerrar --> E([Vuelve al punto<br/>sin perder lo registrado])
+  D -- Cambio de pantalla --> F([La capa se cierra sola])
+  G([Documento completo de la norma]) -.-> H[Solo en el módulo<br/>Ayuda de la norma]

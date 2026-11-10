@@ -1,0 +1,49 @@
+<h1>Plataforma EBA Cuac Cuac</h1>
+<p class="muted">Angular · API Node.js con Express (puerto 3085) · MariaDB.</p>
+
+<div class="rejilla">
+  <section class="panel">
+    <h3>Servidor (API Express)</h3>
+    @let e = estado();
+    @if (e.cargando) {
+      <span class="etiqueta e-pend">Consultando…</span>
+    } @else if (e.salud; as s) {
+      <span class="etiqueta e-ok">Conectado</span>
+      <dl>
+        <dt>Dirección</dt><dd><code>{{ apiUrl }}</code></dd>
+        <dt>Servicio</dt><dd>{{ s.servicio }} {{ s.version }} · {{ s.entorno }}</dd>
+        <dt>Base de datos</dt>
+        <dd>
+          @if (s.baseDeDatos.estado === 'conectada') {
+            <span class="etiqueta e-ok">Conectada</span> MariaDB {{ s.baseDeDatos.version }}
+          } @else {
+            <span class="etiqueta e-error">Sin conexión</span> {{ s.baseDeDatos.motivo }}
+          }
+        </dd>
+        <dt>Asistente</dt><dd>{{ s.asistenteIA }}</dd>
+      </dl>
+    } @else {
+      <span class="etiqueta e-error">Sin conexión</span>
+      <p class="muted">No responde <code>{{ apiUrl }}</code>. Inicie la API con <code>npm run dev</code> desde la raíz del proyecto
+        y revise la IP y el puerto (3085) en <code>.env</code>.</p>
+    }
+  </section>
+
+  <section class="panel">
+    <h3>Reglas compartidas de la norma</h3>
+    <p class="muted">Caso: {{ caso.aves }} patos con MBA {{ caso.medidas.MBA }}, MBR {{ caso.medidas.MBR }} y MBG {{ caso.medidas.MBG }}.</p>
+    <dl>
+      <dt>En el navegador</dt><dd>{{ local.tramo }} · {{ local.puntaje }} puntos · {{ local.nivel }}</dd>
+      <dt>En el servidor</dt>
+      <dd>
+        @if (servidor(); as r) { {{ r.tramo }} · {{ r.puntaje }} puntos · {{ r.nivel }}
+          @if (r.puntaje === local.puntaje) { <span class="etiqueta e-ok">Coinciden</span> }
+        } @else { <span class="muted">sin respuesta</span> }
+      </dd>
+      <dt>Pesos comercial (Tabla 1)</dt><dd>MBA {{ pesos.MBA }} · MBR {{ pesos.MBR }} · MBG {{ pesos.MBG }}</dd>
+      <dt>Niveles (Tabla 2)</dt>
+      <dd>@for (n of niveles; track n.nivel) { <span class="nivel">{{ n.nivel }} ≥ {{ n.minimo }}</span> }</dd>
+      <dt>Muestreo</dt><dd>{{ ejemplo.texto }}</dd>
+    </dl>
+  </section>
+</div>

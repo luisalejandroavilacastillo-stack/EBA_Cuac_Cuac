@@ -1,0 +1,17 @@
+%% Secuencia: recorrido por puntos de gansos
+sequenceDiagram
+    autonumber
+    actor I as Inspector
+    participant R as recorrido_ganso.js
+    participant M as Modal de gansos
+    participant C as calculo.js
+    I->>R: abrir #/eval/{id}/recorrido/{punto}
+    R->>R: rgDe(ev) · ev.rg = {aves, pts, gal, trat}
+    I->>R: recursos del punto (agua, comida, bebedero)
+    I->>M: ganso por ganso: novedad y tratamiento
+    I->>M: «Los gansos restantes, sin novedad»
+    M->>R: ev.rg.aves[pt] = [{m, ok}]
+    R->>R: derivarGansos(ev) → ev.resp[GR02…GA07] total/parte/extra y por galpón
+    R->>C: calcular(ind, resp, ctx)
+    C-->>R: puntaje e indicadores con alerta por galpón
+    R-->>I: avance del punto y siguiente punto

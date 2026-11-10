@@ -1,0 +1,23 @@
+%% Estados del proceso de seguimiento (PRC) · finca + especie
+stateDiagram-v2
+    [*] --> EnCurso : crearProceso() · visita inicial
+    EnCurso --> Cumplido : visita finalizada que cumple
+    EnCurso --> SeguimientoProgramado : visita finalizada que no cumple · programarSeguimiento(fecha)
+    SeguimientoProgramado --> SeguimientoProgramado : reprogramar
+    SeguimientoProgramado --> EnCurso : iniciar seguimiento N de M
+    EnCurso --> EnSeguimiento : finalizada sin cumplir y sin fecha
+    EnSeguimiento --> SeguimientoProgramado : programar seguimiento
+    EnCurso --> RequiereAmpliacion : usó 3 seguimientos y no cumple
+    RequiereAmpliacion --> SeguimientoProgramado : coordinador amplía a 5 (con motivo)
+    EnCurso --> CerradoSinCumplir : usó 5 seguimientos y no cumple
+    Cumplido --> [*]
+    CerradoSinCumplir --> [*]
+    EnCurso : En curso
+    SeguimientoProgramado : Seguimiento programado
+    EnSeguimiento : En seguimiento
+    RequiereAmpliacion : Requiere ampliación
+    CerradoSinCumplir : Cerrado sin cumplir
+    note right of Cumplido
+        Cumple = puntaje ≥ 90, ningún indicador en 0
+        y sin pendientes (regla del proyecto).
+    end note

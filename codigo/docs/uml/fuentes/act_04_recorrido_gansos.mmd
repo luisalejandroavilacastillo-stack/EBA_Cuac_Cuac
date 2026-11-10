@@ -1,0 +1,18 @@
+%% Recorrido por puntos · gansos (CU-11) · 7.2 y Tablas 47 a 53
+flowchart TD
+  A([Abrir recorrido de gansos]) --> B[Plan de muestreo de la especie<br/>tramo según el número de gansos]
+  B --> C[Seleccionar galpón y punto]
+  C --> D[Registrar recursos del punto:<br/>agua, comida, bebedero]
+  D --> E[Revisar ganso por ganso]
+  E --> F{¿El ganso tiene novedad?}
+  F -- Sí --> G["Marcar la novedad: GA01…GA07<br/>(cojera incluida)<br/>y si recibe tratamiento GA01/03/04/07"]
+  F -- No --> H[Marcar sin novedad]
+  G & H --> I{¿Quedan gansos del punto?}
+  I -- Sí --> E
+  I -- "Los gansos restantes, sin novedad" --> J[Completar el punto de una vez]
+  I -- No --> K{¿Quedan puntos?}
+  J --> K
+  K -- Sí --> C
+  K -- No --> L["derivarGansos: total, parte y extra<br/>por indicador y por galpón"]
+  L --> M[GR02 a GR05 y GA01 a GA07 quedan<br/>en solo lectura en la lista de chequeo]
+  M --> N([GA08, GA09 y GA10 se evalúan<br/>en la lista de chequeo])

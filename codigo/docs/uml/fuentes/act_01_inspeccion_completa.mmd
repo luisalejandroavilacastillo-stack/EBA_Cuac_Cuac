@@ -1,0 +1,23 @@
+%% Flujo general de una inspección (Fases I a IV, ICA 2024 · 5.2 a 5.5)
+flowchart TD
+  A([Inicio]) --> B{¿La finca está ACTIVA<br/>y tiene la especie?}
+  B -- No --> Z1[No se puede programar visita]:::err --> FIN([Fin])
+  B -- Sí --> C{¿Hay evaluación abierta<br/>de esa finca y especie?}
+  C -- Sí, Programada/En proceso --> D[Abrir la visita existente<br/>no se crea otra]
+  C -- No --> E[Nueva inspección:<br/>crear proceso PRC y visita inicial]
+  D & E --> F["Fase I · Apertura<br/>persona que atiende, aves por especie,<br/>bebederos, comederos"]
+  F --> G["Calcular tramo por especie<br/>(&lt;200 traspatio / ≥200 comercial)<br/>y plan de muestreo"]
+  G --> H{Especie}
+  H -- Pato --> I["Fase II · Recorrido por puntos<br/>ave por ave (CU-10)"]
+  H -- Ganso --> J["Fase II · Recorrido por puntos<br/>ganso por ganso con novedades (CU-11)"]
+  I & J --> K["Fase III · Lista de chequeo<br/>indicadores restantes (CU-12)"]
+  K --> L{¿Quedan indicadores<br/>pendientes?}
+  L -- Sí --> K
+  L -- No --> M["Fase IV · Cierre<br/>cálculo, nivel, plan de mejora, firmas"]
+  M --> N{¿Cumple?<br/>≥90, sin indicadores en 0,<br/>sin pendientes}
+  N -- Sí --> O[Proceso Cumplido]:::ok --> FIN
+  N -- No --> P["Programar seguimiento automático<br/>fecha sugerida = plazo más lejano + 1 día<br/>(o +30 días)"]:::seg
+  P --> Q[Estado de la especie:<br/>Seguimiento programado] --> FIN
+  classDef err fill:#fde8e8,stroke:#c53030
+  classDef ok fill:#e6f4ea,stroke:#2f855a
+  classDef seg fill:#e8f0fe,stroke:#2b6cb0

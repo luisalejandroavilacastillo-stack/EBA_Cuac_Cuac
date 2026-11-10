@@ -1,0 +1,26 @@
+{
+  "name": "@eba/norma",
+  "version": "0.1.0",
+  "description": "Reglas de la Metodología ICA v1.0 (2024) para patos y gansos, compartidas por el backend y el frontend",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2",
+    "vitest": "^5.1.0"
+  }
+}

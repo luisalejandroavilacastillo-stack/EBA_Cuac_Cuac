@@ -1,0 +1,54 @@
+<a class="volver" routerLink="/fincas">← Volver a fincas</a>
+@let e = estado();
+@if (e.cargando) {
+  <p class="muted">Cargando…</p>
+} @else if (e.error) {
+  <div class="aviso aviso-error">{{ e.error }}</div>
+} @else if (e.finca; as f) {
+  @if (nueva()) { <div class="aviso aviso-ok" role="status">Finca registrada con el código <b>{{ f.codigo }}</b>.</div> }
+  <div class="encabezado">
+    <div>
+      <h1>{{ f.nombre }} @if (f.estado !== 'ACTIVA') { <span class="etiqueta e-gris">Inactiva</span> }</h1>
+      <p class="muted">@if (f.vereda) {Vereda {{ f.vereda }}, }{{ f.municipio }}, {{ f.departamento.nombre }} · {{ f.codigo }}</p>
+    </div>
+  </div>
+
+  <div class="rejilla">
+    <section class="panel">
+      <h3>Datos de la finca</h3>
+      <dl class="datos">
+        <dt>Aves</dt><dd>{{ miles(f.totalAves) }}@if (f.especies.length > 1) { <span class="muted"> (patos + gansos)</span> }</dd>
+        <dt>Especies</dt><dd>{{ f.especies.length }}</dd>
+        <dt>Registrada</dt><dd>{{ f.creadoEn.slice(0, 10) }}</dd>
+      </dl>
+    </section>
+    <section class="panel">
+      <h3>Persona responsable</h3>
+      <dl class="datos">
+        <dt>Nombre</dt><dd>{{ f.responsable.nombre }}</dd>
+        <dt>Documento</dt><dd>{{ f.responsable.tipoDocumento }} {{ f.responsable.numeroDocumento }}</dd>
+        <dt>Correo</dt><dd>{{ f.responsable.correo || 'Sin correo (traspatio)' }}</dd>
+        <dt>Teléfono</dt><dd>{{ f.responsable.telefono }}</dd>
+      </dl>
+      <p class="muted chico">Datos tratados según la Ley 1581 de 2012@if (f.responsable.autorizaDatos) { · autorización registrada}.</p>
+    </section>
+  </div>
+
+  <h2 class="titulo-seccion">Especies</h2>
+  <div class="rejilla">
+    @for (s of f.especies; track s.especie) {
+      <section class="panel">
+        <h3>{{ nombreEspecie(s.especie) }} · {{ miles(s.numeroAves) }} aves
+          <span class="etiqueta" [class.e-com]="s.tramo === 'comercial'" [class.e-trasp]="s.tramo === 'traspatio'">{{ nombreTramo(s.tramo) }}</span></h3>
+        @if (s.pesos; as p) {
+          <p>
+            @if (s.tramo === 'comercial') { Se evalúan recursos, animales y gestión documental: animal {{ pct(p.MBA) }} %, recursos {{ pct(p.MBR) }} %, gestión {{ pct(p.MBG) }} %. }
+            @else { Se evalúan recursos y animales, sin documentos: animal {{ pct(p.MBA) }} %, recursos {{ pct(p.MBR) }} %. }
+          </p>
+        }
+        <p class="muted chico">Muestra prevista: {{ s.muestra }}.</p>
+        <p class="muted chico">Propósito, sistema y corral se confirman en la visita.</p>
+      </section>
+    }
+  </div>
+}

@@ -1,0 +1,54 @@
+%% Vista 7 · Asistente de la norma y ayuda (RF24, RF25)
+classDiagram
+  class AsistenteNorma {
+    +FUERA_DE_TEMA
+    +TEMAS_NORMA
+    +dentroDeTema(q)
+    +responderAsistente(q, cx)
+    +responderTecnico()
+    +fichaTecnica()
+    +conocimientoNorma()
+    +promptAsistente(cx, q)
+    +contextoPantalla()
+    +sugerenciasRol()
+  }
+  class PanelFlotante {
+    <<ui>>
+    +abrirAsistenteFlotante()
+    +cerrarAsistenteFlotante()
+    +pintarAsistenteFlotante()
+  }
+  class BotonAsistente {
+    <<ui>>
+    +destinoAsistente()
+    +actualizarBotonAsistente()
+  }
+  class AsistenteProductor {
+    <<vista>>
+    +contextoAsistente()
+    +responderLocal()
+    +preguntarIA()
+    +sugerencias()
+  }
+  class ServicioIA {
+    <<externo>>
+    Claude API
+  }
+  class PaginasNorma {
+    +PAG_NORMA
+  }
+  class vAyuda {
+    <<vista>>
+    +documento completo
+    +calculadoraAyuda()
+  }
+  class Privacidad {
+    <<regla>>
+    sin documento, correo ni teléfono · bitácora sin texto
+  }
+  BotonAsistente ..> PanelFlotante
+  PanelFlotante ..> AsistenteNorma
+  AsistenteProductor ..> AsistenteNorma
+  AsistenteNorma ..> PaginasNorma
+  AsistenteNorma ..> ServicioIA : modo IA
+  AsistenteNorma ..> Privacidad

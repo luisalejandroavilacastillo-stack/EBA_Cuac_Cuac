@@ -1,0 +1,20 @@
+%% Secuencia: calcular el resultado de una visita
+sequenceDiagram
+    autonumber
+    actor I as Inspector
+    participant V as resultado.js · vCierre
+    participant C as calculo.js
+    participant N as norma.js · NORMA
+    I->>V: abrir #/eval/{id}/cierre
+    V->>C: resultado(ev)
+    C->>C: contexto(ev) → f, e, pob = aves de la especie, tramo, plan
+    C->>N: lista(ev) · indicadores de la especie
+    loop cada indicador
+        C->>C: aplica(ind, ctx)
+        C->>C: calcular(ind, resp, ctx) → puntaje 0 / 20 / 55 / 100
+    end
+    C->>C: promedio por medida MBA, MBR, MBG
+    C->>C: total = Σ medida × PESOS[tramo]
+    C->>C: nivel según Tabla 2 · alertasGalpon(ev)
+    C-->>V: total, med, nivel, pendientes, provisional
+    V-->>I: calificación, plan de mejora y bloque de seguimiento

@@ -1,0 +1,15 @@
+{
+  "folders": [
+    { "name": "🖥️ Frontend (Angular) · apps/web", "path": "apps/web" },
+    { "name": "⚙️ Backend (Express) · apps/api", "path": "apps/api" },
+    { "name": "📐 Reglas de la norma · packages/norma", "path": "packages/norma" },
+    { "name": "📁 Proyecto completo", "path": "." }
+  ],
+  "settings": {
+    "files.exclude": { "**/node_modules": true, "**/dist": true, "**/.angular": true },
+    "typescript.tsdk": "node_modules/typescript/lib"
+  },
+  "extensions": {
+    "recommendations": ["angular.ng-template", "dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+  }
+}

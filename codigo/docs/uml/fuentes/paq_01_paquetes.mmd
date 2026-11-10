@@ -1,0 +1,34 @@
+%% Diagrama de paquetes (módulos JavaScript) v0.24
+flowchart TB
+  subgraph APP["app.js · enrutador por hash"]
+  end
+  subgraph VISTAS["vistas/"]
+    v1[ingreso.js] --- v2[inicio.js] --- v3[fincas.js] --- v4[evaluaciones.js]
+    v5[recorrido.js] --- v6[recorrido_ganso.js] --- v7[indicador.js] --- v8[resultado.js]
+    v9[reportes.js] --- v10[asistente.js] --- v11[asistente_norma.js] --- v12[ayuda.js] --- v13[administracion.js]
+  end
+  subgraph UI["ui/"]
+    u1[estructura.js] --- u2[capas.js] --- u3[graficas.js] --- u4[boton-asistente.js] --- u5[iconos.js]
+  end
+  subgraph NORMA["norma/ · reglas ICA"]
+    n1[calculo.js] --- n2[flujo.js] --- n3[seguimiento.js]
+  end
+  subgraph NUCLEO["nucleo/"]
+    c1[sesion.js] --- c2[utilidades.js]
+  end
+  subgraph DATOS["datos/"]
+    d1[norma.js] --- d2[norma_textos.js] --- d3[norma_paginas.js] --- d4[ejemplo.js] --- d5[semilla.js]
+  end
+  LS[("localStorage · eba7.*")]
+  API[["Claude API (opcional)"]]
+  APP --> VISTAS
+  VISTAS --> UI
+  VISTAS --> NORMA
+  VISTAS --> NUCLEO
+  NORMA --> DATOS
+  NORMA --> NUCLEO
+  UI --> NUCLEO
+  NUCLEO --> DATOS
+  DATOS --> LS
+  v11 -.-> API
+  v10 -.-> API

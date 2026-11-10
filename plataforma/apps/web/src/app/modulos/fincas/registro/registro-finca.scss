@@ -1,0 +1,15 @@
+.rejilla-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 16px; margin-top: 18px; align-items: start; }
+fieldset { margin: 0; min-width: 0; }
+legend { font-weight: 800; color: var(--semilla); padding: 0 6px; font-size: 17px; }
+.fila { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.especies { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.especie { display: flex; align-items: center; gap: 8px; border: 1.5px solid var(--borde); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+.especie.activa { border-color: var(--campo); background: #f2f9f4; }
+.especie.con-error { border-color: var(--rojo); }
+.especie input[type='number'] { flex: 1; min-width: 60px; max-width: 110px; }
+.tramos { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 6px; }
+.tramos li { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.autoriza { margin-top: 6px; align-items: flex-start; }
+.acciones { grid-column: 1 / -1; display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap; }
+.acciones .aviso { margin-right: auto; }
+@media (max-width: 520px) { .fila, .especies { grid-template-columns: 1fr; } .rejilla-form { grid-template-columns: 1fr; } }

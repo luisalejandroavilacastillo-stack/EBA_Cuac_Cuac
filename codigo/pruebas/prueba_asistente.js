@@ -1,0 +1,116 @@
+/* Pruebas de los datos de la persona de la finca y del asistente para el productor (modo local, sin navegador).
+   Uso:  node pruebas/prueba_asistente.js */
+"use strict";
+const fs = require("fs"), path = require("path"), vm = require("vm");
+const SRC = path.join(__dirname, "..", "src", "js");
+const ctx = vm.createContext({ console, document: { getElementById: () => ({}) }, localStorage: { getItem: () => null, setItem() {}, removeItem() {} }, sessionStorage: { getItem: () => null, setItem() {} }, Object, JSON, Math, Number, String, Array, Date, Intl, Set, RegExp });
+["datos/norma.js", "datos/norma_textos.js", "nucleo/utilidades.js", "datos/ejemplo.js", "norma/calculo.js", "norma/seguimiento.js", "datos/semilla.js",
+ "vistas/fincas.js", "vistas/administracion.js", "vistas/resultado.js", "vistas/asistente.js", "datos/norma_paginas.js", "vistas/asistente_norma.js"].forEach((f) =>
+  vm.runInContext(fs.readFileSync(path.join(SRC, f), "utf8").replace(/^const (\w+) =/gm, "var $1 =").replace(/^let (\w+) =/gm, "var $1 =").replace(/^function (\w+)/gm, "var $1 = function $1"), ctx, { filename: f }));
+const R = (code) => vm.runInContext(code, ctx);
+R("var SES = { rol: 'productor' }");
+let ok = 0, mal = 0;
+const igual = (n, o, e) => { const b = JSON.stringify(o) === JSON.stringify(e); b ? ok++ : mal++; if (!b) console.log(`  FALLA ${n}: ${JSON.stringify(o)} (esperado ${JSON.stringify(e)})`); };
+const contiene = (n, t, frag) => { const b = String(t).includes(frag); b ? ok++ : mal++; if (!b) console.log(`  FALLA ${n}: no contiene «${frag}»\n    ${String(t).slice(0, 300)}`); };
+const sec = (t) => console.log("· " + t);
+const T = (o, traspatio) => R(`Object.keys(validarTitular(${JSON.stringify(Object.assign({ nombre: "Hernán Darío Mejía", tipoDoc: "CC", doc: "91234567", correo: "h.mejia@correo.co", tel: "3154827710", autoriza: true }, o))}, ${!!traspatio}))`);
+
+sec("Persona responsable de la finca");
+igual("Datos completos y válidos", T({}), []);
+igual("Nombre con una sola palabra", T({ nombre: "Hernán" }), ["nombre"]);
+igual("Nombre con números", T({ nombre: "Hernán 123" }), ["nombre"]);
+igual("CC con puntos se acepta", T({ doc: "91.234.567" }), []);
+igual("CC muy corta", T({ doc: "123" }), ["doc"]);
+igual("CC con letras", T({ doc: "91A34567" }), ["doc"]);
+igual("NIT con dígito de verificación", T({ tipoDoc: "NIT", doc: "900.123.456-7" }), []);
+igual("NIT sin dígito de verificación", T({ tipoDoc: "NIT", doc: "900123456" }), ["doc"]);
+igual("La tarjeta de identidad no se acepta (un menor no es responsable de la finca)", T({ tipoDoc: "TI", doc: "1012345678" }), ["tipoDoc"]);
+igual("Pasaporte alfanumérico", T({ tipoDoc: "PAS", doc: "AB123456" }), []);
+igual("PPT de 7 dígitos", T({ tipoDoc: "PPT", doc: "1234567" }), []);
+igual("Tipo de documento inválido", T({ tipoDoc: "XX" }), ["tipoDoc"]);
+igual("Correo sin dominio", T({ correo: "h.mejia@correo" }), ["correo"]);
+igual("Comercial: el correo es obligatorio", T({ correo: "" }), ["correo"]);
+igual("Traspatio: el correo es opcional (HU-25)", T({ correo: "" }, true), []);
+igual("Traspatio: si se escribe, el correo se valida", T({ correo: "rosa@" }, true), ["correo"]);
+igual("Celular con espacios y +57", T({ tel: "+57 315 482 7710" }), []);
+igual("Fijo con indicativo 601", T({ tel: "6012345678" }), []);
+igual("Teléfono de 7 dígitos", T({ tel: "2345678" }), ["tel"]);
+igual("Sin autorización Ley 1581", T({ autoriza: false }), ["autoriza"]);
+igual("Varias fallas a la vez", T({ nombre: "", doc: "", correo: "", tel: "" }), ["nombre", "doc", "correo", "tel"]);
+igual("Las fincas de ejemplo validan con su tramo", R("FINCAS0.every((f) => !Object.keys(validarTitular(f.titular, tramo(poblacion(f)) !== 'comercial')).length)"), true);
+igual("Las 4 fincas de ejemplo tienen persona válida", R("FINCAS0.every((f) => f.titular && !Object.keys(validarTitular(f.titular)).length)"), true);
+igual("Documento enmascarado en listas", R("enmascara(FINCAS0[0].titular.doc)"), "•••567");
+igual("Teléfono enmascarado", R("enmascaraTel('3154827710')"), "••• ••• 7710");
+igual("Teléfono con formato", R("formatoTel('3154827710')"), "315 482 7710");
+
+sec("Asistente · contexto");
+R("var F = FINCAS.find((f) => f.id === 'FIN-2026-00417'), E = evaluacionPorDefecto(F.id), CX = contextoAsistente(F, E)");
+igual("Toma la última evaluación finalizada", R("E.id"), "EVA-2026-00072");
+igual("Puntaje igual al del resultado", R("CX.r.total === resultado(E).total"), true);
+igual("Ordena por lo que más sube el puntaje", R("CX.mejorables.every((x, i, a) => !i || CX.ganancia(a[i - 1]) >= CX.ganancia(x) - 1e-9)"), true);
+igual("Ganancia = peso × (100 − puntaje) ÷ indicadores de la medida", R("(() => { const x = CX.mejorables[0]; return Math.abs(CX.ganancia(x) - CX.r.pesos[x.ind.g] * (100 - x.score) / CX.r.n[x.ind.g]) < 1e-9; })()"), true);
+igual("Sube el total exacto si ese indicador llega a 100", R(`(() => { const x = CX.mejorables[0], m = CX.r.med[x.ind.g], n = CX.r.n[x.ind.g];
+  const nuevo = CX.r.total - CX.r.aporte[x.ind.g] + CX.r.pesos[x.ind.g] * (m * n - x.score + 100) / n; return Math.abs((nuevo - CX.r.total) - CX.ganancia(x)) < 0.06; })()`), true);
+igual("Plan de mejora en el contexto", R("CX.plan.map((p) => p.ind.code)"), ["PA01", "PG04"]);
+const resumen = R("resumenContexto(CX)");
+contiene("Resumen con el puntaje", resumen, "Puntaje total:");
+contiene("Resumen con el plan", resumen, "Instalar ventiladores en el galpón 2");
+igual("El resumen no lleva documento, correo ni teléfono", ["91234567", "h.mejia", "3154827710"].some((d) => resumen.includes(d)), false);
+contiene("Prompt pide consultar al veterinario", R("promptSistema(CX)"), "médico veterinario");
+
+sec("Asistente · respuestas locales");
+const P = (q) => R(`responderLocal(${JSON.stringify(q)}, CX)`);
+contiene("Puntaje", P("¿Qué significa mi puntaje?"), "nivel " + R("CX.r.nivel[0]"));
+contiene("Puntaje explica la Tabla 1", P("como me fue"), "× 60 %");
+contiene("Prioridades", P("¿Qué debo corregir primero?"), R("CX.mejorables[0].ind.num"));
+contiene("Indicador por nombre: jadeo", P("¿por qué me calificaron mal el jadeo?"), "6.2.1 Jadeo");
+contiene("Jadeo trae la observación del inspector", P("jadeo"), "galpón 2: 81 de 120");
+contiene("Jadeo trae el plan de mejora", P("jadeo"), "Instalar ventiladores");
+contiene("Indicador por numeral", P("¿qué es el 6.2.10?"), "6.2.10 Mortalidad");
+contiene("Indicador por sinónimo: calor → jadeo", P("las aves respiran con la boca abierta por el calor"), "Jadeo");
+contiene("Indicador por sinónimo: cama húmeda", P("la cama esta humeda"), "6.1.2 Calidad de la cama");
+contiene("Plan de mejora", P("¿Qué dice mi plan de mejora?"), "POE firmado por el MVZ");
+contiene("Seguimiento", P("¿Cuándo se cierra mi proceso?"), "PRC-2026-0001");
+contiene("Galpones", P("¿Qué pasa con mis galpones?"), "galpón");
+contiene("Urgencia: muertes repentinas", P("se me estan muriendo muchas aves de repente"), "oficina local del ICA");
+contiene("Medicamentos: remite al veterinario", P("que antibiotico le doy para la diarrea"), "médico veterinario");
+igual("No da dosis", /\d+\s*(mg|ml|cc)\b/i.test(P("que dosis de antibiotico le doy")), false);
+contiene("Tema desconocido: ofrece ayuda", P("¿quién ganó el partido?"), "Puedo ayudarle con");
+R("var CXG = contextoAsistente(FINCAS.find((f) => f.id === 'FIN-2026-00431'), null)");
+contiene("Finca sin evaluación: explica la norma", R("responderLocal('¿qué es la podo dermatitis?', CXG)"), "7.2.3 Podo dermatitis plantar");
+igual("Gansos: no responde con indicadores de patos", R("buscarIndicadores('pico', CXG).map((i) => i.sp)"), ["ganso"]);
+
+sec("Asistente · formato seguro");
+igual("Escapa HTML de la IA", R("mdSeguro('<img src=x onerror=alert(1)>')").includes("<img"), false);
+igual("Negrita y listas", R("mdSeguro('**Hola**\\n- uno\\n- dos')"), "<p><b>Hola</b></p><ul><li>uno</li><li>dos</li></ul>");
+
+sec("Asistente de la norma · todos los perfiles");
+R("var CXE = contextoAsistente(FINCAS.find((f) => f.id === 'FIN-2026-00417'), EVALS.find((e) => e.id === 'EVA-2026-00088')); CXE.foco = null");
+contiene("Productor: fuera de tema responde que solo habla de la norma", R("responderAsistente('¿quién ganó el partido?', CXE)"), "Solo puedo ayudarle con la metodología del ICA");
+contiene("Productor: sigue explicando qué mejorar", R("responderAsistente('¿qué debo corregir primero?', CXE)"), "Le conviene empezar");
+R("SES = { rol: 'inspector' }");
+igual("El inspector tiene el asistente", R("PERMISOS.inspector.includes('asistente')"), true);
+const RI = (q) => R(`responderAsistente(${JSON.stringify(q)}, CXE)`);
+contiene("Inspector: cómo se evalúa la cama (ficha técnica)", RI("¿cómo se evalúa la cama?"), "6.1.2 Calidad de la cama");
+contiene("Inspector: cita tabla y página", RI("¿cómo se evalúa la cama?"), "Tabla 6 · pág. 18");
+contiene("Inspector: muestra la escala", RI("¿cómo se evalúa la cama?"), "**100:**");
+contiene("Inspector: pregunta por gansos desde una evaluación de patos", RI("¿cómo se evalúa la podo dermatitis en gansos?"), "7.2.3");
+contiene("Inspector: muestra (Tabla 3)", RI("¿cuántas aves tomo de muestra?"), "Tabla 3");
+contiene("Inspector: pesos (Tabla 1)", RI("¿cómo se calcula el puntaje total?"), "60 %");
+contiene("Inspector: documentos", RI("¿qué condiciones deben cumplir los documentos?"), "COMVEZCOL");
+contiene("Inspector: fuera de tema", RI("¿cuál es la capital de Francia?"), "Solo puedo ayudarle");
+R("CXE.foco = IND.PA01");
+contiene("Inspector con un indicador abierto: «¿qué escala aplica?» habla de ese indicador", RI("¿qué escala aplica?"), "6.2.1 Jadeo");
+contiene("Caso dudoso: recomienda la observación", RI("tengo duda entre dos niveles"), "observación del indicador");
+const PR = R("promptAsistente(CXE, '¿cómo se evalúa el jadeo?')");
+contiene("IA: instrucciones para el inspector", PR, "INSPECTOR");
+contiene("IA: incluye la ficha del indicador y la página", PR, "## 6.2.1 Jadeo");
+contiene("IA: regla de solo responder sobre la norma", PR, "Responde SOLO sobre esa metodología");
+igual("IA: no envía documento, correo ni teléfono", ["91234567", "@", "3154827710"].some((x) => PR.includes(x)), false);
+R("SES = { rol: 'coordinador' }");
+contiene("IA: instrucciones para el coordinador", R("promptAsistente(CXE, 'hola')"), "COORDINADOR");
+R("SES = { rol: 'productor' }");
+contiene("IA: instrucciones para el productor", R("promptAsistente(CXE, 'hola')"), "PRODUCTOR");
+
+console.log(`\n${ok} pruebas correctas, ${mal} fallas`);
+process.exit(mal ? 1 : 0);

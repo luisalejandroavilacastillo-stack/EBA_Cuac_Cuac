@@ -1,0 +1,51 @@
+%% Vista 4 · Parametrización de la lista y la norma (RF10 a RF12)
+classDiagram
+  class Indicador {
+    +code
+    +sp
+    +medida
+    +numeral
+    +pregunta
+    +metodo
+    +tabla
+    +total
+    +unidad
+    +regla
+    +opc
+  }
+  class NormaTextos {
+    +texto(code)
+  }
+  class PaginasNorma {
+    +PAG_NORMA: numeral→página
+  }
+  class Pesos {
+    +comercial MBA .60 MBR .25 MBG .15
+    +traspatio
+  }
+  class Niveles {
+    +Excelente ≥90
+    +Alto ≥75
+    +Medio
+    +Bajo
+  }
+  class PlanMuestreo {
+    +AVES_POR_PUNTO 5
+    +planMuestreo(pob, conCorral, nEsp)
+  }
+  class ConfigAsistente {
+    +modo local|IA
+    +apiKey (solo admin, no en código)
+  }
+  class vParametros {
+    <<vista>>
+    +versionesPorEspecie
+    +pesosPorTramo
+    +panelConfigAsistente()
+  }
+  Indicador ..> NormaTextos
+  Indicador ..> PaginasNorma
+  vParametros ..> Indicador
+  vParametros ..> Pesos
+  vParametros ..> ConfigAsistente
+  PlanMuestreo ..> Pesos

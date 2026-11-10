@@ -1,0 +1,27 @@
+# Nunca subir claves ni datos locales
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Dependencias, compilados y datos que se generan solos
+node_modules/
+**/node_modules/
+dist/
+.angular/
+coverage/
+*.tsbuildinfo
+datos_mariadb/
+
+# Carpetas de trabajo de Claude y archivos a eliminar
+_sincronizacion/
+_to_delete/
+**/_to_delete/
+
+# Sistema operativo y editores
+Thumbs.db
+desktop.ini
+.DS_Store
+~$*

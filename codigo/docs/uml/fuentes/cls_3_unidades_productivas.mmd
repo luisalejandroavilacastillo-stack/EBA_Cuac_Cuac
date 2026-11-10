@@ -1,0 +1,65 @@
+%% Vista 3 · Unidades productivas (RF05 a RF08)
+classDiagram
+  class Finca {
+    +id
+    +nombre
+    +productor
+    +depto
+    +mpio
+    +vereda
+    +area
+    +estado
+    +poblacion()
+    +tramoFinca()
+    +tramosTexto()
+  }
+  class PersonaResponsable {
+    +nombre
+    +tipoDoc
+    +doc
+    +correo
+    +tel
+    +autoriza
+    +validarTitular()
+  }
+  class EspecieFinca {
+    +sp
+    +proposito Carne|Huevo|…
+    +sistema
+    +conCorral
+    +permanencia
+    +cama
+    +bebedero
+    +tramoEspecie() traspatio|comercial
+  }
+  class LoteInventario {
+    +cat
+    +n
+    +edad
+    +peso
+  }
+  class EstadoEspecie {
+    +estado Por iniciar|En proceso|Finalizada|Seguimiento programado
+    +principal
+    +secundaria
+  }
+  class vFincas {
+    <<vista>>
+    +registrar()
+    +lineaFlujo()
+    +accionFlujo()
+  }
+  class vFinca {
+    <<vista>>
+    +ficha
+    +historialFinca()
+    +tendenciaHTML()
+    +panelTitular()
+  }
+  Finca *-- PersonaResponsable
+  Finca *-- "1..2" EspecieFinca
+  EspecieFinca *-- "*" LoteInventario
+  vFincas ..> Finca
+  vFinca ..> Finca
+  vFincas ..> EstadoEspecie : estadoEspecie(f, sp)
+  note for EspecieFinca "Tramo por especie (opción B):\n< 200 aves traspatio · ≥ 200 comercial"

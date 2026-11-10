@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EBA Cuac Cuac · Bienestar animal en patos y gansos</title>
+  <meta name="description" content="Prototipo funcional de la plataforma de evaluación de bienestar animal en patos y gansos (proyecto académico).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito+Sans:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="icon" href="img/icono-eba.svg" type="image/svg+xml">
+</head>
+<body>
+  <!-- La aplicación se dibuja en #raiz con los scripts de js/. Prototipo sin base de datos: los datos de ejemplo están en js/datos/ y lo diligenciado se guarda en el navegador. -->
+  <div id="raiz"></div>
+  <div id="capas"></div>
+  <!-- Orden de carga: datos de la norma → núcleo → reglas → interfaz → vistas → enrutador -->
+  <script src="js/datos/norma.js"></script>
+  <script src="js/datos/norma_textos.js"></script>
+  <script src="js/nucleo/utilidades.js"></script>
+  <script src="js/datos/ejemplo.js"></script>
+  <script src="js/norma/calculo.js"></script>
+  <script src="js/norma/seguimiento.js"></script>
+  <script src="js/norma/flujo.js"></script>
+  <script src="js/datos/semilla.js"></script>
+  <script src="js/nucleo/sesion.js"></script>
+  <script src="js/ui/capas.js"></script>
+  <script src="js/ui/iconos.js"></script>
+  <script src="js/ui/graficas.js"></script>
+  <script src="js/vistas/ingreso.js"></script>
+  <script src="js/ui/estructura.js"></script>
+  <script src="js/vistas/inicio.js"></script>
+  <script src="js/vistas/fincas.js"></script>
+  <script src="js/vistas/evaluaciones.js"></script>
+  <script src="js/vistas/indicador.js"></script>
+  <script src="js/vistas/recorrido.js"></script>
+  <script src="js/vistas/recorrido_ganso.js"></script>
+  <script src="js/vistas/resultado.js"></script>
+  <script src="js/vistas/asistente.js"></script>
+  <script src="js/datos/norma_paginas.js"></script>
+  <script src="js/vistas/asistente_norma.js"></script>
+  <script src="js/vistas/reportes.js"></script>
+  <script src="js/vistas/administracion.js"></script>
+  <script src="js/vistas/ayuda.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/ui/boton-asistente.js"></script>
+</body>
+</html>

@@ -1,0 +1,374 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2920" height="1760" viewBox="0 0 2920 1760" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTo2NDE4Mjk1NC01MWYyLTQxMDUtYjljYS0xYTQyZThjYjk5NjMAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaEN9UzS7Hrt8dn8Kyhip5qkAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDoyZDM1OTJjOC1hMTUwLTQ2NzQtOWZkNC05ZGNlOGRmMDhjMWRscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNoir3Dcbc3dAfDBt2M3Vv7QAAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggA/E5z0rC/slMGlzKL8t/nTpDO2FVlFcgxhJdepQojO+kZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaBlF4YS3OLjgsbhC1Rcta/EAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCBxAw42A4fOejkQIqAf/vnUiy1qzi/IMvaJ6TPJmYtkgGRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiaZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjY0MTgyOTU0LTUxZjItNDEwNS1iOWNhLTFhNDJlOGNiOTk2My9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjBmNzZlZDNjLTM1YTMtNGZlNi1iNDQ0LTdjMWNlZDY4NWZmM3JjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCAD8TnPSsL+yUwaXMovy3+dOkM7YVWUVyDGEl16lCiM76JjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFgge4H4YNK6dKlQHUbYhfNgJLszgGHnph1lSbS/+uspReOiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggdka008Cbw0I3a6obmlMSoEh9IROusiQ82RURydvJXQB0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQDE0v4CJoTNXrmvTNBisVaDSJ4t1MW8q3gf1s8WCbrEb//5CbTWaM7Vns2xG4ZYOpM72pxWYpMrw0G/jWUwM+jM=</c2pa:manifest></metadata>
+<defs>
+<marker id="tri" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="14" markerHeight="14" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 1 L13 7 L1 13 z" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.3"/></marker>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11" fill="none" stroke="#3C4043" stroke-width="1.3"/></marker>
+<marker id="diamond" viewBox="0 0 18 12" refX="1" refY="6" markerWidth="18" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 6 L9 1 L17 6 L9 11 z" fill="#3C4043"/></marker>
+<marker id="odiamond" viewBox="0 0 18 12" refX="1" refY="6" markerWidth="18" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 6 L9 1 L17 6 L9 11 z" fill="#FFFFFF" stroke="#3C4043"/></marker>
+</defs>
+<rect id="Fondo" width="2920" height="1760" fill="#F5F5F5"/>
+<g id="Título"><text x="40" y="52" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700" fill="#1F2A24">Diagrama de clases · Vista 2 · Autenticación y recuperación de acceso (RF01 · RF04)</text>
+<text x="40" y="80" font-family="Inter, Arial, sans-serif" font-size="14" fill="#5F6368">Plataforma de Evaluación de Bienestar Animal en Patos y Gansos (ICA) · Módulo administrador · doble factor, validación de contraseña y recuperación</text></g>
+<g id="Clase Controlador">
+<rect x="40" y="120" width="312" height="113" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M40 124 a4 4 0 0 1 4 -4 h304 a4 4 0 0 1 4 4 v38 h-312 z" fill="#2F7A5B"/>
+<text x="196.0" y="138" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«abstract · ver Vista 1»</text>
+<text x="196.0" y="154" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" font-style="italic" fill="#FFFFFF">Controlador</text>
+<text x="52" y="180" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">#usuarioActual : Usuario</text>
+<line x1="40" y1="189" x2="352" y2="189" stroke="#3C4043" stroke-width="1"/>
+<text x="52" y="207" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+procesar() : void</text>
+<text x="52" y="224" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">#verificarPermiso(modulo, accion) : boolean</text>
+</g>
+<g id="Clase ControladorLogin">
+<rect x="40" y="380" width="419" height="165" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M40 384 a4 4 0 0 1 4 -4 h411 a4 4 0 0 1 4 4 v22 h-419 z" fill="#1F4E3D"/>
+<text x="249.5" y="398" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ControladorLogin</text>
+<text x="52" y="424" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-sesionPendiente : Sesion</text>
+<line x1="40" y1="433" x2="459" y2="433" stroke="#3C4043" stroke-width="1"/>
+<text x="52" y="451" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+mostrarFormulario() : void</text>
+<text x="52" y="468" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+iniciarSesion(correo : String, contrasena : String) : void</text>
+<text x="52" y="485" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+verificarCodigo(codigo : String) : void</text>
+<text x="52" y="502" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+reenviarCodigo() : void</text>
+<text x="52" y="519" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+cerrarSesion() : void</text>
+<text x="52" y="536" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-redirigirSegunRol(usuario : Usuario) : void</text>
+</g>
+<g id="Clase ControladorRecuperacion">
+<rect x="40" y="700" width="519" height="131" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M40 704 a4 4 0 0 1 4 -4 h511 a4 4 0 0 1 4 4 v22 h-519 z" fill="#1F4E3D"/>
+<text x="299.5" y="718" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ControladorRecuperacion</text>
+<text x="52" y="744" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-token : String</text>
+<line x1="40" y1="753" x2="559" y2="753" stroke="#3C4043" stroke-width="1"/>
+<text x="52" y="771" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+solicitarRecuperacion(correo : String) : void</text>
+<text x="52" y="788" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+validarEnlace(token : String) : boolean</text>
+<text x="52" y="805" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+restablecer(token : String, nueva : String, confirmacion : String) : void</text>
+<text x="52" y="822" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+recuperacionAsistida(usuario : Usuario) : void</text>
+</g>
+<g id="Clase ControladorCuenta">
+<rect x="40" y="980" width="412" height="114" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M40 984 a4 4 0 0 1 4 -4 h404 a4 4 0 0 1 4 4 v22 h-412 z" fill="#1F4E3D"/>
+<text x="246.0" y="998" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ControladorCuenta</text>
+<line x1="40" y1="1033" x2="452" y2="1033" stroke="#3C4043" stroke-width="1"/>
+<text x="52" y="1051" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+cambiarContrasena(actual : String, nueva : String) : void</text>
+<text x="52" y="1068" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+cambioObligatorio(nueva : String) : void</text>
+<text x="52" y="1085" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+validarEnVivo(contrasena : String) : List&lt;Requisito&gt;</text>
+</g>
+<g id="Clase ServicioAutenticacion">
+<rect x="620" y="380" width="573" height="198" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M620 384 a4 4 0 0 1 4 -4 h565 a4 4 0 0 1 4 4 v38 h-573 z" fill="#1F4E3D"/>
+<text x="906.5" y="398" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«service»</text>
+<text x="906.5" y="414" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ServicioAutenticacion</text>
+<line x1="620" y1="449" x2="1193" y2="449" stroke="#3C4043" stroke-width="1"/>
+<text x="632" y="467" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+validarCredenciales(correo : String, contrasena : String) : Usuario</text>
+<text x="632" y="484" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+registrarIntento(correo : String, etapa : EtapaIntento, exitoso : boolean) : void</text>
+<text x="632" y="501" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+bloquearUsuario(usuario : Usuario) : void</text>
+<text x="632" y="518" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+crearSesion(usuario : Usuario) : Sesion</text>
+<text x="632" y="535" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+activarSesion(sesion : Sesion) : void</text>
+<text x="632" y="552" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+cerrarSesion(sesion : Sesion) : void</text>
+<text x="632" y="569" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+puedeIngresar(usuario : Usuario) : boolean</text>
+</g>
+<g id="Clase ServicioDobleFactor">
+<rect x="620" y="720" width="412" height="215" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M620 724 a4 4 0 0 1 4 -4 h404 a4 4 0 0 1 4 4 v38 h-412 z" fill="#1F4E3D"/>
+<text x="826.0" y="738" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«service»</text>
+<text x="826.0" y="754" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ServicioDobleFactor</text>
+<text x="632" y="780" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-longitudCodigo : int</text>
+<text x="632" y="797" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-minutosVigencia : int</text>
+<text x="632" y="814" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-intentosMaximos : int</text>
+<line x1="620" y1="823" x2="1032" y2="823" stroke="#3C4043" stroke-width="1"/>
+<text x="632" y="841" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+requiereDobleFactor(usuario : Usuario) : boolean</text>
+<text x="632" y="858" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+generarCodigo(sesion : Sesion) : CodigoVerificacion</text>
+<text x="632" y="875" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+enviarCodigo(codigo : CodigoVerificacion) : boolean</text>
+<text x="632" y="892" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+validarCodigo(sesion : Sesion, codigo : String) : boolean</text>
+<text x="632" y="909" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+reenviarCodigo(sesion : Sesion) : void</text>
+<text x="632" y="926" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+anularCodigos(usuario : Usuario) : void</text>
+</g>
+<g id="Clase ServicioRecuperacion">
+<rect x="620" y="1080" width="466" height="164" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M620 1084 a4 4 0 0 1 4 -4 h458 a4 4 0 0 1 4 4 v38 h-466 z" fill="#1F4E3D"/>
+<text x="853.0" y="1098" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«service»</text>
+<text x="853.0" y="1114" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ServicioRecuperacion</text>
+<text x="632" y="1140" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-minutosVigenciaEnlace : int</text>
+<text x="632" y="1157" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-solicitudesPorHora : int</text>
+<line x1="620" y1="1166" x2="1086" y2="1166" stroke="#3C4043" stroke-width="1"/>
+<text x="632" y="1184" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+solicitar(correo : String) : void</text>
+<text x="632" y="1201" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+generarToken(usuario : Usuario) : TokenRecuperacion</text>
+<text x="632" y="1218" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+restablecer(token : String, nueva : String) : boolean</text>
+<text x="632" y="1235" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+recuperacionAsistida(usuario : Usuario, actor : Usuario) : String</text>
+</g>
+<g id="Clase ServicioContrasena">
+<rect x="620" y="1360" width="499" height="164" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M620 1364 a4 4 0 0 1 4 -4 h491 a4 4 0 0 1 4 4 v38 h-499 z" fill="#1F4E3D"/>
+<text x="869.5" y="1378" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«service»</text>
+<text x="869.5" y="1394" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ServicioContrasena</text>
+<line x1="620" y1="1429" x2="1119" y2="1429" stroke="#3C4043" stroke-width="1"/>
+<text x="632" y="1447" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+cambiar(usuario : Usuario, actual : String, nueva : String) : boolean</text>
+<text x="632" y="1464" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+validarPolitica(contrasena : String, usuario : Usuario) : List&lt;String&gt;</text>
+<text x="632" y="1481" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+generarTemporal(usuario : Usuario) : String</text>
+<text x="632" y="1498" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+cifrar(contrasena : String) : String</text>
+<text x="632" y="1515" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+diasParaVencer(usuario : Usuario) : int</text>
+</g>
+<g id="Clase ServicioCorreo">
+<rect x="40" y="1290" width="493" height="113" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M40 1294 a4 4 0 0 1 4 -4 h485 a4 4 0 0 1 4 4 v38 h-493 z" fill="#1F4E3D"/>
+<text x="286.5" y="1308" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«service»</text>
+<text x="286.5" y="1324" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ServicioCorreo</text>
+<text x="52" y="1350" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-servidorSMTP : String</text>
+<text x="52" y="1367" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-remitente : String</text>
+<line x1="40" y1="1376" x2="533" y2="1376" stroke="#3C4043" stroke-width="1"/>
+<text x="52" y="1394" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+enviar(destino : String, plantilla : String, datos : Array) : boolean</text>
+</g>
+<g id="Clase Usuario">
+<rect x="1290" y="120" width="231" height="130" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1290 124 a4 4 0 0 1 4 -4 h223 a4 4 0 0 1 4 4 v38 h-231 z" fill="#1F4E3D"/>
+<text x="1405.5" y="138" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«ver Vista 1»</text>
+<text x="1405.5" y="154" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Usuario</text>
+<text x="1302" y="180" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">ver Vista 1</text>
+<line x1="1290" y1="189" x2="1521" y2="189" stroke="#3C4043" stroke-width="1"/>
+<text x="1302" y="207" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+estaActivo() : boolean</text>
+<text x="1302" y="224" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+estaBloqueado() : boolean</text>
+<text x="1302" y="241" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+getRolesVigentes() : List&lt;Rol&gt;</text>
+</g>
+<g id="Clase Credencial">
+<rect x="1760" y="120" width="298" height="182" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1760 124 a4 4 0 0 1 4 -4 h290 a4 4 0 0 1 4 4 v22 h-298 z" fill="#1F4E3D"/>
+<text x="1909.0" y="138" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Credencial</text>
+<text x="1772" y="164" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-hashContrasena : String</text>
+<text x="1772" y="181" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-algoritmo : String</text>
+<text x="1772" y="198" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-fechaCambio : DateTime</text>
+<text x="1772" y="215" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-fechaExpiracion : DateTime</text>
+<text x="1772" y="232" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-esTemporal : boolean</text>
+<line x1="1760" y1="241" x2="2058" y2="241" stroke="#3C4043" stroke-width="1"/>
+<text x="1772" y="259" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+verificar(contrasena : String) : boolean</text>
+<text x="1772" y="276" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+cambiar(nueva : String) : void</text>
+<text x="1772" y="293" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+estaVencida() : boolean</text>
+</g>
+<g id="Clase HistorialContrasena">
+<rect x="2230" y="120" width="292" height="113" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M2230 124 a4 4 0 0 1 4 -4 h284 a4 4 0 0 1 4 4 v38 h-292 z" fill="#1F4E3D"/>
+<text x="2376.0" y="138" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«historial»</text>
+<text x="2376.0" y="154" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">HistorialContrasena</text>
+<text x="2242" y="180" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-hashContrasena : String</text>
+<text x="2242" y="197" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-fechaRegistro : DateTime</text>
+<line x1="2230" y1="206" x2="2522" y2="206" stroke="#3C4043" stroke-width="1"/>
+<text x="2242" y="224" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+coincide(contrasena : String) : boolean</text>
+</g>
+<g id="Clase PoliticaContrasena">
+<rect x="1560" y="1180" width="446" height="334" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1560 1184 a4 4 0 0 1 4 -4 h438 a4 4 0 0 1 4 4 v38 h-446 z" fill="#1F4E3D"/>
+<text x="1783.0" y="1198" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«configuración»</text>
+<text x="1783.0" y="1214" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">PoliticaContrasena</text>
+<text x="1572" y="1240" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-longitudMinima : int = 10</text>
+<text x="1572" y="1257" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-exigeMayuscula : boolean</text>
+<text x="1572" y="1274" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-exigeMinuscula : boolean</text>
+<text x="1572" y="1291" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-exigeNumero : boolean</text>
+<text x="1572" y="1308" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-exigeCaracterEspecial : boolean</text>
+<text x="1572" y="1325" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-noRepetirUltimas : int = 5</text>
+<text x="1572" y="1342" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-intentosMaximos : int = 5</text>
+<text x="1572" y="1359" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-minutosBloqueo : int = 15</text>
+<text x="1572" y="1376" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-diasExpiracionICA : int = 90</text>
+<text x="1572" y="1393" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-diasExpiracionExterno : int = 180</text>
+<text x="1572" y="1410" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-minutosInactividad : int = 15</text>
+<text x="1572" y="1427" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-minutosVigenciaCodigo : int = 10</text>
+<text x="1572" y="1444" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-intentosMaximosCodigo : int = 3</text>
+<text x="1572" y="1461" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-minutosVigenciaEnlace : int = 30</text>
+<line x1="1560" y1="1470" x2="2006" y2="1470" stroke="#3C4043" stroke-width="1"/>
+<text x="1572" y="1488" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+validar(contrasena : String, usuario : Usuario) : List&lt;String&gt;</text>
+<text x="1572" y="1505" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+calcularFortaleza(contrasena : String) : String</text>
+</g>
+<g id="Clase Sesion">
+<rect x="1290" y="480" width="251" height="249" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1290 484 a4 4 0 0 1 4 -4 h243 a4 4 0 0 1 4 4 v38 h-251 z" fill="#1F4E3D"/>
+<text x="1415.5" y="498" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«historial»</text>
+<text x="1415.5" y="514" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Sesion</text>
+<text x="1302" y="540" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-estado : EstadoSesion</text>
+<text x="1302" y="557" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-segundoFactorVerificado : boolean</text>
+<text x="1302" y="574" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-fechaInicio : DateTime</text>
+<text x="1302" y="591" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-fechaUltimaActividad : DateTime</text>
+<text x="1302" y="608" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-fechaCierre : DateTime [0..1]</text>
+<text x="1302" y="625" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-dispositivo : String</text>
+<text x="1302" y="642" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-ip : String</text>
+<line x1="1290" y1="651" x2="1541" y2="651" stroke="#3C4043" stroke-width="1"/>
+<text x="1302" y="669" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+cerrar() : void</text>
+<text x="1302" y="686" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+expirada() : boolean</text>
+<text x="1302" y="703" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+renovarActividad() : void</text>
+<text x="1302" y="720" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+guardarBorrador() : void</text>
+</g>
+<g id="Clase CodigoVerificacion">
+<rect x="1290" y="900" width="271" height="232" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1290 904 a4 4 0 0 1 4 -4 h263 a4 4 0 0 1 4 4 v38 h-271 z" fill="#1F4E3D"/>
+<text x="1425.5" y="918" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«doble factor»</text>
+<text x="1425.5" y="934" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">CodigoVerificacion</text>
+<text x="1302" y="960" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-hashCodigo : String</text>
+<text x="1302" y="977" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-canal : Canal</text>
+<text x="1302" y="994" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-correoDestino : String</text>
+<text x="1302" y="1011" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-fechaEmision : DateTime</text>
+<text x="1302" y="1028" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-intentos : int</text>
+<text x="1302" y="1045" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-estado : EstadoCodigo</text>
+<line x1="1290" y1="1054" x2="1561" y2="1054" stroke="#3C4043" stroke-width="1"/>
+<text x="1302" y="1072" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+esValido() : boolean</text>
+<text x="1302" y="1089" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+verificar(codigo : String) : boolean</text>
+<text x="1302" y="1106" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+sumarIntento() : void</text>
+<text x="1302" y="1123" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+marcarUsado() : void</text>
+</g>
+<g id="Clase IntentoAcceso">
+<rect x="1760" y="900" width="245" height="154" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1760 904 a4 4 0 0 1 4 -4 h237 a4 4 0 0 1 4 4 v38 h-245 z" fill="#1F4E3D"/>
+<text x="1882.5" y="918" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«historial»</text>
+<text x="1882.5" y="934" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">IntentoAcceso</text>
+<text x="1772" y="960" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-correoIngresado : String</text>
+<text x="1772" y="977" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-fechaHora : DateTime</text>
+<text x="1772" y="994" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-etapa : EtapaIntento</text>
+<text x="1772" y="1011" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-exitoso : boolean</text>
+<text x="1772" y="1028" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-motivoFallo : MotivoFallo [0..1]</text>
+<text x="1772" y="1045" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-ip : String</text>
+</g>
+<g id="Clase TokenRecuperacion">
+<rect x="1290" y="1260" width="218" height="198" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1290 1264 a4 4 0 0 1 4 -4 h210 a4 4 0 0 1 4 4 v38 h-218 z" fill="#1F4E3D"/>
+<text x="1399.0" y="1278" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«historial»</text>
+<text x="1399.0" y="1294" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">TokenRecuperacion</text>
+<text x="1302" y="1320" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-hashToken : String</text>
+<text x="1302" y="1337" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-origen : OrigenToken</text>
+<text x="1302" y="1354" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-fechaEmision : DateTime</text>
+<text x="1302" y="1371" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-fechaVencimiento : DateTime</text>
+<text x="1302" y="1388" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-usado : boolean</text>
+<text x="1302" y="1405" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-asistidoPor : Usuario [0..1]</text>
+<line x1="1290" y1="1414" x2="1508" y2="1414" stroke="#3C4043" stroke-width="1"/>
+<text x="1302" y="1432" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+esValido() : boolean</text>
+<text x="1302" y="1449" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+marcarUsado() : void</text>
+</g>
+<g id="Relación CLogin – Controlador">
+<path d="M40.0 462.5 L20.0 462.5 L20.0 176.5 L40.0 176.5" fill="none" stroke="#3C4043" stroke-width="1.3" marker-end="url(#tri)"/>
+</g>
+<g id="Relación CRecup – Controlador">
+<path d="M40.0 765.5 L20.0 765.5 L20.0 176.5 L40.0 176.5" fill="none" stroke="#3C4043" stroke-width="1.3" marker-end="url(#tri)"/>
+</g>
+<g id="Relación CCuenta – Controlador">
+<path d="M40.0 1037.0 L20.0 1037.0 L20.0 176.5 L40.0 176.5" fill="none" stroke="#3C4043" stroke-width="1.3" marker-end="url(#tri)"/>
+</g>
+<g id="Relación CLogin – SAuth">
+<path d="M459.0 429.5 L539.5 429.5 L539.5 439.4 L620.0 439.4" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="505.2" y="423.5" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«usa»</text>
+</g>
+<g id="Relación CLogin – S2FA">
+<path d="M459.0 495.5 L560.0 495.5 L560.0 784.5 L620.0 784.5" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="566.0" y="634.0" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«usa»</text>
+</g>
+<g id="Relación CRecup – SRecup">
+<path d="M559.0 778.6 L585.0 778.6 L585.0 1145.6 L620.0 1145.6" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="591.0" y="956.1" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«usa»</text>
+</g>
+<g id="Relación CCuenta – SPass">
+<path d="M452.0 1037.0 L520.0 1037.0 L520.0 1425.6 L620.0 1425.6" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="526.0" y="1225.3" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«usa»</text>
+</g>
+<g id="Relación S2FA – SMail">
+<path d="M620.0 902.8 L483.7 902.8 L483.7 1290.0" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="393.7" y="1012.9" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«envía código»</text>
+</g>
+<g id="Relación SRecup – SMail">
+<path d="M620.0 1211.2 L595.0 1211.2 L595.0 1346.5 L533.0 1346.5" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="601.0" y="1272.8" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«envía enlace»</text>
+</g>
+<g id="Relación SRecup – SPass">
+<path d="M759.8 1244.0 L759.8 1302.0 L769.7 1302.0 L769.7 1360.0" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="765.8" y="1267.0" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«usa»</text>
+</g>
+<g id="Relación SAuth – Usuario">
+<path d="M1193.0 409.7 L1200.0 409.7 L1200.0 185.0 L1290.0 185.0" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="1206.0" y="291.4" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«valida con»</text>
+</g>
+<g id="Relación SAuth – Sesion">
+<path d="M1193.0 479.0 L1241.5 479.0 L1241.5 542.2 L1290.0 542.2" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="1247.5" y="504.6" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«genera»</text>
+</g>
+<g id="Relación SAuth – Intento">
+<path d="M1193.0 548.3 L1240.0 548.3 L1240.0 860.0 L1882.5 860.0 L1882.5 900.0" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="1631.5" y="854.0" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«registra»</text>
+</g>
+<g id="Relación S2FA – Codigo">
+<path d="M1032.0 827.5 L1161.0 827.5 L1161.0 969.6 L1290.0 969.6" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="1167.0" y="892.5" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«genera / valida»</text>
+</g>
+<g id="Relación SRecup – Token">
+<path d="M1086.0 1145.6 L1188.0 1145.6 L1188.0 1319.4 L1290.0 1319.4" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="1194.0" y="1226.5" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«genera»</text>
+</g>
+<g id="Relación SPass – Pol">
+<path d="M1119.0 1515.8 L1530.0 1515.8 L1530.0 1490.0 L1560.0 1490.0" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="1248.3" y="1529.8" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">«valida con»</text>
+</g>
+<g id="Relación Usuario – Cred">
+<path d="M1521.0 172.0 L1640.5 172.0 L1640.5 174.6 L1760.0 174.6" fill="none" stroke="#3C4043" stroke-width="1.3" marker-start="url(#diamond)"/>
+<text x="1527.0" y="167.0" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="1754.0" y="169.6" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="1586.8" y="166.0" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">tiene</text>
+</g>
+<g id="Relación Cred – Hist">
+<path d="M2058.0 174.6 L2144.0 174.6 L2144.0 165.2 L2230.0 165.2" fill="none" stroke="#3C4043" stroke-width="1.3"/>
+<text x="2064.0" y="169.6" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="2224.0" y="160.2" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..5</text>
+<text x="2107.0" y="168.6" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">conserva</text>
+</g>
+<g id="Relación Usuario – Sesion">
+<path d="M1405.5 250.0 L1405.5 365.0 L1415.5 365.0 L1415.5 480.0" fill="none" stroke="#3C4043" stroke-width="1.3"/>
+<text x="1411.5" y="265.0" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="1421.5" y="474.0" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..*</text>
+<text x="1411.5" y="301.5" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">inicia</text>
+</g>
+<g id="Relación Sesion – Codigo">
+<path d="M1415.5 729.0 L1415.5 814.5 L1425.5 814.5 L1425.5 900.0" fill="none" stroke="#3C4043" stroke-width="1.3"/>
+<text x="1421.5" y="744.0" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="1431.5" y="894.0" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..*</text>
+<text x="1421.5" y="765.8" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">se valida con</text>
+</g>
+<g id="Relación Usuario – Intento">
+<path d="M1521.0 230.5 L1700.0 230.5 L1700.0 880.0 L1821.2 880.0 L1821.2 900.0" fill="none" stroke="#3C4043" stroke-width="1.3"/>
+<text x="1527.0" y="225.5" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..1</text>
+<text x="1827.2" y="894.0" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..*</text>
+</g>
+<g id="Relación Usuario – Token">
+<path d="M1290.0 230.5 L1260.0 230.5 L1260.0 1359.0 L1290.0 1359.0" fill="none" stroke="#3C4043" stroke-width="1.3"/>
+<text x="1284.0" y="225.5" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="1284.0" y="1354.0" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..*</text>
+<text x="1200.0" y="1020.4" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">solicita</text>
+</g>
+<g id="Enumeraciones">
+<rect x="2060" y="1180" width="820" height="154" rx="4" fill="#FFFFFF" stroke="#5B4B8A" stroke-width="1.2"/>
+<rect x="2060" y="1180" width="820" height="26" rx="4" fill="#5B4B8A"/>
+<text x="2072" y="1198" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">«enumeration»  Valores permitidos</text>
+<text x="2072" y="1226" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24"><tspan font-weight="700">EstadoSesion:</tspan> PENDIENTE_2FA · ACTIVA · CERRADA · EXPIRADA</text>
+<text x="2072" y="1246" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24"><tspan font-weight="700">EstadoCodigo:</tspan> PENDIENTE · USADO · VENCIDO · ANULADO</text>
+<text x="2072" y="1266" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24"><tspan font-weight="700">Canal:</tspan> CORREO</text>
+<text x="2072" y="1286" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24"><tspan font-weight="700">EtapaIntento:</tspan> CREDENCIALES · CODIGO</text>
+<text x="2072" y="1306" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24"><tspan font-weight="700">MotivoFallo:</tspan> CONTRASENA · USUARIO_INACTIVO · BLOQUEADO · ACCESO_VENCIDO · CODIGO_INVALIDO</text>
+<text x="2072" y="1326" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24"><tspan font-weight="700">OrigenToken:</tspan> CORREO · ASISTIDO</text>
+</g>
+<g id="Reglas de acceso">
+<rect x="2060" y="1360" width="820" height="174" rx="4" fill="#FBEAE7" stroke="#C62828" stroke-width="1.2"/>
+<text x="2072" y="1380" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#7A1F16">Reglas de acceso (RN-01 a RN-07 · RN-28 a RN-40 · RN-45 a RN-50) · parámetros configurables en PoliticaContrasena</text>
+<text x="2072" y="1400" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">· Solo ingresan usuarios ACTIVO con rol vigente; INACTIVO, PENDIENTE o consultor con acceso vencido → acceso denegado.</text>
+<text x="2072" y="1417" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">· 5 intentos fallidos → BLOQUEADO 15 min; el administrador puede desbloquear. Todo intento queda en IntentoAcceso.</text>
+<text x="2072" y="1434" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">· Doble factor obligatorio para todos (RN-45): código de 6 dígitos, vence en 10 min, 3 intentos y 3 reenvíos (RN-46 a RN-48).</text>
+<text x="2072" y="1451" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">· Contraseña: 10 caracteres, mayúscula, minúscula, número y especial; sin nombre ni documento; no repetir las últimas 5 (RN-33 a RN-35).</text>
+<text x="2072" y="1468" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">· Vence a los 90 días (ICA) o 180 días (externos); aviso previo. Contraseñas, códigos y tokens se guardan cifrados (hash).</text>
+<text x="2072" y="1485" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">· Enlace de recuperación: 30 min, un solo uso, máx. 3 solicitudes por hora y respuesta genérica (no revela si el correo existe).</text>
+<text x="2072" y="1502" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">· Productor de traspatio: el acceso exige correo (RN-50); recuperación asistida por inspector o administrador (HU-39).</text>
+<text x="2072" y="1519" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">· Inactividad de 15 min con aviso 1 min antes: lo capturado ya está guardado (autoguardado y Sesion.guardarBorrador).</text>
+</g>
+<g id="Convenciones">
+<rect x="40" y="1560" width="560" height="150" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1"/>
+<text x="52" y="1580" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#1F2A24">Convenciones</text>
+<path d="M56 1600 L126 1600" stroke="#3C4043" stroke-width="1.3" fill="none" marker-end="url(#tri)"/>
+<text x="140" y="1604" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Herencia: la clase hereda de Modelo o de Controlador</text>
+<path d="M56 1624 L126 1624" stroke="#3C4043" stroke-width="1.3" fill="none" marker-start="url(#diamond)"/>
+<text x="140" y="1628" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Composición: la parte no existe sin el todo</text>
+<path d="M56 1648 L126 1648" stroke="#3C4043" stroke-width="1.3" fill="none"/>
+<text x="140" y="1652" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Asociación con multiplicidad (1, 0..1, 0..*, 1..*)</text>
+<path d="M56 1672 L126 1672" stroke="#3C4043" stroke-width="1.3" fill="none" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="140" y="1676" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Dependencia «usa»: una clase usa a otra</text>
+<rect x="56" y="1690" width="14" height="12" fill="#1F4E3D"/><text x="76" y="1700" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Clase</text>
+<rect x="186" y="1690" width="14" height="12" fill="#2F7A5B"/><text x="206" y="1700" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Abstracta</text>
+<rect x="316" y="1690" width="14" height="12" fill="#8A8F98"/><text x="336" y="1700" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Otro módulo</text>
+<rect x="446" y="1690" width="14" height="12" fill="#5B4B8A"/><text x="466" y="1700" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Enumeración</text>
+</g>
+</svg>

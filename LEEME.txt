@@ -1,0 +1,4 @@
+EBA Cuac Cuac · carpeta de trabajo
+- Prototipo_EBA_Cuac_Cuac.html: abrir con doble clic (o F5 si ya está abierto) para ver la última versión.
+- codigo/: código fuente, pruebas y documentos del proyecto (codigo/src/index.html abre la versión por archivos).
+- _sincronizacion/: paquete que Claude usa para actualizar esta carpeta; no hace falta abrirlo.

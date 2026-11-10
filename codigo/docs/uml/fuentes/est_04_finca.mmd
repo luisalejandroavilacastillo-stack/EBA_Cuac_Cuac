@@ -1,0 +1,11 @@
+%% Estados de la finca
+stateDiagram-v2
+    [*] --> ACTIVA : registrar
+    ACTIVA --> INACTIVA : inactivar(motivo) · tiene evaluaciones
+    INACTIVA --> ACTIVA : reactivar
+    ACTIVA --> Eliminada : eliminar · sin evaluaciones (copia en bitácora)
+    Eliminada --> [*]
+    note right of INACTIVA
+        Conserva su historial; no se programan visitas
+        ni cuenta en el tablero.
+    end note

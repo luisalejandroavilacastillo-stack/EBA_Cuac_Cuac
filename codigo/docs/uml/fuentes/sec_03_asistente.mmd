@@ -1,0 +1,23 @@
+%% Secuencia: consulta al asistente de la norma
+sequenceDiagram
+    autonumber
+    actor U as Usuario (cualquier rol)
+    participant P as Panel flotante
+    participant A as asistente_norma.js
+    participant IA as Servicio de IA (opcional)
+    participant B as Bitácora
+    U->>P: escribe la pregunta
+    P->>A: responderAsistente(q, contextoPantalla())
+    A->>A: dentroDeTema(q)
+    alt fuera de tema
+        A-->>P: mensaje de alcance
+    else modo IA configurado
+        A->>A: promptAsistente(cx, q) · sin documento, correo ni teléfono
+        A->>IA: mensaje
+        IA-->>A: respuesta
+        A-->>P: respuesta con numeral y página (PAG_NORMA)
+    else modo local
+        A->>A: responderTecnico / fichaTecnica / conocimientoNorma
+        A-->>P: respuesta con numeral y página
+    end
+    A->>B: «Consulta al asistente» (sin texto de la pregunta)

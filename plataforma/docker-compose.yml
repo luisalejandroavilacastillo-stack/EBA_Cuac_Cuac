@@ -1,0 +1,77 @@
+# Plataforma EBA Cuac Cuac completa en Docker: base de datos, API, frontend y correo de prueba.
+#   Primera vez o después de cambiar código:  docker compose up -d --build   (npm run docker:subir)
+#   Apagar:                                   docker compose down            (npm run docker:bajar)
+# Frontend: http://localhost:4200   ·   API: http://localhost:3085/api   ·   Correos: http://localhost:8025
+# Los valores se toman del archivo .env (copia de .env.example).
+services:
+  mariadb:
+    image: mariadb:11.8
+    container_name: eba-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_NOMBRE:-eba}
+      MARIADB_USER: ${DB_USUARIO:-eba_app}
+      MARIADB_PASSWORD: ${DB_CLAVE:-cambie_esta_clave}
+      MARIADB_ROOT_PASSWORD: ${DB_CLAVE_ROOT:-cambie_esta_clave_root}
+      TZ: America/Bogota
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_spanish2_ci --default-time-zone=-05:00
+    ports:
+      - "${DB_PUERTO:-3306}:3306"
+    volumes:
+      - datos_mariadb:/var/lib/mysql
+      # En la etapa de base de datos se agregan aquí los scripts que crean las tablas al primer arranque.
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    image: eba-api:0.6.0
+    container_name: eba-api
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-desarrollo}
+      API_HOST: 0.0.0.0
+      API_PUERTO: 3085
+      WEB_ORIGEN: ${WEB_ORIGEN:-http://localhost:4200}
+      DB_HOST: mariadb
+      DB_PUERTO: 3306
+      DB_NOMBRE: ${DB_NOMBRE:-eba}
+      DB_USUARIO: ${DB_USUARIO:-eba_app}
+      DB_CLAVE: ${DB_CLAVE:-cambie_esta_clave}
+      DATOS_EJEMPLO: ${DATOS_EJEMPLO:-si}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODELO: ${GEMINI_MODELO:-gemini-3.8-flash}
+      GEMINI_MODELO_RESPALDO: ${GEMINI_MODELO_RESPALDO:-gemini-3.5-flash-lite}
+    ports:
+      - "${API_PUERTO:-3085}:3085"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    image: eba-web:0.6.0
+    container_name: eba-web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PUERTO:-4200}:80"
+    depends_on:
+      - api
+
+  mailpit:
+    image: axllent/mailpit:v1.27
+    container_name: eba-mailpit
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # bandeja web: http://localhost:8025
+
+volumes:
+  datos_mariadb:

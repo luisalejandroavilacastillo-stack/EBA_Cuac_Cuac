@@ -1,0 +1,1 @@
+b87b9fc Pruebas: elegir el departamento cuando el registro usa el catálogo de la platafor

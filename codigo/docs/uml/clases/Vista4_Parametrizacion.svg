@@ -1,0 +1,390 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2960" height="1860" viewBox="0 0 2960 1860" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTozMDc3ZTY5YS0wMjg4LTQ1ZjItODA3Yy05Y2Y2MTZhNzQwMWUAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaBPt8AnE6HEYVZVn0K/NDSUAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDoxMzlhYjQ3Mi1jMGRhLTQyMjYtYWMxYS0zMmE4YTJkMzZlZTRscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNob9FHMBKOIcYY98AJm7i+UwAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggC6hf6/3n8mOdanYXC3ieaOFZkTNhE+SGETAaHKeQZAWkZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaG5nh5NKPaDKH23NG/R77BMAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCCXlOIfucWDepyRCVs23mXUBnyl39WRcab1kTgZS1YKjWRuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBiaZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjMwNzdlNjlhLTAyODgtNDVmMi04MDdjLTljZjYxNmE3NDAxZS9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjZhOTE3NjY3LTBlYmYtNDVkYi1iNjI4LTdhYWE5OTBjYzY1Y3JjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCALqF/r/efyY51qdhcLeJ5o4VmRM2ET5IYRMBocp5BkBaJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFggPg4Cx5KnN0CHHTi5IlVwW38QE1j5325PjTCFQYjfTDWiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggWdx+cDx2aVwynDDqeghqxndy4fbD51O7tCc+nofgM6t0Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQH7XTSAdfxVpoNqBlom+DzhFY+nf+xSFFd8n5b8hrlFQG/h4KWJ09CmccIUbw9eo0wL1BRLO6euaMGJkrb5OOVg=</c2pa:manifest></metadata>
+<defs>
+<marker id="tri" viewBox="0 0 14 14" refX="13" refY="7" markerWidth="14" markerHeight="14" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 1 L13 7 L1 13 z" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.3"/></marker>
+<marker id="open" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 1 L11 6 L1 11" fill="none" stroke="#3C4043" stroke-width="1.3"/></marker>
+<marker id="diamond" viewBox="0 0 18 12" refX="17" refY="6" markerWidth="18" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 6 L9 1 L17 6 L9 11 z" fill="#3C4043"/></marker>
+<marker id="odiamond" viewBox="0 0 18 12" refX="17" refY="6" markerWidth="18" markerHeight="12" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M1 6 L9 1 L17 6 L9 11 z" fill="#FFFFFF" stroke="#3C4043"/></marker>
+</defs>
+<rect id="Fondo" width="2960" height="1860" fill="#F5F5F5"/>
+<g id="Título"><text x="40" y="52" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="700" fill="#1F2A24">Diagrama de clases · Vista 4 · Parametrización del checklist (RF10 · RF11 · RF12)</text>
+<text x="40" y="80" font-family="Inter, Arial, sans-serif" font-size="14" fill="#5F6368">Plataforma de Evaluación de Bienestar Animal en Patos y Gansos (ICA) · Criterios, indicadores, preguntas, tipos de captura, reglas de cálculo automático, escalas, ponderaciones y clasificación por especie y versión</text></g>
+<g id="Herencia CtrlParam – Controlador">
+<path d="M380.0 168.9 L339.5 168.9 L339.5 166.0 L299.0 166.0" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-end="url(#tri)"/>
+</g>
+<g id="Relación ControladorParametrizacion – ServicioPublicacion">
+<path d="M779.0 168.9 L889.5 168.9 L889.5 157.8 L1000.0 157.8" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="825.5" y="163.9" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">usa</text>
+</g>
+<g id="Relación ControladorParametrizacion – VersionMetodologia">
+<path d="M499.7 283.0 L499.7 376.5 L513.0 376.5 L513.0 470.0" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="476.4" y="324.8" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">gestiona</text>
+</g>
+<g id="Relación ServicioPublicacion – VersionMetodologia">
+<path d="M1157.2 246.0 L1157.2 440.0 L900.0 440.0 L900.0 509.8 L646.0 509.8" fill="none" stroke="#3C4043" stroke-width="1.3" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="982.0" y="435.0" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">valida y publica</text>
+</g>
+<g id="Herencia Version – Modelo">
+<path d="M606.1 470.0 L606.1 420.0 L1823.0 420.0 L1823.0 229.0" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-end="url(#tri)"/>
+</g>
+<g id="Relación Especie – VersionMetodologia">
+<path d="M180.0 512.0 L280.0 512.0 L280.0 523.0 L380.0 523.0" fill="none" stroke="#3C4043" stroke-width="1.3"  />
+<text x="186" y="507.0" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="374" y="518.0" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..*</text>
+<text x="215.4" y="507.0" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">tiene</text>
+</g>
+<g id="Relación VersionMetodologia – RangoClasificacion">
+<path d="M646.0 602.5 L823.0 602.5 L823.0 521.6 L1000.0 521.6" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-start="url(#diamond)"/>
+<text x="652" y="597.5" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="994" y="516.6" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">4</text>
+<text x="696.6" y="597.5" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">clasifica con</text>
+</g>
+<g id="Relación VersionMetodologia – PonderacionTramo">
+<path d="M646.0 668.8 L1493.5 668.8 L1493.5 565.0" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-start="url(#diamond)"/>
+<text x="652" y="663.75" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="1499.5" y="581" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1..*</text>
+<text x="1049.3" y="663.8" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">pondera</text>
+</g>
+<g id="Relación VersionMetodologia – Dimension">
+<path d="M486.4 735.0 L486.4 817.5 L476.0 817.5 L476.0 900.0" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-start="url(#diamond)"/>
+<text x="492.4" y="751" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="482.0" y="894" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">3</text>
+<text x="463.1" y="771.2" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">organiza</text>
+</g>
+<g id="Relación PonderacionTramo – Dimension">
+<path d="M1437.4 565.0 L1437.4 850.0 L584.0 850.0 L584.0 900.0" fill="none" stroke="#3C4043" stroke-width="1.3"  />
+<text x="1443.4" y="581" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..*</text>
+<text x="590.0" y="894" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="900.0" y="844.0" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">peso de</text>
+</g>
+<g id="Relación Dimension – Criterio">
+<path d="M620.0 944.8 L690.0 944.8 L690.0 958.4 L760.0 958.4" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-start="url(#diamond)"/>
+<text x="626" y="939.8" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="754" y="953.4" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1..*</text>
+<text x="637.5" y="939.8" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">agrupa</text>
+</g>
+<g id="Relación Criterio – Subcriterio">
+<path d="M831.5 1046.0 L831.5 1086.0 L974.5 1086.0 L974.5 1046.0" fill="none" stroke="#3C4043" stroke-width="1.3"  />
+<text x="837.5" y="1062" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..1</text>
+<text x="980.5" y="1062" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..*</text>
+<text x="870.9" y="1081.0" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">subcriterio</text>
+</g>
+<g id="Relación Criterio – Indicador">
+<path d="M1046.0 943.8 L1123.0 943.8 L1123.0 916.4 L1200.0 916.4" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-start="url(#diamond)"/>
+<text x="1052" y="938.8" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="1194" y="911.4" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1..*</text>
+<text x="1061.2" y="938.8" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">contiene</text>
+</g>
+<g id="Relación Indicador – ReglaAplicabilidad">
+<path d="M1559.0 902.3 L1689.5 902.3 L1689.5 898.7 L1820.0 898.7" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-start="url(#diamond)"/>
+<text x="1565" y="897.3" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="1814" y="893.7" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..*</text>
+<text x="1598.0" y="897.3" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">aplica si</text>
+</g>
+<g id="Relación Indicador – ReglaCondicion">
+<path d="M1559.0 1029.2 L1689.5 1029.2 L1689.5 1171.6 L1820.0 1171.6" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-start="url(#diamond)"/>
+<text x="1565" y="1024.2" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="1814" y="1166.6" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..*</text>
+<text x="1657.4" y="1095.4" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">calcula con</text>
+</g>
+<g id="Relación Indicador – Pregunta">
+<path d="M1379.5 1142.0 L1379.5 1251.0 L1323.0 1251.0 L1323.0 1360.0" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-start="url(#diamond)"/>
+<text x="1385.5" y="1158" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="1329.0" y="1354" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1..*</text>
+<text x="1356.2" y="1191.5" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">pregunta</text>
+</g>
+<g id="Relación Indicador – NivelEscala">
+<path d="M1271.8 1142.0 L1271.8 1300.0 L920.0 1300.0 L920.0 1360.0" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-start="url(#diamond)"/>
+<text x="1277.8" y="1158" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="926.0" y="1354" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">2..4</text>
+<text x="1078.4" y="1295.0" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">escala</text>
+</g>
+<g id="Relación Indicador – ReglaConversion">
+<path d="M1200.0 1099.7 L1150.0 1099.7 L1150.0 1250.0 L503.0 1250.0 L503.0 1360.0" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-start="url(#diamond)"/>
+<text x="1194" y="1094.7" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="509.0" y="1354" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..*</text>
+<text x="788.6" y="1245.0" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">convierte con</text>
+</g>
+<g id="Relación Indicador – PlantillaDiagnostico">
+<path d="M1505.2 1142.0 L1505.2 1644.8 L1820.0 1644.8" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-start="url(#diamond)"/>
+<text x="1511.15" y="1158" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="1814" y="1639.8" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..*</text>
+<text x="1484.7" y="1388.4" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">redacta</text>
+</g>
+<g id="Relación Pregunta – OpcionRespuesta">
+<path d="M1446.0 1414.0 L1633.0 1414.0 L1633.0 1434.8 L1820.0 1434.8" fill="none" stroke="#3C4043" stroke-width="1.3"  marker-start="url(#diamond)"/>
+<text x="1452" y="1409.0" text-anchor="start" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">1</text>
+<text x="1814" y="1429.8" text-anchor="end" font-family="Inter, Arial, sans-serif" font-size="11" font-weight="700" fill="#5F6368">0..*</text>
+<text x="1516.2" y="1409.0" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#5F6368">opciones</text>
+</g>
+<g id="Clase Controlador">
+<rect x="40" y="120" width="259" height="92" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M40 124 a4 4 0 0 1 4 -4 h251 a4 4 0 0 1 4 4 v34 h-259 z" fill="#8A8F98"/>
+<text x="169.5" y="134" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«abstract · módulo administrador»</text>
+<text x="169.5" y="150" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Controlador</text>
+<text x="52" y="179" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">#usuario : Usuario</text>
+<line x1="40" y1="187" x2="299" y2="187" stroke="#3C4043" stroke-width="1"/>
+<text x="52" y="204" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+verificarPermiso(accion) : boolean</text>
+</g>
+<g id="Clase ControladorParametrizacion">
+<rect x="380" y="120" width="399" height="163" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M380 124 a4 4 0 0 1 4 -4 h391 a4 4 0 0 1 4 4 v20 h-399 z" fill="#3C4043"/>
+<text x="579.5" y="137" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ControladorParametrizacion</text>
+<line x1="380" y1="156" x2="779" y2="156" stroke="#3C4043" stroke-width="1"/>
+<text x="392" y="173" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+crearVersion(especie : Especie) : VersionMetodologia</text>
+<text x="392" y="190" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+copiarVersion(id : int) : VersionMetodologia</text>
+<text x="392" y="207" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+editarElemento(tipo : String, datos : Array) : boolean</text>
+<text x="392" y="224" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+importarCatalogo(archivo : File) : ResultadoImportacion</text>
+<text x="392" y="241" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+vistaPrevia(id : int, tramo : Tramo) : Checklist</text>
+<text x="392" y="258" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+simular(id : int, datos : Array) : ResultadoSimulado</text>
+<text x="392" y="275" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+publicar(id : int) : boolean</text>
+</g>
+<g id="Clase ServicioPublicacion">
+<rect x="1000" y="120" width="524" height="126" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1000 124 a4 4 0 0 1 4 -4 h516 a4 4 0 0 1 4 4 v34 h-524 z" fill="#2F6E9E"/>
+<text x="1262.0" y="134" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«service»</text>
+<text x="1262.0" y="150" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ServicioPublicacion</text>
+<line x1="1000" y1="170" x2="1524" y2="170" stroke="#3C4043" stroke-width="1"/>
+<text x="1012" y="187" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+validarCompletitud(v : VersionMetodologia) : List&lt;Error&gt;</text>
+<text x="1012" y="204" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+publicar(v : VersionMetodologia) : void</text>
+<text x="1012" y="221" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+simular(v : VersionMetodologia, tramo : Tramo, puntajes : Map) : Resultado</text>
+<text x="1012" y="238" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+importarCatalogo(archivo : File) : VersionMetodologia</text>
+</g>
+<g id="Clase Modelo">
+<rect x="1700" y="120" width="246" height="109" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1700 124 a4 4 0 0 1 4 -4 h238 a4 4 0 0 1 4 4 v34 h-246 z" fill="#8A8F98"/>
+<text x="1823.0" y="134" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«abstract · módulo administrador»</text>
+<text x="1823.0" y="150" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Modelo</text>
+<text x="1712" y="179" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">#id : int</text>
+<line x1="1700" y1="187" x2="1946" y2="187" stroke="#3C4043" stroke-width="1"/>
+<text x="1712" y="204" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+tieneHistorial() : boolean</text>
+<text x="1712" y="221" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+puedeEliminarse() : boolean</text>
+</g>
+<g id="Clase Especie">
+<rect x="40" y="470" width="140" height="84" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M40 474 a4 4 0 0 1 4 -4 h132 a4 4 0 0 1 4 4 v34 h-140 z" fill="#8A8F98"/>
+<text x="110.0" y="484" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" font-style="italic" fill="#FFFFFF">«catálogo · RF09»</text>
+<text x="110.0" y="500" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Especie</text>
+<text x="52" y="529" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-nombre : String</text>
+<text x="52" y="546" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-activa : boolean</text>
+</g>
+<g id="Clase VersionMetodologia">
+<rect x="380" y="470" width="266" height="265" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M380 474 a4 4 0 0 1 4 -4 h258 a4 4 0 0 1 4 4 v20 h-266 z" fill="#1F4E3D"/>
+<text x="513.0" y="487" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">VersionMetodologia</text>
+<text x="392" y="515" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-numero : String</text>
+<text x="392" y="532" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-fuente : String</text>
+<text x="392" y="549" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-estado : EstadoVersion</text>
+<text x="392" y="566" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-corteTramo : int = 200</text>
+<text x="392" y="583" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-fechaPublicacion : DateTime [0..1]</text>
+<text x="392" y="600" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-publicadaPor : Usuario [0..1]</text>
+<text x="392" y="617" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-copiaDe : VersionMetodologia [0..1]</text>
+<line x1="380" y1="625" x2="646" y2="625" stroke="#3C4043" stroke-width="1"/>
+<text x="392" y="642" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+publicar() : void</text>
+<text x="392" y="659" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+retirar() : void</text>
+<text x="392" y="676" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+copiar() : VersionMetodologia</text>
+<text x="392" y="693" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+validarCompletitud() : List&lt;String&gt;</text>
+<text x="392" y="710" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+estaUsada() : boolean</text>
+<text x="392" y="727" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+puedeEliminarse() : boolean</text>
+</g>
+<g id="Clase RangoClasificacion">
+<rect x="1000" y="470" width="240" height="129" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1000 474 a4 4 0 0 1 4 -4 h232 a4 4 0 0 1 4 4 v20 h-240 z" fill="#1F4E3D"/>
+<text x="1120.0" y="487" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">RangoClasificacion</text>
+<text x="1012" y="515" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-nivel : NivelBienestar</text>
+<text x="1012" y="532" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-minimo : decimal</text>
+<text x="1012" y="549" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-maximo : decimal [0..1]</text>
+<text x="1012" y="566" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-color : String</text>
+<line x1="1000" y1="574" x2="1240" y2="574" stroke="#3C4043" stroke-width="1"/>
+<text x="1012" y="591" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+contiene(p : decimal) : boolean</text>
+</g>
+<g id="Clase PonderacionTramo">
+<rect x="1400" y="470" width="187" height="95" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1400 474 a4 4 0 0 1 4 -4 h179 a4 4 0 0 1 4 4 v20 h-187 z" fill="#1F4E3D"/>
+<text x="1493.5" y="487" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">PonderacionTramo</text>
+<text x="1412" y="515" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-tramo : Tramo</text>
+<text x="1412" y="532" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-peso : decimal</text>
+<line x1="1400" y1="540" x2="1587" y2="540" stroke="#3C4043" stroke-width="1"/>
+<text x="1412" y="557" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+validarSuma() : boolean</text>
+</g>
+<g id="Clase Dimension">
+<rect x="380" y="900" width="240" height="112" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M380 904 a4 4 0 0 1 4 -4 h232 a4 4 0 0 1 4 4 v20 h-240 z" fill="#1F4E3D"/>
+<text x="500.0" y="917" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Dimension</text>
+<text x="392" y="945" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-codigo : GrupoMedidas</text>
+<text x="392" y="962" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-nombre : String</text>
+<text x="392" y="979" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-orden : int</text>
+<line x1="380" y1="987" x2="620" y2="987" stroke="#3C4043" stroke-width="1"/>
+<text x="392" y="1004" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+indicadores() : List&lt;Indicador&gt;</text>
+</g>
+<g id="Clase Criterio">
+<rect x="760" y="900" width="286" height="146" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M760 904 a4 4 0 0 1 4 -4 h278 a4 4 0 0 1 4 4 v20 h-286 z" fill="#1F4E3D"/>
+<text x="903.0" y="917" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Criterio</text>
+<text x="772" y="945" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-nombre : String</text>
+<text x="772" y="962" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-orden : int</text>
+<text x="772" y="979" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-peso : decimal = 1</text>
+<text x="772" y="996" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-padre : Criterio [0..1]</text>
+<line x1="760" y1="1004" x2="1046" y2="1004" stroke="#3C4043" stroke-width="1"/>
+<text x="772" y="1021" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+agregarIndicador(i : Indicador) : void</text>
+<text x="772" y="1038" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+ordenar() : void</text>
+</g>
+<g id="Clase Indicador">
+<rect x="1200" y="860" width="359" height="282" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1200 864 a4 4 0 0 1 4 -4 h351 a4 4 0 0 1 4 4 v20 h-359 z" fill="#1F4E3D"/>
+<text x="1379.5" y="877" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Indicador</text>
+<text x="1212" y="905" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-codigo : String</text>
+<text x="1212" y="922" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-nombre : String</text>
+<text x="1212" y="939" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-numeral : String</text>
+<text x="1212" y="956" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-tabla : String</text>
+<text x="1212" y="973" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-metodo : MetodoEvaluacion</text>
+<text x="1212" y="990" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-unidadMuestreo : String</text>
+<text x="1212" y="1007" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-grupoProductivo : String</text>
+<text x="1212" y="1024" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-tipoCaptura : TipoCaptura</text>
+<text x="1212" y="1041" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-peso : decimal = 1</text>
+<text x="1212" y="1058" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-orden : int</text>
+<line x1="1200" y1="1066" x2="1559" y2="1066" stroke="#3C4043" stroke-width="1"/>
+<text x="1212" y="1083" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+aplica(ctx : ContextoEvaluacion) : boolean</text>
+<text x="1212" y="1100" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+motivoNoAplica(ctx : ContextoEvaluacion) : String</text>
+<text x="1212" y="1117" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+calcular(r : List&lt;Respuesta&gt;) : decimal</text>
+<text x="1212" y="1134" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+nivelAutomatico(r : List&lt;Respuesta&gt;) : int</text>
+</g>
+<g id="Clase ReglaAplicabilidad">
+<rect x="1820" y="860" width="319" height="129" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1820 864 a4 4 0 0 1 4 -4 h311 a4 4 0 0 1 4 4 v20 h-319 z" fill="#1F4E3D"/>
+<text x="1979.5" y="877" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ReglaAplicabilidad</text>
+<text x="1832" y="905" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-variable : VariableContexto</text>
+<text x="1832" y="922" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-operador : Operador</text>
+<text x="1832" y="939" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-valor : String</text>
+<text x="1832" y="956" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-motivo : String</text>
+<line x1="1820" y1="964" x2="2139" y2="964" stroke="#3C4043" stroke-width="1"/>
+<text x="1832" y="981" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+evaluar(ctx : ContextoEvaluacion) : boolean</text>
+</g>
+<g id="Clase ReglaCondicion">
+<rect x="1820" y="1120" width="452" height="129" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1820 1124 a4 4 0 0 1 4 -4 h444 a4 4 0 0 1 4 4 v20 h-452 z" fill="#1F4E3D"/>
+<text x="2046.0" y="1137" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ReglaCondicion</text>
+<text x="1832" y="1165" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-condiciones : List&lt;Condicion&gt;</text>
+<text x="1832" y="1182" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-tramo : Tramo [0..1]</text>
+<text x="1832" y="1199" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-puntaje : int</text>
+<text x="1832" y="1216" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-prioridad : int</text>
+<line x1="1820" y1="1224" x2="2272" y2="1224" stroke="#3C4043" stroke-width="1"/>
+<text x="1832" y="1241" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+cumple(r : List&lt;Respuesta&gt;, ctx : ContextoEvaluacion) : boolean</text>
+</g>
+<g id="Clase ReglaConversion">
+<rect x="380" y="1360" width="246" height="180" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M380 1364 a4 4 0 0 1 4 -4 h238 a4 4 0 0 1 4 4 v20 h-246 z" fill="#1F4E3D"/>
+<text x="503.0" y="1377" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">ReglaConversion</text>
+<text x="392" y="1405" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-variable : String</text>
+<text x="392" y="1422" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-minimo : decimal [0..1]</text>
+<text x="392" y="1439" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-incluyeMinimo : boolean</text>
+<text x="392" y="1456" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-maximo : decimal [0..1]</text>
+<text x="392" y="1473" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-incluyeMaximo : boolean</text>
+<text x="392" y="1490" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-puntaje : int</text>
+<text x="392" y="1507" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-formula : String [0..1]</text>
+<line x1="380" y1="1515" x2="626" y2="1515" stroke="#3C4043" stroke-width="1"/>
+<text x="392" y="1532" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+nivelPara(valor : decimal) : int</text>
+</g>
+<g id="Clase NivelEscala">
+<rect x="800" y="1360" width="240" height="104" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M800 1364 a4 4 0 0 1 4 -4 h232 a4 4 0 0 1 4 4 v20 h-240 z" fill="#1F4E3D"/>
+<text x="920.0" y="1377" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">NivelEscala</text>
+<text x="812" y="1405" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-puntaje : int  (100, 55, 20, 0)</text>
+<text x="812" y="1422" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-descripcion : String</text>
+<text x="812" y="1439" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-color : String</text>
+<text x="812" y="1456" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-exigeEvidencia : boolean</text>
+</g>
+<g id="Clase Pregunta">
+<rect x="1200" y="1360" width="246" height="180" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1200 1364 a4 4 0 0 1 4 -4 h238 a4 4 0 0 1 4 4 v20 h-246 z" fill="#1F4E3D"/>
+<text x="1323.0" y="1377" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">Pregunta</text>
+<text x="1212" y="1405" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-texto : String</text>
+<text x="1212" y="1422" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-ayuda : String</text>
+<text x="1212" y="1439" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-tipoDato : TipoDato</text>
+<text x="1212" y="1456" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-esPrincipal : boolean</text>
+<text x="1212" y="1473" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-obligatoria : boolean</text>
+<text x="1212" y="1490" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-evidencia : RequisitoEvidencia</text>
+<text x="1212" y="1507" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-orden : int</text>
+<line x1="1200" y1="1515" x2="1446" y2="1515" stroke="#3C4043" stroke-width="1"/>
+<text x="1212" y="1532" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+validar(r : Respuesta) : boolean</text>
+</g>
+<g id="Clase OpcionRespuesta">
+<rect x="1820" y="1400" width="167" height="87" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1820 1404 a4 4 0 0 1 4 -4 h159 a4 4 0 0 1 4 4 v20 h-167 z" fill="#1F4E3D"/>
+<text x="1903.5" y="1417" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">OpcionRespuesta</text>
+<text x="1832" y="1445" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-texto : String</text>
+<text x="1832" y="1462" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-valor : String</text>
+<text x="1832" y="1479" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-puntaje : int [0..1]</text>
+</g>
+<g id="Clase PlantillaDiagnostico">
+<rect x="1820" y="1600" width="306" height="112" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<path d="M1820 1604 a4 4 0 0 1 4 -4 h298 a4 4 0 0 1 4 4 v20 h-306 z" fill="#1F4E3D"/>
+<text x="1973.0" y="1617" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="700" fill="#FFFFFF">PlantillaDiagnostico</text>
+<text x="1832" y="1645" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-tipo : TipoItem</text>
+<text x="1832" y="1662" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-puntaje : int</text>
+<text x="1832" y="1679" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">-texto : String</text>
+<line x1="1820" y1="1687" x2="2126" y2="1687" stroke="#3C4043" stroke-width="1"/>
+<text x="1832" y="1704" font-family="Inter, Arial, sans-serif" font-size="12" fill="#1F2A24">+redactar(r : ResultadoIndicador) : String</text>
+</g>
+<g id="Regla versión e historial"><rect x="2380" y="120" width="540" height="172" rx="4" fill="#FBEAE7" stroke="#C62828" stroke-width="1.2"/>
+<text x="2392" y="140" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#7A1F16">Regla de negocio · versiones e historial (RN-80 a RN-88)</text>
+<text x="2392" y="160" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Una versión PUBLICADA por especie; al publicar queda inmutable.</text>
+<text x="2392" y="177" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Cambio = copiar() → BORRADOR → publicar(); la anterior queda RETIRADA.</text>
+<text x="2392" y="194" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">En BORRADOR los elementos se eliminan; en PUBLICADA o RETIRADA</text>
+<text x="2392" y="211" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">  nunca: se retiran en una versión nueva.</text>
+<text x="2392" y="228" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Cada Evaluacion guarda la versión con que se calculó (RN-82).</text>
+<text x="2392" y="245" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">validarCompletitud(): escala o regla en cada indicador, pesos</text>
+<text x="2392" y="262" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">  que suman 100 % por tramo, Tabla 2 sin huecos, 33 / 25 indicadores.</text>
+<text x="2392" y="279" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Todo cambio queda en RegistroAuditoria (RN-132).</text>
+</g>
+<g id="Ajuste a la norma"><rect x="2380" y="340" width="540" height="206" rx="4" fill="#FFF8E1" stroke="#B58900" stroke-width="1.2"/>
+<text x="2392" y="360" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#5C4300">Ajuste a la norma de patos y gansos</text>
+<text x="2392" y="380" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Dimension = grupo de medidas MBR, MBA, MBG (5; 5.4).</text>
+<text x="2392" y="397" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">PonderacionTramo = Tabla 1: comercial 60/25/15; traspatio 70/30/0.</text>
+<text x="2392" y="414" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">RangoClasificacion = Tabla 2: ≥ 90, ≥ 75, ≥ 50, &lt; 50.</text>
+<text x="2392" y="431" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">NivelEscala: 100/55/0; 100/0; 20 solo en tablas de gansos.</text>
+<text x="2392" y="448" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">ReglaConversion: porcentaje → nivel (p. ej. 6.2.1 jadeo ≤ 40 % → 100).</text>
+<text x="2392" y="465" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">ReglaCondicion: condiciones → nivel (6.1.1, 6.1.4, 6.1.6, 6.1.12, 7.1.1).</text>
+<text x="2392" y="482" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">ReglaAplicabilidad: traspatio sin MBG; nidal solo huevo; jadeo con</text>
+<text x="2392" y="499" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">  permanencia; cama sin piso duro nocturno; GG08 intensivo/semi.</text>
+<text x="2392" y="516" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Indicador.peso = 1: la norma no pondera indicadores.</text>
+<text x="2392" y="533" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Calificación automática: el inspector registra datos; el nivel lo da la regla.</text>
+</g>
+<g id="Enumeraciones"><rect x="2380" y="900" width="540" height="206" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1.2"/>
+<text x="2392" y="920" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#1F2A24">Enumeraciones</text>
+<text x="2392" y="940" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">EstadoVersion: BORRADOR · PUBLICADA · RETIRADA</text>
+<text x="2392" y="957" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">GrupoMedidas: MBR · MBA · MBG   ·   Tramo: TRASPATIO · COMERCIAL</text>
+<text x="2392" y="974" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">NivelBienestar: EXCELENTE · ALTO · MEDIO · BAJO</text>
+<text x="2392" y="991" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">TipoCaptura: CONDICIONES · PORCENTAJE · POR_UNIDAD · CONDICION_CORPORAL ·</text>
+<text x="2392" y="1008" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">  DENSIDAD · PRACTICAS · DOCUMENTO · OPCION</text>
+<text x="2392" y="1025" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">TipoDato: CASILLA · NUMERO · TEXTO · FECHA · ARCHIVO</text>
+<text x="2392" y="1042" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">MetodoEvaluacion: DOCUMENTAL · VISUAL_SIN_MUESTREO · VISUAL_CON_MUESTREO</text>
+<text x="2392" y="1059" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">VariableContexto: TRAMO · PROPOSITO · SISTEMA · PERMANENCIA · PISO</text>
+<text x="2392" y="1076" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">RequisitoEvidencia: NO · OPCIONAL · OBLIGATORIA · SEGUN_NIVEL</text>
+<text x="2392" y="1093" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">TipoItem: FORTALEZA · OPORTUNIDAD · INCUMPLIMIENTO</text>
+</g>
+<g id="Convenciones"><rect x="2320" y="1600" width="600" height="214" rx="4" fill="#FFFFFF" stroke="#3C4043" stroke-width="1"/>
+<text x="2332" y="1620" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#1F2A24">Convenciones</text>
+<path d="M2336 1642 L2406 1642" stroke="#3C4043" stroke-width="1.3" fill="none"  marker-end="url(#tri)"/>
+<text x="2420" y="1646" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Herencia: la clase hereda de Modelo o de Controlador</text>
+<path d="M2336 1666 L2406 1666" stroke="#3C4043" stroke-width="1.3" fill="none"  marker-start="url(#diamond)"/>
+<text x="2420" y="1670" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Composición: la parte no existe sin el todo</text>
+<path d="M2336 1690 L2406 1690" stroke="#3C4043" stroke-width="1.3" fill="none"  marker-start="url(#odiamond)"/>
+<text x="2420" y="1694" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Agregación: la parte existe por sí sola</text>
+<path d="M2336 1714 L2406 1714" stroke="#3C4043" stroke-width="1.3" fill="none" stroke-dasharray="6 4" marker-end="url(#open)"/>
+<text x="2420" y="1718" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Dependencia: usa o calcula con</text>
+<path d="M2336 1738 L2406 1738" stroke="#3C4043" stroke-width="1.3" fill="none"  />
+<text x="2420" y="1742" font-family="Inter, Arial, sans-serif" font-size="11.5" fill="#1F2A24">Asociación (1, 0..1, 0..*, 1..*: multiplicidad)</text>
+<rect x="2336" y="1766" width="16" height="12" rx="2" fill="#1F4E3D"/>
+<text x="2358" y="1776" font-family="Inter, Arial, sans-serif" font-size="11" fill="#1F2A24">Clase del módulo</text>
+<rect x="2531" y="1766" width="16" height="12" rx="2" fill="#2F7A5B"/>
+<text x="2553" y="1776" font-family="Inter, Arial, sans-serif" font-size="11" fill="#1F2A24">«historial» (no se borra)</text>
+<rect x="2726" y="1766" width="16" height="12" rx="2" fill="#5B4B8A"/>
+<text x="2748" y="1776" font-family="Inter, Arial, sans-serif" font-size="11" fill="#1F2A24">«catálogo» / «enum»</text>
+<rect x="2336" y="1790" width="16" height="12" rx="2" fill="#2F6E9E"/>
+<text x="2358" y="1800" font-family="Inter, Arial, sans-serif" font-size="11" fill="#1F2A24">«service»</text>
+<rect x="2531" y="1790" width="16" height="12" rx="2" fill="#3C4043"/>
+<text x="2553" y="1800" font-family="Inter, Arial, sans-serif" font-size="11" fill="#1F2A24">Controlador (pantalla)</text>
+<rect x="2726" y="1790" width="16" height="12" rx="2" fill="#8A8F98"/>
+<text x="2748" y="1800" font-family="Inter, Arial, sans-serif" font-size="11" fill="#1F2A24">Clase de otro módulo</text>
+</g>
+</svg>

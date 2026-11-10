@@ -1,0 +1,26 @@
+digraph G {
+rankdir=LR; nodesep=0.18; ranksep=0.9; fontname="Arial"; bgcolor="white";
+node [fontname="Arial", fontsize=12]; edge [fontname="Arial", fontsize=10, arrowhead=none, color="#2e7d4f"];
+A [shape=none, label=<<table border="0"><tr><td><font point-size="11" color="#555">«actor»</font></td></tr><tr><td><b>Productor</b></td></tr></table>>];
+subgraph cluster_s { label="Sistema EBA Cuac Cuac · Productor"; style="rounded"; color="#1f5d3a"; fontsize=14;
+node [shape=ellipse, style=filled, fillcolor="#eef6f0", color="#2e7d4f"];
+C1 [label="CU-01\nIngresar con doble factor"];
+C2 [label="CU-02\nRecuperar contraseña"];
+C3 [label="CU-03\nGestionar mi cuenta"];
+C5 [label="CU-05\nConsultar ficha e historial\nde la finca"];
+C16 [label="CU-16\nConsultar resultado\ny plan de mejora"];
+C20 [label="CU-20\nConsultar tablero de inicio"];
+C22 [label="CU-22\nConsultar asistente de la norma"];
+C23 [label="CU-23\nConsultar Ayuda de la norma"];
+}
+A -> C1;
+A -> C2;
+A -> C3;
+A -> C5;
+A -> C16;
+A -> C20;
+A -> C22;
+A -> C23;
+IA [shape=box, style="rounded,dashed,filled", fillcolor="#fff7e6", color="#b7791f", label="Servicio de IA\n(Claude API, opcional)"];
+C22 -> IA [style=dashed, arrowhead=vee, color="#b7791f"];
+}

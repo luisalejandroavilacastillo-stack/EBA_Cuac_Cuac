@@ -1,0 +1,15 @@
+%% Estado de cada especie de la finca (módulo Fincas y tablero)
+stateDiagram-v2
+    [*] --> PorIniciar : finca registrada con la especie
+    PorIniciar --> EnProceso : Nueva inspección · primer dato
+    EnProceso --> Finalizada : cierre (cumple o sin seguimiento disponible)
+    EnProceso --> SeguimientoProgramado : cierre sin cumplir · visita N programada
+    SeguimientoProgramado --> EnProceso : Iniciar seguimiento
+    Finalizada --> EnProceso : Programar seguimiento / Nueva evaluación
+    PorIniciar : Por iniciar
+    EnProceso : En proceso
+    SeguimientoProgramado : Seguimiento programado
+    note left of SeguimientoProgramado
+        Inspector: botón Iniciar seguimiento y Reprogramar.
+        Productor: Ver resultados.
+    end note

@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EBA Cuac Cuac · Bienestar animal en patos y gansos</title>
+  <meta name="description" content="Prototipo funcional de la plataforma de evaluación de bienestar animal en patos y gansos (proyecto académico).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito+Sans:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilos.css">
+  <link rel="icon" href="img/icono-eba.svg" type="image/svg+xml">
+</head>
+<body>
+  <!-- La aplicación se dibuja en #raiz con los scripts de js/. Los datos se guardan en MariaDB a través de la API (js/nucleo/conexion.js); si la API no responde, se trabaja en el navegador. -->
+  <div id="raiz"></div>
+  <div id="capas"></div>
+  <!-- Orden de carga: datos de la norma → núcleo → reglas → interfaz → vistas → enrutador -->
+  <!-- Carga los datos desde la base de datos (API) y luego los scripts de la aplicación, en orden (js/arranque.js). -->
+  <script src="js/arranque.js"></script>
+</body>
+</html>
