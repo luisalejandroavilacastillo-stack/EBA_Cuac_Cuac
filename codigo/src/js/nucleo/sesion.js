@@ -4,9 +4,10 @@
 
 /* ---------------- sesión y seguridad ---------------- */
 const LIMITE = 15 * 60; // segundos de inactividad
-let SES = null, restante = LIMITE, reloj = null, intentos = 0, bloqueoHasta = 0, rolElegido = "inspector";
-function iniciarSesion(rol) {
-  SES = { rol, desde: new Date().toISOString() }; restante = LIMITE;
+let SES = null, restante = LIMITE, reloj = null, intentos = 0, bloqueoHasta = 0, rolElegido = "inspector", usuarioIngreso = null;   // perfil elegido y usuario que pasó la contraseña
+/** k = clave del usuario de demostración; el perfil (rol) sale de USUARIOS[k].perfil. */
+function iniciarSesion(k) {
+  SES = { rol: (USUARIOS[k] && USUARIOS[k].perfil) || k, u: k, desde: new Date().toISOString() }; restante = LIMITE;
   try { sessionStorage.setItem("eba.ses", JSON.stringify(SES)); } catch (e) { }
   log("Inicio de sesión con verificación en dos pasos");
   clearInterval(reloj); reloj = setInterval(tic, 1000);

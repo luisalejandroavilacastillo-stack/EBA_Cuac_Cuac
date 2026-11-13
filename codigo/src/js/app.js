@@ -8,7 +8,7 @@
 function render() {
   const h = (location.hash || "#/ingreso").slice(2).split("/");
   if (!SES) {
-    try { const s = JSON.parse(sessionStorage.getItem("eba.ses")); if (s && USUARIOS[s.rol]) { SES = s; clearInterval(reloj); reloj = setInterval(tic, 1000); } } catch (e) { }
+    try { const s = JSON.parse(sessionStorage.getItem("eba.ses")); if (s && USUARIOS[s.u || s.rol] && USUARIOS[s.u || s.rol].estado === "Activo") { SES = Object.assign({ u: s.rol }, s); clearInterval(reloj); reloj = setInterval(tic, 1000); } } catch (e) { }
   }
   if (!SES) return vIngreso(h[0] === "codigo" ? "codigo" : h[0] === "recuperar" ? "recuperar" : null);
   cerrarCapas(); window.scrollTo(0, 0);
@@ -24,9 +24,12 @@ function render() {
   if (sec === "evaluaciones") { if (h[1] === "nueva") return vNueva(); location.replace("#/fincas"); return; }
   if (sec === "eval") {
     const ev = EVALS.find((e) => e.id === h[1]); if (!ev) { location.replace("#/fincas"); return; }
+    // v0.25: el productor solo ve visitas aprobadas; el inspector, solo las asignadas a él.
+    if (!puedeVerEval(ev)) { if (SES.rol === "productor") { toast("El resultado se publica cuando el coordinador del ICA aprueba la inspección."); location.replace(`#/finca/${ev.finca}`); return; } return sinPermiso("evaluaciones"); }
     if (!h[2] || h[2] === "apertura") return vApertura(ev);
     if (h[2] === "cierre") return vCierre(ev);
     if (h[2] === "resultado") return vResultado(ev);
+    if (h[2] === "constancia") return vConstancia(ev);
     if (h[2] === "recorrido") return ev.sp === "pato" ? vRecorrido(ev, h[3], h[4]) : vRecorridoGanso(ev, h[3]);
     return vIndicador(ev, h[2]);
   }

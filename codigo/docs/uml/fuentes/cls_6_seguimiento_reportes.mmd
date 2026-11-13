@@ -1,4 +1,4 @@
-%% Vista 6 · Seguimiento, reportes y tablero (RF27 a RF36, RF40)
+%% Vista 6 · Asignación, aprobación, seguimiento, constancia, reportes y tablero · v0.25
 classDiagram
   class ProcesoSeguimiento {
     +id PRC
@@ -28,13 +28,16 @@ classDiagram
   class Programacion {
     +fechaSugeridaSeguimiento(ev)
     +avisoFechaSeguimiento(ev, fecha)
-    +programarSeguimiento(pid, fecha)
-    +reprogramarSeguimiento(ev, fecha)
-    +crearSeguimiento(pid)
-    +crearProceso(finca, sp)
+    +programarSeguimiento(pid, fecha, inspector)
+    +reprogramarSeguimiento(ev, fecha, motivo)
+    +crearSeguimiento(pid, inspector)
+    +crearProceso(finca, sp, base, fecha, inspector)
   }
   class Flujo {
-    +ESTADOS_FLUJO
+    +ESTADOS_FLUJO Por asignar…Aprobada
+    +ESTADOS_PRODUCTOR
+    +textoFlujo(s)
+    +enHistorial(ev)
     +estadoEspecie(f, sp)
     +pasoContinuar(ev)
     +siguientePendiente(ev)
@@ -54,6 +57,33 @@ classDiagram
     +imprimir
     +compararVisitas()
   }
+  class Asignacion {
+    +por
+    +fecha
+    +inspector
+    +fechaVisita
+    +anterior
+  }
+  class Revision {
+    +accion Enviada|Reenviada|Devuelta|Aprobada
+    +por
+    +fecha
+    +obs
+  }
+  class Reprogramacion {
+    +antes
+    +nueva
+    +motivo
+    +por
+  }
+  class Constancia {
+    +codigo CER-AAAA-NNNNN
+    +verificacion
+    +emitida
+    +vence
+    +emitirConstancia(ev)
+    +constanciaVigente(c)
+  }
   class Bitacora {
     +t
     +u
@@ -67,3 +97,7 @@ classDiagram
   Flujo ..> ProcesoSeguimiento
   vInicio ..> Flujo
   vReportes ..> ProcesoSeguimiento
+  Programacion ..> Asignacion
+  Programacion ..> Reprogramacion
+  Revision ..> Constancia : Aprobada y cumple
+  Revision ..> Programacion : Aprobada sin cumplir

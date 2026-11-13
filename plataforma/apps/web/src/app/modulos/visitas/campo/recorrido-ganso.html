@@ -1,0 +1,56 @@
+@if (copia(); as ev) { @if (vista(); as v) { @if (plan(); as plan) { @if (ctx(); as c) {
+<div class="encabezado"><div><h1>Recorrido por puntos</h1>
+    <p>{{ c.f.nombre }} · Gansos · {{ flujo().nombreVisita(ev) }} · {{ plan.corrales ? plan.corrales + ' galpón(es) × ' + plan.puntosCorral + ' puntos' : plan.puntos + ' punto(s) sin corral' }} · {{ plan.aves }} gansos ({{ plan.avesPunto }} por punto) · {{ v.hechos }} de {{ plan.puntos }} puntos completos</p></div>
+  <a class="btn btn-sec" [routerLink]="['/visitas', ev.id, destinoLista()]">Listado por indicador</a></div>
+
+<div class="recorrido">
+  <section class="panel"><h3>Puntos de muestreo</h3>
+    <div [innerHTML]="v.grafica | html"></div>
+    <div class="chips">@for (ch of v.chips; track ch.p) {
+      @if (ch.galpon) { <span class="muted" style="font-size:12px;font-weight:800;width:100%" [style.margin-top.px]="ch.p ? 6 : 0">Galpón {{ ch.galpon }}</span> }
+      <button type="button" class="chip-punto est-{{ ch.est }}" [class.actual]="ch.p === v.pt" [title]="ch.title" [attr.aria-current]="ch.p === v.pt ? 'true' : null" (click)="irPunto(ch.p)">{{ ch.est === 'hecho' ? '✓ ' : '' }}{{ ch.corto }}<small>{{ ch.aves }} aves</small></button>
+    }</div>
+    <p class="leyenda-puntos"><span><i class="lp est-pend"></i>Pendiente</span><span><i class="lp est-proceso"></i>En proceso</span><span><i class="lp est-hecho"></i>Evaluado</span><span><i class="lp actual"></i>Punto actual</span></p>
+  </section>
+
+  <div>
+    <section class="panel"><h2 style="margin:0">{{ nombrePunto(v.pt) }}</h2>
+      <h3 class="paso-punto"><span class="paso-n">1</span>Recursos más cercanos al punto</h3>
+      @if (v.galpon; as g) {
+        <div class="fila-recurso"><div><b>{{ g.num }} {{ g.titulo }}</b> <app-btn-ficha code="GR05" /><small class="muted">Una vez por galpón: limpieza y elementos de riesgo</small></div>
+          <div class="niveles-campo">
+            <button type="button" class="nv" [class.sel]="g.val === false" [style.--c]="COL[100]" [disabled]="!ed()" (click)="galpon(false)"><span>Limpio, sin elementos de riesgo</span></button>
+            <button type="button" class="nv" [class.sel]="g.val === true" [style.--c]="COL[0]" [disabled]="!ed()" (click)="galpon(true)"><span>Con elementos de riesgo</span></button></div></div>
+      }
+      @for (r of v.recursos; track r.code) {
+        <div class="fila-recurso"><div><b>{{ r.num }} {{ r.titulo }}</b> <app-btn-ficha [code]="r.code" /><small class="muted">{{ r.sub }}</small></div>
+          <div><div class="niveles-campo">@for (op of r.ops; track op[0]) {
+              <button type="button" class="nv" [class.sel]="r.val === op[0]" [style.--c]="COL[op[2]]" [disabled]="!ed()" (click)="recurso(r.campo, op[0])"><span>{{ op[1] }}</span></button> }</div>
+            @if (r.igual) { <div class="herr-recurso"><button type="button" class="btn btn-fantasma btn-chico" (click)="igual(r.campo)">Igual en todo el galpón</button></div> }</div></div>
+      }
+
+      <h3 class="paso-punto"><span class="paso-n">2</span>Aves del punto <span class="resumen-aves">{{ v.revisadas }} de {{ v.total }} completas</span></h3>
+      @if (v.total) {
+        <div class="tarjetas-aves">@for (a of v.aves; track a.k) {
+          <button type="button" class="tarjeta-ave est-{{ a.est }}" (click)="avesAbiertas.set(a.k)"><b>{{ a.ok ? '✓ ' : '' }}Ave {{ a.k + 1 }}@if (a.h) {<i class="punto-hall" aria-hidden="true"></i>}</b><span>{{ a.texto }}</span></button> }</div>
+        <div class="evaluar-aves">
+          @if (ed() && v.sig >= 0) { <button type="button" class="btn btn-sec" title="Deja normal lo que falta en las aves del punto" (click)="restoSinHallazgos()">{{ v.algunaEmpezada ? 'Las aves restantes, sin hallazgos' : 'Todas las aves del punto, sin hallazgos' }}</button> }
+          <button type="button" class="btn" [class.btn-primario]="v.sig >= 0 && ed()" [class.btn-sec]="!(v.sig >= 0 && ed())" (click)="avesAbiertas.set(v.sig >= 0 ? v.sig : 0)">{{ !ed() ? 'Ver aves del punto' : v.sig < 0 ? 'Revisar aves del punto' : 'Revisar el Ave ' + (v.sig + 1) + ' →' }}</button>
+        </div>
+      } @else { <p class="muted">Este punto no tiene aves asignadas.</p> }
+
+      <div class="acciones" style="justify-content:space-between;margin-top:18px">
+        <button type="button" class="btn btn-sec" [disabled]="v.pt === 0" (click)="irPunto(v.pt - 1)">{{ v.pt === 0 ? 'Punto anterior' : 'Punto anterior: ' + nombrePunto(v.pt - 1) }}</button>
+        <button type="button" class="btn btn-primario" (click)="siguiente()">{{ !v.ultimo ? 'Siguiente punto: ' + nombrePunto(v.pt + 1) : 'Continuar con la evaluación por indicador' }}</button></div>
+      <p class="estado-guardado" [class.sin-conexion]="trabajo.estado() === 'sin-conexion'" role="status">{{ textoGuardado() }}</p>
+    </section>
+    @if (v.trat.length) {
+      <section class="panel"><h3>Evidencia de tratamiento</h3><p class="muted" style="margin:0 0 8px">La tabla de estos indicadores cambia si los gansos con la novedad están siendo tratados. Marque la que verifique.</p>
+        @for (t of v.trat; track t.code) { <label class="chk"><input type="checkbox" [checked]="t.val" [disabled]="!ed()" (change)="tratamiento(t.code, $any($event.target).checked)">{{ t.texto }}</label> }
+      </section>
+    }
+  </div>
+</div>
+
+@if (avesAbiertas() != null && origen(); as o) { <app-ficha-aves [o]="o" [k0]="avesAbiertas()!" [guardado]="textoGuardado()" /> }
+} } } }

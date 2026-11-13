@@ -1,0 +1,68 @@
+<div class="encabezado"><div><h1>Reportes</h1><p>Consolida y analiza las inspecciones registradas. Los filtros se aplican a todo lo que se ve y a la exportación, que no incluye datos personales.</p></div>
+  <div class="no-imprimir acciones-encabezado"><button type="button" class="btn btn-sec" (click)="imprimir()">Imprimir</button><button type="button" class="btn btn-primario" (click)="exportar()">Exportar CSV</button></div></div>
+<section class="panel filtros-reporte no-imprimir" aria-label="Filtros"><div class="rejilla-filtros">
+  <div class="campo"><label for="rf1">Finca</label><select id="rf1" (change)="poner('finca', $any($event.target).value)"><option value="" [selected]="!f.filtro().finca">Todas</option>@for (x of fincas(); track x.id) { <option [value]="x.id" [selected]="f.filtro().finca === x.id">{{ x.nombre }}</option> }</select></div>
+  <div class="campo"><label for="rf2">Especie</label><select id="rf2" (change)="poner('sp', $any($event.target).value)"><option value="" [selected]="!f.filtro().sp">Patos y gansos</option><option value="pato" [selected]="f.filtro().sp === 'pato'">Patos</option><option value="ganso" [selected]="f.filtro().sp === 'ganso'">Gansos</option></select></div>
+  <div class="campo"><label for="rf3">Estado</label><select id="rf3" (change)="poner('estado', $any($event.target).value)"><option value="" [selected]="!f.filtro().estado">Todos</option><option value="Finalizada" [selected]="f.filtro().estado === 'Finalizada'">Finalizada</option><option value="En proceso" [selected]="f.filtro().estado === 'En proceso'">En proceso</option><option value="Programada" [selected]="f.filtro().estado === 'Programada'">Programada (por iniciar)</option></select></div>
+  <div class="campo"><label for="rf4">Visita</label><select id="rf4" (change)="poner('visita', $any($event.target).value)"><option value="" [selected]="!f.filtro().visita">Todas</option><option value="inicial" [selected]="f.filtro().visita === 'inicial'">Visita inicial</option><option value="seg" [selected]="f.filtro().visita === 'seg'">Seguimientos</option></select></div>
+  <div class="campo"><label for="rf5">Desde</label><input id="rf5" type="date" [value]="f.filtro().desde" (change)="poner('desde', $any($event.target).value)"></div>
+  <div class="campo"><label for="rf6">Hasta</label><input id="rf6" type="date" [value]="f.filtro().hasta" (change)="poner('hasta', $any($event.target).value)"></div>
+  <div class="campo campo-boton"><button type="button" class="btn-texto" (click)="limpiar()">Limpiar filtros</button></div></div></section>
+
+@if (!evs().length) { <section class="panel"><p class="muted" style="margin:0">No hay evaluaciones que coincidan con los filtros.</p></section> }
+@else {
+<div class="rejilla r-4 kpis-compactos">
+  <div class="kpi" style="--c:var(--semilla)"><div class="v">{{ kpis().total }}</div><div class="l">Evaluaciones en la consulta</div></div>
+  <div class="kpi" style="--c:var(--campo)"><div class="v">{{ kpis().fin }}</div><div class="l">Finalizadas · {{ kpis().abiertas }} abiertas</div></div>
+  <div class="kpi" [style.--c]="kpis().color"><div class="v">{{ fmt(kpis().prom) }}</div><div class="l">Puntaje promedio de las finalizadas</div></div>
+  <div class="kpi" style="--c:var(--azul)"><div class="v">@if (kpis().fin) { {{ kpis().cumplen }}<small> de {{ kpis().fin }}</small> } @else { — }</div><div class="l">Cumplen los criterios (≥ 90, sin ceros ni pendientes)</div></div>
+</div>
+<div class="rejilla r-2" style="margin-top:18px">
+  <section class="panel"><h3>Evaluaciones finalizadas por nivel</h3>
+    @if (fin().length) { <div class="barras" [innerHTML]="graficaNiveles() | html"></div><p class="muted texto-chico" style="margin-top:8px">Niveles de la Tabla 2 con el puntaje total.</p> }
+    @else { <p class="muted">No hay evaluaciones finalizadas en la consulta.</p> }</section>
+  <section class="panel"><h3>Promedio por medida</h3>
+    @if (fin().length) { <div class="barras" [innerHTML]="graficaMedidas() | html"></div><p class="muted texto-chico" style="margin-top:8px">Promedio de las evaluaciones finalizadas. En traspatio no se evalúa la gestión.</p> }
+    @else { <p class="muted">No hay evaluaciones finalizadas en la consulta.</p> }</section>
+</div>
+<div class="rejilla r-2" style="margin-top:18px">
+  <section class="panel"><h3>Criterios con mayor cumplimiento</h3><ng-container *ngTemplateOutlet="tablaCrit; context: { lista: criterios().mejores, c: 'var(--campo)', vacio: fin().length ? 'Ningún indicador promedia 90 o más.' : 'No hay evaluaciones finalizadas.' }" /></section>
+  <section class="panel"><h3>Criterios que requieren atención</h3><ng-container *ngTemplateOutlet="tablaCrit; context: { lista: criterios().atencion, c: 'var(--rojo)', vacio: fin().length ? 'Todos los indicadores promedian 90 o más.' : 'No hay evaluaciones finalizadas.' }" /></section>
+</div>
+<section class="panel" style="margin-top:18px" id="comparar"><div class="panel-cab"><h3>Comparación entre visitas</h3>
+  <div class="campo campo-en-linea no-imprimir"><label for="rc">Finca y especie</label><select id="rc" (change)="f.comparar.set($any($event.target).value)">@for (p of pares(); track p.p) { <option [value]="p.p" [selected]="p.p === parSel()">{{ p.nombre }}{{ p.conDos ? '' : ' · sin historial' }}</option> }</select></div></div>
+  @if (cmp(); as c) {
+    @if ('sin' in c) { <p class="aviso-vacio">Esta finca aún no tiene historial para comparar: {{ c.sin }}. La comparación aparece cuando hay dos inspecciones finalizadas.</p> }
+    @else {
+      <div class="rejilla r-2"><div class="envoltura-tabla"><table class="tabla tabla-compacta"><thead><tr><th>Visita</th><th class="num">MBR</th><th class="num">MBA</th><th class="num">MBG</th><th class="num">Total</th><th>Nivel</th><th class="num">Cambio</th></tr></thead><tbody>
+        @for (x of c.filas; track x.e.id) { <tr><td>{{ x.nombre }}<br><span class="muted texto-chico">{{ x.e.id }} · {{ fechaCorta(x.e.fecha) }}</span></td>@for (m of x.med; track $index) { <td class="num">{{ m }}</td> }<td class="num"><b>{{ fmt(x.r.total) }}</b></td><td>{{ x.r.nivel[0] }}{{ x.r.provisional ? ' (prov.)' : '' }}</td>
+          <td class="num">@if (x.d == null) {—} @else {<b [class.sube]="x.d > 0" [class.baja]="x.d < 0">{{ x.d > 0 ? '+' : '' }}{{ fmt(x.d) }}</b>}</td></tr> }</tbody></table></div>
+        <div [innerHTML]="c.grafica | html"></div></div>
+      <h4 style="margin:14px 0 0">Cambios por indicador entre {{ c.a.id }} y {{ c.b.id }} <span class="muted texto-chico">· {{ c.cambios.igual }} sin cambio</span></h4>
+      <div class="rejilla r-2"><div><h4 class="sube">Mejoraron · {{ c.cambios.mejoro.length }}</h4><ng-container *ngTemplateOutlet="cambios; context: { lista: c.cambios.mejoro }" /></div>
+        <div><h4 class="baja">Bajaron · {{ c.cambios.empeoro.length }}</h4><ng-container *ngTemplateOutlet="cambios; context: { lista: c.cambios.empeoro }" /></div></div>
+    }
+  } @else { <p class="muted">No hay fincas en la consulta.</p> }
+</section>
+<section class="panel" style="margin-top:18px"><div class="panel-cab"><h3>Consulta por visita · {{ evs().length }}</h3></div><div class="envoltura-tabla"><table class="tabla tabla-compacta"><thead><tr><th>Evaluación</th><th>Finca</th><th>Visita</th><th>Estado</th><th class="num">Avance</th><th class="num">MBR</th><th class="num">MBA</th><th class="num">MBG</th><th class="num">Total</th><th>Nivel</th><th class="no-imprimir"></th></tr></thead><tbody>
+  @for (x of filas(); track x.e.id) {
+    <tr><td><b>{{ x.e.id }}</b><br><span class="muted texto-chico">{{ fechaCorta(x.e.fecha) }}</span></td><td>{{ x.finca }}<br><span class="muted texto-chico">{{ nombreEspecie(x.e.sp) }}</span></td><td>{{ x.visita }}<br><span class="muted texto-chico">{{ x.e.proceso }}</span></td>
+      <td><span class="etiqueta" [class.e-ok]="x.e.estado === 'Finalizada'" [class.e-medio]="x.e.estado === 'En proceso'" [class.e-info]="x.e.estado !== 'Finalizada' && x.e.estado !== 'En proceso'">{{ x.e.estado }}{{ x.e.estado === 'Finalizada' && x.r.provisional ? ' · provisional' : '' }}</span></td><td class="num">{{ x.avance }} %</td>
+      @if (x.pr) { <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td>—</td> }
+      @else { @for (m of x.med; track $index) { <td class="num">{{ m }}</td> }<td class="num"><b>{{ fmt(x.r.total) }}</b></td><td>{{ x.r.nivel[0] }}@if (x.e.estado !== 'Finalizada') {<span class="muted texto-chico"> · prel.</span>}</td> }
+      <td class="num no-imprimir acciones-fila"><a class="btn btn-sec btn-chico" [routerLink]="x.e.estado === 'Finalizada' ? ['/visitas', x.e.id, 'resultado'] : ['/visitas', x.e.id]">{{ x.e.estado === 'Finalizada' ? 'Ver resultados' : 'Abrir' }}</a><a class="btn-texto" [routerLink]="['/reportes/finca', x.e.finca]">Informe de la finca</a></td></tr>
+  }</tbody></table></div></section>
+}
+
+<ng-template #tablaCrit let-lista="lista" let-c="c" let-vacio="vacio">
+  @if (lista.length) {
+    <div class="envoltura-tabla"><table class="tabla tabla-compacta"><thead><tr><th>Indicador</th><th class="num">Promedio</th><th class="num">Evaluaciones</th><th class="num">Ceros</th></tr></thead><tbody>
+      @for (x of lista; track x.ind.code) { <tr><td>{{ x.ind.num }} {{ x.ind.name }}<br><span class="muted texto-chico">{{ nombreEspecie(x.ind.sp) }} · {{ x.ind.g }}</span></td><td class="num"><b [style.color]="c">{{ fmt(x.prom) }}</b></td><td class="num">{{ x.n }}</td><td class="num">{{ x.ceros }}</td></tr> }</tbody></table></div>
+  } @else { <p class="muted">{{ vacio }}</p> }
+</ng-template>
+<ng-template #cambios let-lista="lista">
+  @if (lista.length) {
+    <ul class="lista-cambios">@for (x of lista.slice(0, 5); track x[0].code) { <li>{{ x[0].num }} {{ x[0].name }}: {{ fmt(x[1]) }} → <b>{{ fmt(x[2]) }}</b></li> }</ul>
+    @if (lista.length > 5) { <p class="muted texto-chico">y {{ lista.length - 5 }} más</p> }
+  } @else { <p class="muted">Ninguno.</p> }
+</ng-template>

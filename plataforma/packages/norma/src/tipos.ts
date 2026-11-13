@@ -4,8 +4,12 @@ export type Tramo = 'traspatio' | 'comercial';
 export type Medida = 'MBA' | 'MBR' | 'MBG';
 export type Nivel = 'Excelente' | 'Alto' | 'Medio' | 'Bajo';
 export type Rol = 'inspector' | 'coordinador' | 'productor' | 'admin';
-export type EstadoEvaluacion = 'Programada' | 'En proceso' | 'Finalizada';
-export type EstadoEspecie = 'Por iniciar' | 'En proceso' | 'Finalizada' | 'Seguimiento programado';
+/** Estados de una visita (v0.25). «Programada» se muestra como «Asignada» y «Finalizada» como «Aprobada». */
+export type EstadoEvaluacion = 'Programada' | 'En proceso' | 'Pendiente de aprobación' | 'Devuelta' | 'Finalizada' | 'Anulada';
+/** Estado de cada especie de la finca, según el personal del ICA. */
+export type EstadoEspecie = 'Por asignar' | 'Asignada' | 'En proceso' | 'Devuelta' | 'Pendiente de aprobación' | 'Aprobada' | 'Seguimiento programado';
+/** El mismo estado, como lo ve el productor. */
+export type EstadoProductor = 'Sin programar' | 'En evaluación' | 'En revisión del ICA' | 'Plan de mejora' | 'Certificada' | 'Constancia vencida';
 export type EstadoProceso =
   | 'En curso' | 'Seguimiento programado' | 'En seguimiento' | 'Requiere ampliación' | 'Cumplido' | 'Cerrado sin cumplir';
 

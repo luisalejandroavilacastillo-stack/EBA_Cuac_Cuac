@@ -1,25 +1,28 @@
-%% Cierre de la visita y seguimiento automático (CU-15, CU-17, CU-18, CU-19)
+%% Finalizar, aprobar y programar el seguimiento · v0.25 (CU-15, CU-17, CU-18, CU-19, CU-28)
 flowchart TD
-  A([Abrir cierre]) --> B{¿Hay indicadores pendientes?}
+  A([Inspector: abrir cierre]) --> B{¿Hay indicadores pendientes?}
   B -- Sí --> X[Ir al siguiente pendiente] --> FIN([Fin])
-  B -- No --> C[Calcular resultado:<br/>MBA, MBR, MBG ponderados por tramo,<br/>nivel según Tabla 2]
-  C --> D[Plan de mejora con acción, responsable y plazo<br/>para cada indicador bajo]
+  B -- No --> C[Resultado preliminar:<br/>MBA, MBR, MBG por tramo · nivel Tabla 2]
+  C --> D[Plan de mejora: acción, responsable, plazo]
   D --> E{¿Cumple?}
-  E -- Sí --> F[Firmas · Finalizar]
-  F --> G[Proceso Cumplido]:::ok --> FIN
-  E -- No --> H["Bloque Seguimiento programado:<br/>fecha sugerida = plazo más lejano + 1 día<br/>sin plazos → +30 días"]
-  H --> I{¿La fecha es antes del plazo<br/>del plan de mejora?}
-  I -- Sí --> J[Aviso no bloqueante] --> K
-  I -- No --> K[Firmas · Finalizar]
-  K --> L{¿Seguimientos usados &lt; máximo?<br/>3, ampliable a 5}
-  L -- Sí --> M[Crear visita N de M Programada<br/>retomando las respuestas anteriores]:::seg
-  M --> N[Especie en Seguimiento programado]
-  N --> O{¿Cambia la fecha acordada?}
-  O -- Sí --> P[Reprogramar: fecha ≥ hoy,<br/>queda en bitácora] --> N
-  O -- No --> Q([El día de la visita:<br/>Iniciar seguimiento])
-  L -- No --> R{¿Coordinador amplía<br/>con motivo?}
-  R -- Sí --> M
-  R -- No --> S[Proceso Cerrado sin cumplir]:::err --> FIN
+  E -- No --> H["Proponer fecha del seguimiento<br/>sugerida = plazo más lejano + 1 día"]
+  H --> K
+  E -- Sí --> K[Firmas · Finalizar y enviar]
+  K --> P[Pendiente de aprobación · aviso al coordinador]:::rev
+  P --> R{Coordinador revisa}
+  R -- Devolver con observación --> DV[Devuelta · aviso al inspector]:::err --> COR[Inspector corrige y reenvía] --> P
+  R -- Aprobar --> AP{¿Cumple?}
+  AP -- Sí --> CER[Constancia de cumplimiento<br/>CER-AAAA-NNNNN · 1 año]:::ok --> G[Proceso Cumplido · aviso al productor] --> FIN
+  AP -- No --> L{¿Seguimientos usados &lt; máximo?<br/>3, ampliable a 5}
+  L -- Sí --> M[Confirmar fecha e inspector<br/>Crear visita N de M Programada<br/>retomando la anterior]:::seg
+  M --> N[Especie en Seguimiento programado<br/>Productor: Plan de mejora]
+  N --> O{¿Cambia la fecha?}
+  O -- Sí --> Q[Reprogramar con motivo:<br/>coordinador, administrador o inspector asignado] --> N
+  O -- No --> S([El día de la visita: Iniciar seguimiento])
+  L -- No --> AM{¿Coordinador o administrador<br/>amplía con motivo?}
+  AM -- Sí --> M
+  AM -- No --> Z[Proceso Cerrado sin cumplir]:::err --> FIN
   classDef ok fill:#e6f4ea,stroke:#2f855a
   classDef err fill:#fde8e8,stroke:#c53030
   classDef seg fill:#e8f0fe,stroke:#2b6cb0
+  classDef rev fill:#fcebd9,stroke:#8a4b08

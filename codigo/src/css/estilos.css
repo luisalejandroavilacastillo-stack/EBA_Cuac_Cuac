@@ -793,6 +793,7 @@ body.con-fab .toast { bottom: 96px; }
 .lista-tareas .tarea-pie small { margin: 0 !important; }
 /* v0.20 · Seguimiento programado al cerrar sin cumplir */
 .e-seg { background: #EFE9F6; color: #5B3E8C; }
+.e-rev { background: #FCEBD9; color: #8A4B08; }
 .bloque-seg { margin-top: 14px; padding: 12px 14px; border: 1.5px solid #D9CCEA; border-radius: 12px; background: #FAF7FD; }
 .bloque-seg h4 { margin: 0; color: #5B3E8C; }
 .aviso-seg { display: block; color: #8A5A00; font-size: 13px; font-weight: 600; margin-top: 6px; }
@@ -857,3 +858,49 @@ body.con-fab .toast { bottom: 96px; }
 .btn-ficha:hover { background: #F2EFB0; }
 .nov-con-ficha { padding: 0 10px 0 0; gap: 8px; }
 .nov-con-ficha .nov-toggle { display: flex; align-items: center; gap: 12px; flex: 1; padding: 12px 14px; border: 0; background: transparent; font: inherit; text-align: left; cursor: pointer; }
+
+/* v0.25 · revisión del coordinador */
+.aviso-devuelta { background: #F8EDEC; color: var(--rojo); margin-bottom: 16px; }
+.aviso-revision { background: #FCEBD9; color: #8A4B08; margin-bottom: 16px; }
+.aviso-aprobada { background: #E3F2E6; color: var(--semilla); margin: 0 0 16px; }
+.panel-revision.pendiente { border: 2px solid #E8A15C; }
+.panel-revision .acciones { justify-content: flex-end; }
+.lista-revision { margin: 10px 0 0; padding-left: 18px; display: grid; gap: 4px; font-size: 14px; }
+.notif-item.aviso b { font-weight: 700; }
+
+/* v0.25 · ficha del ave: la misma para patos y gansos */
+.ficha-ave .fila-ave { grid-template-columns: 260px minmax(0, 1fr); }
+.ficha-ave .niveles-campo.n2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ficha-ave .niveles-campo.n3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ficha-ave .niveles-campo.n5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.ficha-ave .nv { min-height: 52px; font-size: 14px; font-weight: 700; align-content: center; }
+.ficha-ave .sin-hallazgos { position: sticky; top: -18px; z-index: 2; background: var(--blanco); padding: 8px 0 10px; border-bottom: 1px solid var(--linea); }
+.btn-grande { min-height: 52px; font-size: 16px; padding: 12px 22px; }
+.info-ave .hall { color: var(--rojo); }
+.punto-hall { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--rojo); margin-left: 6px; vertical-align: middle; box-shadow: 0 0 0 2px var(--blanco); }
+@media (max-width: 760px) { .ficha-ave .fila-ave { grid-template-columns: 1fr; gap: 6px; } .ficha-ave .niveles-campo.n5 { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+/* v0.25 · constancia de cumplimiento */
+.panel-constancia { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; border: 2px solid var(--campo); background: #F1F8F2; }
+.panel-constancia.vencida { border-color: var(--linea); background: var(--blanco); }
+.pc-cuerpo { display: flex; gap: 14px; align-items: center; }
+.pc-sello { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; background: var(--campo); color: #fff; font-size: 24px; font-weight: 800; flex: none; }
+.panel-constancia.vencida .pc-sello { background: #8A9488; }
+.panel-plan { border-left: 5px solid #7A5AA6; }
+.enlace-constancia { font-size: 12px; font-weight: 800; color: var(--campo); }
+.constancia { max-width: 820px; margin: 0 auto; background: #fff; border: 2px solid var(--campo); border-radius: 14px; padding: 36px 44px; box-shadow: 0 8px 24px rgba(0,0,0,.06); }
+.constancia.vencida { border-color: #8A9488; }
+.constancia header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; border-bottom: 1px solid var(--linea); padding-bottom: 16px; }
+.c-marca { font-size: 22px; font-weight: 800; color: var(--campo); line-height: 1.1; } .c-marca b { color: #C9B800; } .c-marca small { display: block; font-size: 12px; color: var(--texto-2, #5c6b5e); font-weight: 600; }
+.c-cod { text-align: right; } .c-cod small { display: block; font-size: 12px; color: #5c6b5e; } .c-cod b { font-size: 20px; letter-spacing: .5px; }
+.constancia h1 { font-size: 26px; text-align: center; margin: 26px 0 10px; }
+.c-intro { text-align: center; max-width: 620px; margin: 0 auto 22px; }
+.c-datos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 24px; margin: 0; }
+.c-datos dt { font-size: 12px; font-weight: 800; color: var(--campo); text-transform: uppercase; letter-spacing: .4px; } .c-datos dd { margin: 2px 0 0; }
+.c-nota { font-size: 12px; color: #5c6b5e; margin: 22px 0 0; }
+.constancia footer { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid var(--linea); margin-top: 18px; padding-top: 10px; font-size: 12px; color: #5c6b5e; }
+@media (max-width: 760px) { .constancia { padding: 22px 18px; } .c-datos { grid-template-columns: 1fr; } .constancia header { flex-direction: column; } .c-cod { text-align: left; } }
+@media print {
+  body * { visibility: hidden; } .constancia, .constancia * { visibility: visible; }
+  .constancia { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; }
+}

@@ -2,6 +2,40 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
+## 1.0.0 · Plataforma (Angular + API Node.js + MariaDB)
+- La aplicación completa pasa a la plataforma (`plataforma/`): Angular 22 con el mismo cálculo y flujo del prototipo, traducidos a `@eba/norma` y verificados contra él (los 58 indicadores, el resultado, el plan de muestreo, el recorrido de gansos y las respuestas del asistente dan lo mismo).
+- Ingreso real: la cuenta se crea sin contraseña y la persona la crea con un enlace de 48 horas; contraseña cifrada (scrypt), código de 6 dígitos al correo, bloqueo de 15 minutos a los 5 intentos, recuperación con enlace de 30 minutos, cierre tras 15 minutos sin uso. Columna «Acceso» y «Reenviar enlace» en Usuarios.
+- Trabajo sin señal en campo: la aplicación abre sin conexión con la copia de los datos de quien ingresó; lo registrado se guarda en el equipo y se envía al volver la señal; control de versiones de cada cambio.
+- Seguridad: privacidad por perfil en el servidor, bitácora con usuario y hora del servidor, sin cambios sin sesión, política de contenido (CSP) y la API no arranca en producción con una configuración insegura.
+- MariaDB con migraciones automáticas; los datos de ejemplo los carga la API; el prototipo deja de publicarse en el servidor.
+- Prototipo en un solo archivo: Usuarios muestra el estado de acceso y «Reenviar enlace» (simulado, sin correos); constancia con puntaje y nivel; códigos de finca y visita consecutivos del año; asistente con «¿Qué falta por evaluar?» y preguntas por finca. Nueva herramienta `herramientas/empaquetar_prototipo.py`.
+- Documentación: CU-01 a CU-03, CU-24 a CU-26 ajustados y CU-32 (activar la cuenta) y CU-33 (trabajar sin señal) nuevos; diagramas act_09, act_10, est_06, sec_06, cls_2 y paq_02; libro con HU-213 a HU-224 y RN-209 a RN-222 (`herramientas/actualizar_libro_v1_0.py`); diccionario y ER de la base MariaDB (`base_de_datos/mariadb/`); capturas de la plataforma.
+
+## 0.25.3 · Documentación de la v0.25
+- Casos de uso CU-01 a CU-31 (nuevos: asignar, reasignar, aprobar o devolver, corregir y reenviar, constancia y avisos) con matriz por perfil.
+- Diagramas: casos de uso por actor, flujo «asignar, evaluar, aprobar o devolver» (act_08), cierre y aprobación (act_05), estados de la evaluación, de la especie y de la constancia (est_05), secuencias de aprobación (sec_02, sec_05), clases de perfiles y usuarios, dominio y seguimiento, paquetes.
+- Libro de requerimientos: HU-193 a HU-212, RN-191 a RN-208, RN-51 y RN-140 ajustadas, hojas 12_Casos_de_Uso (v0.25), 15_Cambios_v0_25 y 16_Diagramas_v0_25 (`herramientas/actualizar_libro_v0_25.py`).
+- Base de datos: `07_actualizacion_v0_25.sql` (asignación, revisión, estados nuevos, constancia, avisos) y `08_pruebas_v0_25.sql`; ER y diccionario regenerados (76 tablas).
+- 40 capturas del prototipo con el flujo nuevo.
+
+## 0.25.2 · Constancia de cumplimiento e historial del inspector
+- Constancia de cumplimiento de bienestar animal: se emite al aprobar una visita en la que la finca cumple (código CER-AAAA-NNNNN, verificación, vigencia de 1 año, una por especie, coordinador que aprobó). Página lista para descargar como PDF o imprimir.
+- Productor: «Certificada» con «Descargar constancia», «Plan de mejora» con las acciones y la próxima visita, o «Constancia vencida». Aviso al productor cuando su finca queda certificada.
+- Inspector: en las fincas que le asignaron ve el historial aprobado de todos los inspectores (solo lectura); no ve visitas ajenas en curso.
+
+## 0.25.1 · Administrador con todos los permisos y reprogramación por el inspector
+- El administrador tiene todos los permisos (usuarios, fincas, asignar, reasignar y seguimientos) menos aprobar o devolver inspecciones, que es solo del coordinador: no recibe avisos de «por aprobar» y su Inicio muestra solo lo que falta asignar.
+- El inspector asignado a un seguimiento lo puede reprogramar antes de iniciarlo («Reprogramar» en su lista); se exige motivo, queda en el historial y avisa al coordinador y al productor. Ampliar a 5 seguimientos sigue siendo del coordinador o el administrador.
+- Las cuentas de usuario las sigue creando solo el ICA (administrador); no hay registro propio del productor.
+
+## 0.25.0 · Perfiles reorganizados (paso 1) y ficha del ave única
+- Cuatro perfiles: el administrador gestiona usuarios y consulta todo en solo lectura; el coordinador registra fincas, asigna cada inspección (inspector y fecha), reasigna y aprueba o devuelve con observación; el inspector solo ve lo asignado y «Finalizar» deja la visita «Pendiente de aprobación»; el productor ve sus fincas y el resultado solo cuando está aprobado («En evaluación», «En revisión del ICA»).
+- El seguimiento se crea al aprobar, con la fecha propuesta por el inspector y confirmada por el coordinador.
+- Avisos dentro de la aplicación (asignación, devolución, por aprobar, resultado disponible).
+- Usuarios: crear, editar, asignar perfil, inactivar, reactivar y eliminar (sin historial); el productor se vincula con sus fincas por documento. Ingreso con un botón por perfil (sin conteos ni correos) y entrada con el correo; nombre del perfil igual para hombres y mujeres.
+- Ficha del ave única para patos y gansos (mismos botones, colores y «Sin hallazgos · siguiente ave»), respetando la norma de cada especie; «Igual en todo el galpón» también en gansos.
+- Pendiente: seguimientos (paso 2), registro del productor e inicio y reportes por perfil (paso 3), constancia de cumplimiento (paso 4) y documentación.
+
 ## 0.24.2 · Registro de fincas solo por el ICA
 - El productor ya no ve «Registrar finca»: las fincas las registran el inspector, el coordinador o el administrador (RN-51 y HU-44 ajustadas; CU-04).
 - Prueba nueva en `pruebas/prueba_prototipo.py`.

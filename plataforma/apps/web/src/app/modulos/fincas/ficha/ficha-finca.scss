@@ -1,6 +1,0 @@
-.rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
-h3 { margin: 0 0 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.datos { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
-.datos dt { font-weight: 700; color: var(--semilla); }
-.datos dd { margin: 0; }
-.titulo-seccion { font-size: 20px; margin: 26px 0 12px; }

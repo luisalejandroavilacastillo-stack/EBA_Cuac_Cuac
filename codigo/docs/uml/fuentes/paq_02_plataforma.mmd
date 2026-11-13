@@ -1,0 +1,21 @@
+%% Paquetes y despliegue de la plataforma 1.0
+flowchart LR
+  subgraph NAV [Navegador]
+    W[Angular 22 · apps/web<br/>módulos: ingreso, inicio, fincas, visitas,<br/>reportes, ayuda, asistente, administración]
+    SW[Service worker<br/>aplicación guardada en el equipo]
+    N["@eba/norma · packages/norma<br/>cálculo, flujo, campo"]
+    W --- N
+    W --- SW
+  end
+  subgraph SRV [Servidor · Docker]
+    X[Nginx · eba-web<br/>/plataforma/ · CSP y cabeceras]
+    A[API Node.js 24 + Express 5 · eba-api<br/>auth, usuarios, sincronización,<br/>asistente, fincas, salud]
+    B[(MariaDB 11.8 · eba-mariadb<br/>migraciones 001 a 004)]
+  end
+  M[Correo institucional · SMTP]
+  G[Gemini · opcional]
+  W -- https · cookie HttpOnly --> X
+  X -- /api --> A
+  A --> B
+  A --> M
+  A -- sin datos personales --> G

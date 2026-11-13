@@ -1,6 +1,6 @@
 {
   "name": "@eba/api",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "description": "API de la plataforma EBA Cuac Cuac (Node.js + Express)",
   "private": true,
   "type": "module",
@@ -17,6 +17,7 @@
   "dependencies": {
     "@eba/norma": "0.1.0",
     "express": "^5.3.0",
-    "mariadb": "^3.5.5"
+    "mariadb": "^3.5.5",
+    "nodemailer": "^10.5.0"
   }
 }

@@ -1,0 +1,30 @@
+@if (f(); as f) {
+<div class="encabezado"><div><h1>Informe de {{ f.nombre }}</h1><p>{{ f.mpio }}, {{ f.depto }} · {{ f.id }} · {{ pob() }} aves · {{ tramoTxt() }}{{ f.titular ? ' · Responsable: ' + f.titular.nombre : '' }} · generado el {{ hoy }}</p></div>
+  <div class="no-imprimir acciones-encabezado"><a class="btn btn-sec" [routerLink]="['/fincas', f.id]">Ficha de la finca</a><button type="button" class="btn btn-primario" (click)="imprimir()">Imprimir o guardar PDF</button></div></div>
+@for (b of bloques(); track b.sp) {
+  @if (!b.ev) { <section class="panel"><h3>{{ b.titulo.split(' · ')[0] }}</h3><app-linea-flujo [s]="b.s" [conAcciones]="false" /><p class="muted">Sin evaluaciones con resultado.</p></section> }
+  @else {
+  <section class="panel informe-especie"><h3>{{ b.titulo }}</h3><app-linea-flujo [s]="b.s" [conAcciones]="false" />
+    <div class="rejilla r-2" style="margin-top:12px"><div><h4>{{ b.ev.estado === 'Finalizada' ? 'Último resultado' : 'Resultado preliminar' }} · {{ b.nombreVisita }} ({{ b.ev.id }}, {{ fechaCorta(b.ev.fecha) }})</h4>
+        <p class="puntaje-informe"><b [style.color]="b.r!.nivel[1]">{{ fmt(b.r!.total) }}</b> {{ b.r!.nivel[0] }}@if (b.r!.provisional) { <span class="etiqueta e-medio">Provisional</span> }</p>
+        <div class="barras" [innerHTML]="b.barras! | html"></div>
+        <p class="texto-chico" style="margin-top:10px">{{ b.resumen }}</p></div>
+      <div>@if (b.evolucion) { <div [innerHTML]="b.evolucion | html"></div> } @else { <p class="muted">La evolución aparece cuando hay dos inspecciones finalizadas.</p> }</div></div>
+    <h4 style="margin-top:14px">Indicadores por mejorar · {{ b.mejorar!.length }}</h4>
+    @if (b.mejorar!.length) {
+      <div class="envoltura-tabla"><table class="tabla tabla-compacta"><thead><tr><th>Indicador</th><th class="num">Puntaje</th><th>Observación del inspector</th></tr></thead><tbody>
+        @for (x of b.mejorar; track x.ind.code) { <tr><td>{{ x.ind.num }} {{ x.ind.name }}</td><td class="num"><b [style.color]="x.score === 0 ? 'var(--rojo)' : 'inherit'">{{ fmt(x.score) }}</b></td><td>{{ b.ev.obs[x.ind.code] || '—' }}</td></tr> }</tbody></table></div>
+    } @else { <p class="muted">Todos los indicadores calificados están en 100.</p> }
+    <h4 style="margin-top:14px">Plan de mejora acordado</h4>
+    @if (b.plan!.length) {
+      <div class="envoltura-tabla"><table class="tabla tabla-compacta"><thead><tr><th>Indicador</th><th>Acción</th><th>Responsable</th><th>Plazo</th></tr></thead><tbody>
+        @for (p of b.plan; track p[0]) { <tr><td>{{ INDICADOR[p[0]] ? INDICADOR[p[0]].num + ' ' + INDICADOR[p[0]].name : p[0] }}{{ p[1]['galpon'] ? ' · ' + p[1]['galpon'] : '' }}</td><td>{{ p[1].accion }}</td><td>{{ p[1]['resp'] || '—' }}</td><td>{{ p[1].plazo ? fechaCorta(p[1].plazo) : '—' }}</td></tr> }</tbody></table></div>
+    } @else { <p class="muted">No hay acciones registradas en el plan de mejora de esta visita.</p> }
+    <h4 style="margin-top:14px">Historial de visitas</h4><div class="envoltura-tabla"><table class="tabla tabla-compacta"><thead><tr><th>Visita</th><th>Proceso</th><th>Estado</th><th class="num">MBR</th><th class="num">MBA</th><th class="num">MBG</th><th class="num">Total</th><th>Nivel</th></tr></thead><tbody>
+      @for (h of b.historial; track h.e.id) { <tr><td>{{ h.nombre }}<br><span class="muted texto-chico">{{ h.e.id }} · {{ fechaCorta(h.e.fecha) }}</span></td><td>{{ h.e.proceso }}</td><td>{{ h.e.estado }}</td>
+        @if (h.pr) { <td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td>—</td> }
+        @else { @for (m of h.med; track $index) { <td class="num">{{ m }}</td> }<td class="num"><b>{{ fmt(h.r.total) }}</b></td><td>{{ h.r.nivel[0] }}</td> }</tr> }</tbody></table></div>
+  </section>
+  }
+}
+}

@@ -1,15 +1,15 @@
-import type { Rol } from '@eba/norma';
+import { PERMISOS, type Modulo, type Rol } from '@eba/norma';
 
-/** Módulos del menú y roles que los ven (igual que PERMISOS del prototipo). */
-export interface OpcionMenu { ruta: string; texto: string; roles: Rol[] }
-const TODOS: Rol[] = ['inspector', 'coordinador', 'productor', 'admin'];
+/** Opciones del menú lateral, en el mismo orden del prototipo; cada perfil ve las de sus permisos (PERMISOS de @eba/norma). */
+export interface OpcionMenu { modulo: Modulo; ruta: string; texto: string }
 export const MENU: OpcionMenu[] = [
-  { ruta: 'inicio', texto: 'Inicio', roles: TODOS },
-  { ruta: 'fincas', texto: 'Fincas', roles: TODOS },
-  { ruta: 'reportes', texto: 'Reportes', roles: ['inspector', 'coordinador', 'admin'] },
-  { ruta: 'usuarios', texto: 'Usuarios', roles: ['admin'] },
-  { ruta: 'parametrizacion', texto: 'Parametrización', roles: ['admin'] },
-  { ruta: 'bitacora', texto: 'Bitácora', roles: ['admin'] },
-  { ruta: 'ayuda', texto: 'Ayuda de la norma', roles: TODOS },
-  { ruta: 'cuenta', texto: 'Mi cuenta y seguridad', roles: TODOS },
+  { modulo: 'inicio', ruta: 'inicio', texto: 'Inicio' },
+  { modulo: 'fincas', ruta: 'fincas', texto: 'Fincas' },
+  { modulo: 'reportes', ruta: 'reportes', texto: 'Reportes' },
+  { modulo: 'usuarios', ruta: 'usuarios', texto: 'Usuarios' },
+  { modulo: 'parametros', ruta: 'parametrizacion', texto: 'Parametrización' },
+  { modulo: 'bitacora', ruta: 'bitacora', texto: 'Bitácora' },
+  { modulo: 'ayuda', ruta: 'ayuda', texto: 'Ayuda de la norma' },
+  { modulo: 'cuenta', ruta: 'cuenta', texto: 'Mi cuenta y seguridad' },
 ];
+export const menuDe = (perfil: Rol | null): OpcionMenu[] => (perfil ? MENU.filter((o) => PERMISOS[perfil].includes(o.modulo)) : []);

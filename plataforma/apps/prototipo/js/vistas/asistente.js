@@ -103,7 +103,7 @@ function evaluacionesDeFinca(fid) {
   return EVALS.filter((e) => e.finca === fid && e.estado !== "Programada" && e.estado !== "Anulada").sort((a, b) => b.fecha.localeCompare(a.fecha));
 }
 function fincasAsistente() {
-  const u = USUARIOS[SES.rol];
+  const u = yo();
   return SES.rol === "productor" ? FINCAS.filter((f) => f.productor === u.nombre) : FINCAS;
 }
 /** Evaluación por defecto: la última finalizada de la finca; si no hay, la última registrada. */

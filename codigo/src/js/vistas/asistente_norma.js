@@ -55,7 +55,7 @@ const TEMAS_NORMA = [
       "- Si no cumple, al cerrar queda programado el siguiente seguimiento (hasta 3; el coordinador puede ampliar a 5).",
       "- Cada seguimiento retoma lo de la visita anterior y muestra qué mejoró o empeoró."] },
 ];
-const RE_DOMINIO = /\b(pato|ganso|aves?\b|bienestar|ica\b|norma|metodolog|indicador|galpon|corral|finca|predio|evaluac|inspecc|visita|puntaje|calific|escala|nivel|plan de mejora|mejorar|corregir|muestra|punto|recurso|animal|tabla|numeral|documento|seguimiento|productor|inspector|cama|agua|bebeder|comeder|nidal|jadeo|plumaje|pico|diarrea|cojo|herida|mortalidad|densidad|alimento|veterinari|sacrificio|vacun|enferm|medicament)/;
+const RE_DOMINIO = /\b(pato|ganso|aves?\b|bienestar|ica\b|norma|metodolog|indicador|galpon|corral|finca|granja|predio|lote|evalu|pendiente|falta|inspecc|visita|puntaje|calific|escala|nivel|plan de mejora|mejorar|corregir|muestra|punto|recurso|animal|tabla|numeral|documento|seguimiento|productor|inspector|cama|agua|bebeder|comeder|nidal|jadeo|plumaje|pico|diarrea|cojo|herida|mortalidad|densidad|alimento|veterinari|sacrificio|vacun|enferm|medicament)/;
 const RE_REFERENCIA = /(este indicador|esto|aqui|esta escala|este nivel|como (lo )?califico|como se (evalua|califica|mide)|que (escala|nivel)|duda|no se si|caso|cuando es|se cuenta|cuenta como)/;
 const RE_COMO = /(como se (evalua|califica|mide|cuenta|hace)|como (lo )?(evaluo|califico|mido|cuento)|metodo|que (reviso|miro|observo)|procedimiento)/;
 
@@ -107,9 +107,33 @@ function responderTecnico(q, cx) {
 }
 /** Responde según el perfil (sin conexión). */
 function responderAsistente(q, cx) {
+  const pend = respuestaPendientes(q, cx); if (pend) return pend;
   if (esTecnico()) return responderTecnico(q, cx);
   if (!dentroDeTema(q, cx)) return FUERA_DE_TEMA;
   return responderLocal(q, cx);
+}
+/** «¿Qué falta por evaluar?»: indicadores sin calificar de la evaluación en contexto. */
+function respuestaPendientes(q, cx) {
+  if (!cx.ev || !/(falta|pendiente|sin calificar|me queda|queda por|por evaluar|por calificar)/.test(sinTildes(q))) return "";
+  const ev = cx.ev, pend = cx.pendientes || [];
+  if (ev.estado === "Finalizada") return `La evaluación **${ev.id}** de ${cx.f.nombre} (${nombreSp(ev.sp).toLowerCase()}) ya está finalizada: no tiene indicadores pendientes.`;
+  if (!pend.length) return `En la evaluación **${ev.id}** de ${cx.f.nombre} (${nombreSp(ev.sp).toLowerCase()}) ya están calificados todos los indicadores. Falta el **cierre**: revisar el plan de mejora, las firmas y finalizar.`;
+  return `En la evaluación **${ev.id}** de ${cx.f.nombre} (${nombreSp(ev.sp).toLowerCase()}, ${ev.estado.toLowerCase()}) faltan **${pend.length} indicador${pend.length === 1 ? "" : "es"}** por calificar:\n` +
+    pend.slice(0, 15).map((x) => `- ${x.ind.num} ${x.ind.name}`).join("\n") + (pend.length > 15 ? `\n- … y ${pend.length - 15} más` : "") +
+    "\nPuede ir directo con el botón «Siguiente pendiente» de la evaluación.";
+}
+/** Si la pregunta nombra una finca (o su código, o el de una evaluación), el asistente responde con los datos de esa finca. */
+function contextoDePregunta(q, cx) {
+  const nq = sinTildes(q), fs = fincasAsistente();
+  const ev0 = EVALS.find((e) => nq.includes(sinTildes(e.id)) && fs.some((f) => f.id === e.finca)) || null;
+  const nombre = (x) => sinTildes(x.nombre).replace(/^(granja|finca|hacienda|lote|predio)\s+/, "");
+  const f = ev0 ? FINCAS.find((x) => x.id === ev0.finca)
+    : fs.find((x) => nq.includes(sinTildes(x.id)) || (sinTildes(x.nombre).length >= 4 && nq.includes(sinTildes(x.nombre)))) || fs.find((x) => nombre(x).length >= 4 && nq.includes(nombre(x)));
+  if (!f || (cx.f && cx.f.id === f.id && !ev0)) return cx;
+  const evs = evaluacionesDeFinca(f.id);
+  const ev = ev0 || evs.find((e) => e.estado === "En proceso") || evs.find((e) => e.estado === "Programada") || evaluacionPorDefecto(f.id);
+  const nuevo = contextoAsistente(f, ev); nuevo.foco = null; nuevo.mencionada = true;
+  return nuevo;
 }
 /** Conocimiento de la norma que se le pasa a la IA: temas generales y las fichas relacionadas con la pregunta. */
 function conocimientoNorma(q, cx) {
@@ -196,13 +220,14 @@ function pintarAsistenteFlotante() {
     q = String(q || "").trim(); if (!q || ocupado) return;
     ocupado = true; p.querySelector("#apEnviar").disabled = true;
     const previo = conv.slice(1); conv.push({ rol: "u", texto: q }); pinta();
-    const c = cfgAsistente();
-    if (c.modo === "local") conv.push({ rol: "a", texto: responderAsistente(q, cx), fuente: "local", nota: "Respuesta con el texto de la norma y los datos de la plataforma." });
-    else if (!dentroDeTema(q, cx)) conv.push({ rol: "a", texto: FUERA_DE_TEMA, fuente: "local" });
+    const c = cfgAsistente(), cxq = contextoDePregunta(q, cx), pend = respuestaPendientes(q, cxq);
+    if (c.modo === "local" || pend) conv.push({ rol: "a", texto: pend || responderAsistente(q, cxq), fuente: "local", nota: "Respuesta con el texto de la norma y los datos de la plataforma." });
+    // Con Gemini, el filtro local solo descarta lo claramente ajeno; Gemini decide el resto con sus instrucciones.
+    else if (c.modo !== "gemini" && !cxq.mencionada && !dentroDeTema(q, cxq)) conv.push({ rol: "a", texto: FUERA_DE_TEMA, fuente: "local" });
     else {
       caja.insertAdjacentHTML("beforeend", '<div class="msg msg-a msg-escribiendo">El asistente está escribiendo…</div>'); caja.scrollTop = caja.scrollHeight;
-      try { conv.push({ rol: "a", texto: await preguntarIA(q, cx, previo), fuente: "ia", nota: "Respuesta generada con IA a partir de la norma. Verifique con la ficha del indicador." }); }
-      catch (e) { conv.push({ rol: "a", texto: responderAsistente(q, cx), fuente: "local", error: true, nota: `No se pudo conectar con la IA (${e.message}). Respondí con el texto de la norma.` }); }
+      try { conv.push({ rol: "a", texto: await preguntarIA(q, cxq, previo), fuente: "ia", nota: "Respuesta generada con IA a partir de la norma. Verifique con la ficha del indicador." }); }
+      catch (e) { conv.push({ rol: "a", texto: responderAsistente(q, cxq), fuente: "local", error: true, nota: `No se pudo conectar con la IA (${e.message}). Respondí con el texto de la norma.` }); }
     }
     log(`Consulta al asistente (${NOMBRE_ROL_ASIS[SES.rol] || SES.rol})${cx.ev ? ` sobre ${cx.ev.id}` : ""}`);
     ocupado = false; const b = p.querySelector("#apEnviar"); if (b) b.disabled = false; pinta();

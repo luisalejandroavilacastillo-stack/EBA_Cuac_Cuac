@@ -5,8 +5,6 @@ import { Router } from 'express';
  * e indican qué casos de uso cubrirán (docs/requerimientos/CASOS_DE_USO.md del prototipo).
  */
 export const MODULOS = [
-  { ruta: 'autenticacion', nombre: 'Autenticación con doble factor', cu: 'CU-01 a CU-03', etapa: 3 },
-  { ruta: 'usuarios', nombre: 'Usuarios y roles', cu: 'CU-24', etapa: 3 },
   { ruta: 'bitacora', nombre: 'Bitácora', cu: 'CU-26', etapa: 3 },
   { ruta: 'evaluaciones', nombre: 'Inspección: apertura, recorridos, lista y cierre', cu: 'CU-08 a CU-16', etapa: 5 },
   { ruta: 'seguimiento', nombre: 'Proceso de seguimiento', cu: 'CU-17 a CU-19', etapa: 6 },

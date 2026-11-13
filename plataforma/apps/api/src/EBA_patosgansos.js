@@ -1,8 +1,17 @@
 import os from 'node:os';
-import { config } from './config/config.js';
+import { config, problemasProduccion } from './config/config.js';
 import { crearApp } from './app.js';
 import { cerrarBaseDeDatos } from './bd/conexion.js';
 import { aplicarMigraciones } from './bd/migraciones.js';
+import { sembrarDatosEjemplo } from './bd/semilla.js';
+import { asegurarPrimerAdministrador } from './modulos/auth/primer_admin.js';
+
+const problemas = problemasProduccion();
+if (problemas.length) {
+  console.error('  La API no arranca: la configuración de producción no es segura.');
+  for (const p of problemas) console.error(`  · ${p}`);
+  process.exit(1);
+}
 
 const app = crearApp();
 
@@ -10,6 +19,8 @@ const app = crearApp();
 async function prepararBaseDeDatos(intento = 1) {
   try {
     await aplicarMigraciones();
+    await sembrarDatosEjemplo();
+    await asegurarPrimerAdministrador();
   } catch (e) {
     console.warn(`  Base de datos no disponible (${e.code ?? e.message}); reintento ${intento} en 10 s…`);
     setTimeout(() => prepararBaseDeDatos(intento + 1), 10_000).unref();

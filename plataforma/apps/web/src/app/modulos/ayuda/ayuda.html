@@ -1,0 +1,21 @@
+<div class="encabezado"><div><h1>Ayuda de la norma</h1><p>Metodología para evaluar el bienestar animal en patos y gansos · ICA, versión 1.0 (2024). Texto, tablas, gráficas y la forma en que la plataforma calcula cada puntaje.</p></div>
+  <a class="btn btn-primario" [href]="PDF" target="_blank" rel="noopener">Abrir la norma (PDF)</a></div>
+<nav class="ayuda-tabs" aria-label="Secciones de la ayuda">@for (s of SECC; track s[0]) { <a [routerLink]="['/ayuda', s[0]]" [attr.aria-current]="s[0] === sec() ? 'page' : null">{{ s[1] }}</a> }</nav>
+<div class="eval">
+  <nav class="panel indice" aria-label="Fichas de los indicadores">
+    <div class="indice-cab"><b>Fichas de los 58 indicadores</b><br><small>Patos (numeral 6) y gansos (numeral 7) · punto amarillo = tiene nota de interpretación</small></div>
+    @for (g of grupos(); track g.sp) {
+      <div class="grupo-ind"><h4>{{ g.titulo }}</h4></div>
+      @for (m of g.medidas; track m.titulo) {
+        <div class="grupo-ind"><h4>{{ m.titulo }}</h4>@for (i of m.items; track i.code) {
+          <a class="item-ind" [routerLink]="['/ayuda', i.code]" [attr.aria-current]="i.code === clave() ? 'true' : null"><span class="punto" [style.--c]="i.nota ? 'var(--cosecha)' : 'var(--siembra)'"></span><span>{{ i.name }}</span><span class="n">{{ i.num }}</span></a> }</div>
+      }
+    }
+  </nav>
+  <div #caja (click)="enlace($event)" (input)="calculadora()" (change)="calculadora()">
+    @if (ind(); as i) {
+      <article class="ficha"><header class="ficha-cab"><div><div class="num">{{ i.num }} · Tabla {{ i.tabla }} · {{ i.sp === 'pato' ? 'Patos' : 'Gansos' }} · {{ i.g }}</div><h2>{{ i.name }}</h2></div>
+        <a class="btn btn-sec btn-chico" [href]="PDF" target="_blank" rel="noopener">Ver en el PDF</a></header><div class="cajon-cuerpo" [innerHTML]="cuerpo() | html"></div></article>
+    } @else { <div [innerHTML]="cuerpo() | html"></div> }
+  </div>
+</div>

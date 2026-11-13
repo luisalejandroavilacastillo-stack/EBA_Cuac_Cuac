@@ -1,0 +1,89 @@
+@if (copia(); as ev) { @if (vista(); as v) { @if (plan(); as plan) { @if (ctx(); as c) {
+<div class="encabezado"><div><h1>Recorrido por puntos</h1>
+    <p>{{ c.f.nombre }} · {{ flujo().nombreVisita(ev) }} · {{ plan.corrales ? plan.corrales + ' galpón(es) × ' + plan.puntosCorral + ' puntos' : plan.puntos + ' punto(s) sin corral' }} · {{ plan.aves }} aves ({{ plan.avesPunto }} por punto) · {{ v.hechos }} de {{ plan.puntos }} puntos completos</p></div>
+  <a class="btn btn-sec" [routerLink]="['/visitas', ev.id, destinoLista()]">Listado por indicador</a></div>
+
+@if (v.previos.length) {
+  <section class="panel"><h3>1 · Al llegar, antes de manipular las aves</h3>
+    <p class="muted" style="margin:0 0 8px">La norma pide observar jadeo y amontonamiento desde afuera y desde el centro{{ plan.corrales === 2 ? ' de cada galpón' : '' }}, antes de cualquier otra medición.</p>
+    @for (p of v.previos; track p.code) { <button type="button" class="btn btn-sec btn-chico" [title]="p.title" (click)="flotante.set(p.code)">{{ p.texto }}</button>{{ ' ' }} }
+  </section>
+}
+
+<div class="recorrido">
+  <section class="panel"><h3>2 · Puntos de muestreo</h3>
+    <div [innerHTML]="v.grafica | html"></div>
+    <div class="chips">@for (ch of v.chips; track ch.p) {
+      @if (ch.galpon) { <span class="muted" style="font-size:12px;font-weight:800;width:100%" [style.margin-top.px]="ch.p ? 6 : 0">Galpón {{ ch.galpon }}</span> }
+      <button type="button" class="chip-punto est-{{ ch.est }}" [class.actual]="ch.p === v.pt" [title]="ch.title" [attr.aria-current]="ch.p === v.pt ? 'true' : null" (click)="irPunto(ch.p)">{{ ch.est === 'hecho' ? '✓ ' : '' }}{{ ch.corto }}<small>{{ ch.aves }} aves</small><span class="sr"> · {{ TXT_EST[ch.est] }}</span></button>
+    }</div>
+    <p class="leyenda-puntos"><span><i class="lp est-pend"></i>Pendiente</span><span><i class="lp est-proceso"></i>En proceso</span><span><i class="lp est-hecho"></i>Evaluado</span><span><i class="lp actual"></i>Punto actual</span></p>
+  </section>
+
+  <div>
+    <section class="panel"><h2 style="margin:0">{{ nombrePunto(v.pt) }}</h2>
+      @if (v.recursos.flex.length || v.recursos.comedero) {
+        <h3 class="paso-punto"><span class="paso-n">1</span>Recursos más cercanos al punto (Ilustración 3)</h3>
+        <p class="muted" style="margin:0 0 6px;font-size:13px">Se califica el recurso que esté más cerca, aunque lo comparta con otro punto.</p>
+        @for (r of v.recursos.flex; track r.code) {
+          <div class="fila-campo"><div><b>{{ r.i.num }} {{ r.i.name }}</b> <app-btn-ficha [code]="r.code" /><br><span class="muted" style="font-size:12px">El más cercano al punto</span></div>
+            <div>
+              @if (r.mismo != null) {
+                <p style="margin:0">Es el mismo {{ r.unidad.toLowerCase() }} del <b>{{ r.mismoTxt }}</b>: no se vuelve a contar. @if (ed()) { <button type="button" class="btn btn-fantasma btn-chico" (click)="deshacer(r.code)">Cambiar</button> }</p>
+              } @else if (r.nohay) {
+                <p style="margin:0;color:var(--rojo)"><b>No hay {{ r.code === 'PR05' ? 'bebederos' : 'nidales' }} en este galpón</b>: cuenta 0 puntos. @if (ed()) { <button type="button" class="btn btn-fantasma btn-chico" (click)="deshacer(r.code)">Deshacer</button> }</p>
+              } @else {
+                @for (val of r.v; track $index; let k = $index) {
+                  <div style="display:grid;gap:8px;align-items:center;margin-bottom:6px" [style.grid-template-columns]="(r.v.length > 1 ? '90px ' : '') + 'minmax(0,1fr)' + (k > 0 && ed() ? ' auto' : '')">
+                    @if (r.v.length > 1) { <span class="muted" style="font-size:12px">{{ r.unidad }} {{ k + 1 }}</span> }
+                    <div class="niveles-campo">@for (op of r.ops; track op[0]) {
+                      <button type="button" class="nv" [class.sel]="val === op[0]" [style.--c]="COL[op[2]]" [disabled]="!ed()" (click)="ponerFlex(r.code, k, op[0])"><span>{{ op[1] }}</span></button> }</div>
+                    @if (k > 0 && ed()) { <button type="button" class="btn btn-fantasma btn-chico" title="Quitar" (click)="quitar(r.code, k)">✕</button> }
+                  </div>
+                }
+              }
+              @if (ed()) {
+                <div class="herr-recurso">
+                  @if (r.agregar) { <button type="button" class="btn btn-fantasma btn-chico" (click)="agregar(r.code)">+ Otro bebedero cercano</button> }
+                  @if (r.igual) { <button type="button" class="btn btn-fantasma btn-chico" (click)="igual(r.code)">Igual en todo el galpón</button> }
+                  @if (r.anteriores.length) { <label class="muted" style="font-size:12px">Es el mismo del <select (change)="mismo(r.code, $any($event.target).value)"><option value="">—</option>@for (a of r.anteriores; track a.p) { <option [value]="a.p">{{ a.t }}</option> }</select></label> }
+                  @if (r.noHay) { <button type="button" class="btn btn-fantasma btn-chico" (click)="noHay(r.code)">No hay en este galpón</button> }
+                </div>
+              }
+            </div></div>
+        }
+        @if (v.recursos.comedero; as com) {
+          <div class="fila-campo"><div><b>6.1.7 Calidad de los comederos</b> <app-btn-ficha code="PR07" /><br><span class="muted" style="font-size:12px">Una vez por {{ com.donde }}</span></div>
+            <div class="niveles-campo">@for (op of com.ops; track op[0]) {
+              <button type="button" class="nv" [class.sel]="com.val === op[0]" [style.--c]="COL[op[2]]" [disabled]="!ed()" (click)="comederoNivel(op[0])"><span>{{ op[1] }}</span></button> }</div></div>
+        }
+      }
+      @if (v.bebTraspatio) { <p class="muted" style="margin-top:10px">En traspatio los bebederos y comederos se califican todos en su propia pantalla (6.1.5 y 6.1.7).</p> }
+
+      <h3 class="paso-punto"><span class="paso-n">{{ v.recursos.flex.length || v.recursos.comedero ? 2 : 1 }}</span>Aves del punto
+        <span class="resumen-aves">{{ v.avesHechas }} de {{ v.nAves }} completas{{ v.avesMedias ? ' · ' + v.avesMedias + ' a medias' : '' }}</span></h3>
+      @if (v.nAves) {
+        <div class="tarjetas-aves">@for (a of v.aves; track a.k) {
+          <button type="button" class="tarjeta-ave est-{{ a.est }}" (click)="avesAbiertas.set(a.k)"><b>{{ a.est === 'hecho' ? '✓ ' : '' }}Ave {{ a.k + 1 }}@if (a.h) {<i class="punto-hall" aria-hidden="true"></i>}</b><span>{{ a.texto }}</span></button> }</div>
+        <div class="evaluar-aves">
+          @if (ed() && v.sigAve >= 0) { <button type="button" class="btn btn-sec" title="Deja normal lo que falta en las aves del punto" (click)="restoSinHallazgos()">{{ v.avesHechas || v.avesMedias ? 'Las aves restantes, sin hallazgos' : 'Todas las aves del punto, sin hallazgos' }}</button> }
+          <button type="button" class="btn" [class.btn-primario]="v.sigAve >= 0 && ed()" [class.btn-sec]="!(v.sigAve >= 0 && ed())" (click)="avesAbiertas.set(v.sigAve < 0 ? 0 : v.sigAve)">{{ !ed() ? 'Ver aves del punto' : v.sigAve < 0 ? 'Revisar aves del punto' : 'Revisar el Ave ' + (v.sigAve + 1) + ' →' }}</button>
+        </div>
+      } @else { <p class="muted">Este punto no tiene aves asignadas (la especie tiene menos aves que la muestra).</p> }
+
+      <div class="acciones" style="justify-content:space-between;margin-top:18px">
+        <button type="button" class="btn btn-sec" [disabled]="v.pt === 0" (click)="irPunto(v.pt - 1)">{{ v.pt === 0 ? 'Punto anterior' : 'Punto anterior: ' + nombrePunto(v.pt - 1) }}</button>
+        <button type="button" class="btn btn-primario" (click)="siguiente()">{{ !v.ultimo ? 'Siguiente punto: ' + nombrePunto(v.pt + 1) : 'Continuar con la evaluación por indicador' }}</button></div>
+      <p class="estado-guardado" [class.sin-conexion]="trabajo.estado() === 'sin-conexion'" role="status">{{ textoGuardado() }}</p>
+    </section>
+    @if (v.cerosRec.length) {
+      <section class="panel" style="border-left:5px solid var(--rojo)"><h3>Hallazgos en 0 en los recursos del punto</h3><p class="muted">Describa lo observado (queda en la observación del indicador).</p>
+        @for (x of v.cerosRec; track x.code) { <div class="campo"><label [for]="'ob_' + x.code">{{ x.nombre }}</label><textarea [id]="'ob_' + x.code" rows="2" [value]="x.valor" [disabled]="!ed()" (input)="ponerObs(x.code, $any($event.target).value)"></textarea></div> }
+      </section>
+    }
+  </div>
+</div>
+
+@if (avesAbiertas() != null && origen(); as o) { <app-ficha-aves [o]="o" [k0]="avesAbiertas()!" [guardado]="textoGuardado()" /> }
+@if (flotante(); as code) { <app-indicador-flotante [ev]="ev" [code]="code" [finca]="c.f" (cerrar)="flotante.set(null)" /> }
+} } } }

@@ -1,15 +1,24 @@
-%% Estado de cada especie de la finca (módulo Fincas y tablero)
+%% Estado de cada especie de la finca (Fincas y tablero) · v0.25
 stateDiagram-v2
-    [*] --> PorIniciar : finca registrada con la especie
-    PorIniciar --> EnProceso : Nueva inspección · primer dato
-    EnProceso --> Finalizada : cierre (cumple o sin seguimiento disponible)
-    EnProceso --> SeguimientoProgramado : cierre sin cumplir · visita N programada
+    [*] --> PorAsignar : finca registrada con la especie
+    PorAsignar --> Asignada : coordinador asigna inspector y fecha
+    Asignada --> EnProceso : primer dato del inspector
+    EnProceso --> Pendiente : Finalizar y enviar
+    Devuelta --> Pendiente : corregir y reenviar
+    Pendiente --> Devuelta : devolver con observación
+    Pendiente --> Aprobada : aprobar (cumple o sin seguimientos)
+    Pendiente --> SeguimientoProgramado : aprobar sin cumplir · visita N programada
     SeguimientoProgramado --> EnProceso : Iniciar seguimiento
-    Finalizada --> EnProceso : Programar seguimiento / Nueva evaluación
-    PorIniciar : Por iniciar
+    Aprobada --> Asignada : asignar nueva inspección
+    PorAsignar : Por asignar
     EnProceso : En proceso
+    Pendiente : Pendiente de aprobación
     SeguimientoProgramado : Seguimiento programado
-    note left of SeguimientoProgramado
-        Inspector: botón Iniciar seguimiento y Reprogramar.
-        Productor: Ver resultados.
+    note left of Aprobada
+        Productor: «Certificada» (constancia vigente),
+        «Constancia vencida» o «Plan de mejora».
+    end note
+    note right of Pendiente
+        Productor: «En evaluación» (asignada, en proceso, devuelta)
+        y «En revisión del ICA» (pendiente).
     end note

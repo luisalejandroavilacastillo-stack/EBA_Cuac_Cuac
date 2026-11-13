@@ -14,7 +14,7 @@ export function cors(origenesPermitidos) {
     if (req.method === 'OPTIONS') {
       if (!origen || !permitidos.has(origen)) return res.status(403).end();
       res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization,ngsw-bypass');
       res.setHeader('Access-Control-Max-Age', '600');
       return res.status(204).end();
     }

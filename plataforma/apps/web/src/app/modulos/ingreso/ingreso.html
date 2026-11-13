@@ -1,0 +1,51 @@
+<main class="ingreso">
+  <app-marca-ingreso />
+  <section class="ingreso-form"><div class="tarjeta-ingreso"><img src="logo-eba-color.svg" alt="" style="width:260px;margin-bottom:22px">
+    @if (info()) { <p class="aviso-info" role="status">{{ info() }}</p> }
+    @switch (paso()) {
+      @case ('datos') {
+        <h2>Ingresar</h2><p class="muted">Use el correo con el que el ICA creó su cuenta.</p>
+        <form novalidate (ngSubmit)="continuar()">
+          <div class="campo"><label for="correo">Correo electrónico</label>
+            <input id="correo" name="correo" type="email" autocomplete="username" required [ngModel]="correo()" (ngModelChange)="correo.set($event)"></div>
+          <div class="campo"><label for="clave">Contraseña</label>
+            <div style="position:relative"><input id="clave" name="clave" [type]="verClave() ? 'text' : 'password'" autocomplete="current-password" required [ngModel]="clave()" (ngModelChange)="clave.set($event)" style="padding-right:84px">
+              <button type="button" class="btn btn-fantasma btn-chico" style="position:absolute;right:4px;top:5px" (click)="verClave.set(!verClave())">{{ verClave() ? 'Ocultar' : 'Mostrar' }}</button></div>
+            <span class="error-campo" role="alert">{{ error() }}</span></div>
+          <button class="btn btn-primario" style="width:100%" [disabled]="enviando()">{{ enviando() ? 'Verificando…' : 'Continuar' }}</button>
+        </form>
+        <p style="margin-top:14px;text-align:center"><button type="button" class="btn btn-fantasma btn-chico" (click)="irARecuperar()">¿Olvidó su contraseña?</button></p>
+      }
+      @case ('codigo') {
+        <h2>Verificación en dos pasos</h2><p class="muted">Enviamos un código de 6 dígitos a {{ correoOculto() }}. Vence en {{ minutos() }} minutos.</p>
+        <form novalidate (ngSubmit)="verificar()">
+          <div class="codigo" (paste)="pegar($event)">
+            @for (i of [0, 1, 2, 3, 4, 5]; track i) {
+              <input #digito inputmode="numeric" autocomplete="one-time-code" maxlength="1" [attr.aria-label]="'Dígito ' + (i + 1)" (input)="alEscribir(i, $event)" (keydown)="retroceso(i, $event)">
+            }
+          </div>
+          <span class="error-campo" role="alert">{{ error() }}</span>
+          <p class="muted" style="font-size:14px">¿No le llegó? Revise la carpeta de correo no deseado o
+            @if (esperaReenvio()) { pida otro en {{ esperaReenvio() }} s. } @else { <button type="button" class="btn btn-fantasma btn-chico" (click)="reenviar()">reenvíe el código</button> }</p>
+          <div class="acciones" style="justify-content:space-between"><button type="button" class="btn btn-sec" (click)="regresar()">Volver</button>
+            <button class="btn btn-primario" [disabled]="enviando()">Verificar</button></div>
+        </form>
+      }
+      @case ('recuperar') {
+        <h2>Restablecer contraseña</h2><p class="muted">Escriba su correo. Si está registrado, le enviaremos un enlace para crear una contraseña nueva (vence en 30 minutos).</p>
+        <form novalidate (ngSubmit)="recuperar()">
+          <div class="campo"><label for="correoR">Correo electrónico</label>
+            <input id="correoR" name="correoR" type="email" autocomplete="username" required [ngModel]="correo()" (ngModelChange)="correo.set($event)">
+            <span class="error-campo" role="alert">{{ error() }}</span></div>
+          <div class="acciones" style="justify-content:space-between"><button type="button" class="btn btn-sec" (click)="regresar()">Volver</button>
+            <button class="btn btn-primario" [disabled]="enviando()">Enviar enlace</button></div>
+        </form>
+      }
+      @case ('recuperado') {
+        <h2>Revise su correo</h2>
+        <p>Si el correo está registrado, en unos minutos recibirá un enlace para crear una contraseña nueva. El enlace vence en 30 minutos.</p>
+        <button type="button" class="btn btn-primario" style="width:100%" (click)="regresar()">Volver al ingreso</button>
+      }
+    }
+    <p class="aviso-seguro">🔒 Conexión cifrada · Sus datos se tratan según la Ley 1581 de 2012.</p></div></section>
+</main>

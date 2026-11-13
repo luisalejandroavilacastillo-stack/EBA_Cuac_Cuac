@@ -1,0 +1,16 @@
+%% Estados de la cuenta de usuario · plataforma 1.0 (CU-24, CU-32, CU-01)
+stateDiagram-v2
+    [*] --> Pendiente : el administrador crea la cuenta · enlace de 48 h
+    Pendiente --> Activa : la persona crea su contraseña
+    Pendiente --> EnlaceVencido : pasan 48 horas
+    EnlaceVencido --> Pendiente : «Reenviar enlace»
+    SinEnlace --> Pendiente : «Enviar enlace»
+    Activa --> Bloqueada : 5 contraseñas erradas
+    Bloqueada --> Activa : pasan 15 minutos
+    Activa --> Inactiva : el administrador la inactiva · se cierran sus sesiones
+    Inactiva --> Activa : el administrador la reactiva
+    Activa --> [*] : se elimina (solo sin historial)
+    state "Pendiente de activación" as Pendiente
+    state "Enlace vencido" as EnlaceVencido
+    state "Sin enlace" as SinEnlace
+    state "Bloqueada temporalmente" as Bloqueada

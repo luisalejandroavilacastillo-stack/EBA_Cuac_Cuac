@@ -1,0 +1,19 @@
+%% Secuencia v0.25: aprobación de una visita que cumple y constancia de cumplimiento (CU-28, CU-30)
+sequenceDiagram
+    autonumber
+    actor C as Coordinador
+    actor P as Productor
+    participant V as resultado.js
+    participant F as flujo.js
+    participant S as seguimiento.js
+    participant A as Avisos
+    participant D as localStorage (eba7.*)
+    C->>V: Aprobar inspección
+    V->>S: verificarCumplimiento(ev)
+    S-->>V: cumple = true (≥ 90, sin ceros, sin pendientes)
+    V->>D: ev.estado = Finalizada · aprobada {por, fecha}
+    V->>F: emitirConstancia(ev)
+    F-->>V: CER-AAAA-NNNNN · verificación · vence (+1 año)
+    V->>A: avisar(productor, «¡Finca certificada!», #/eval/id/constancia)
+    P->>V: Descargar constancia
+    V-->>P: vConstancia(ev) · guardar como PDF o imprimir

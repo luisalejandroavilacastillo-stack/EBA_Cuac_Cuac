@@ -6,7 +6,7 @@ cd "$(dirname "$0")/.."
 SRC=docs/uml/fuentes
 CFG=$(mktemp); trap 'rm -f "$CFG"' EXIT
 echo '{"theme":"neutral","themeVariables":{"fontFamily":"Arial, Helvetica, sans-serif","fontSize":"14px"}}' > "$CFG"
-destino() { case "$1" in cu_*) echo casos_de_uso;; act_*) echo actividad;; est_*) echo estados;; sec_*) echo secuencia;; cls_*) echo clases;; paq_*) echo paquetes;; *) echo otros;; esac; }
+destino() { case "$1" in cu_*) echo casos_de_uso;; dep_*) echo despliegue;; act_*) echo actividad;; est_*) echo estados;; sec_*) echo secuencia;; cls_*) echo clases;; paq_*) echo paquetes;; *) echo otros;; esac; }
 for f in "$SRC"/*.mmd; do
   b=$(basename "$f" .mmd); d=docs/uml/$(destino "$b"); mkdir -p "$d"
   mmdc -q -i "$f" -o "$d/$b.svg" -c "$CFG" -b white -w 1400

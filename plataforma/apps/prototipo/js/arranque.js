@@ -26,6 +26,7 @@
     "js/vistas/fincas.js",
     "js/vistas/evaluaciones.js",
     "js/vistas/indicador.js",
+    "js/vistas/ficha_ave.js",
     "js/vistas/recorrido.js",
     "js/vistas/recorrido_ganso.js",
     "js/vistas/resultado.js",
@@ -41,7 +42,8 @@
   const LS = (k) => "eba7." + k;
   const escribir = (k, v) => { try { localStorage.setItem(LS(k), JSON.stringify(v)); } catch (e) { /* sin almacenamiento */ } };
   const hayLocal = () => { try { return localStorage.getItem(LS("fincas")) !== null || localStorage.getItem(LS("evals")) !== null; } catch (e) { return false; } };
-  const limpiar = () => { try { ["fincas", "evals", "bitacora", "usuarios", "procesos"].forEach((k) => localStorage.removeItem(LS(k))); } catch (e) { } };
+  const quitar = (k) => { try { localStorage.removeItem(LS(k)); } catch (e) { } };
+  const limpiar = () => ["fincas", "evals", "bitacora", "cuentas", "procesos", "avisos", "usuarios"].forEach(quitar);
 
   /** Estado de la conexión, compartido con js/nucleo/conexion.js. */
   window.EBA_BD = { modo: "navegador", inicial: null, importar: false, datosEjemplo: true };
@@ -58,19 +60,25 @@
   const control = new AbortController();
   setTimeout(() => control.abort(), 5000);   // si la API no responde en 5 s, se trabaja en el navegador
   fetch("/api/sincronizacion", { cache: "no-store", signal: control.signal })
-    .then((r) => (r.ok ? r.json() : Promise.reject(new Error("HTTP " + r.status))))
+    .then((r) => {
+      // Producción (sin ingreso de demostración): sin sesión real, se ingresa por la plataforma Angular.
+      if (r.status === 401) { location.replace("/plataforma/ingreso"); return new Promise(() => {}); }
+      return r.ok ? r.json() : Promise.reject(new Error("HTTP " + r.status));
+    })
     .then((d) => {
       const B = window.EBA_BD;
-      B.modo = "bd"; B.inicial = d; B.datosEjemplo = d.datosEjemplo; B.asistenteServidor = d.asistente || null; B.departamentos = (d.catalogos && d.catalogos.departamentos) || null;
+      B.modo = "bd"; B.inicial = d; B.ingresoDemostracion = d.ingresoDemostracion !== false; B.datosEjemplo = d.datosEjemplo; B.asistenteServidor = d.asistente || null; B.departamentos = (d.catalogos && d.catalogos.departamentos) || null;
       if (d.vacio) {
         if (hayLocal()) B.importar = true;                 // la base está vacía: se sube lo que ya había en este navegador
         else if (d.datosEjemplo) limpiar();                // desarrollo: la aplicación crea sus datos de ejemplo y se suben
-        else { escribir("fincas", []); escribir("evals", []); escribir("usuarios", []); escribir("procesos", {}); escribir("bitacora", []); }
+        else { escribir("fincas", []); escribir("evals", []); quitar("cuentas"); escribir("procesos", {}); escribir("bitacora", []); escribir("avisos", []); }
       } else {
         const c = d.colecciones;
         escribir("fincas", c.fincas.map((r) => r.datos));
         escribir("evals", c.evals.map((r) => r.datos));
-        escribir("usuarios", c.usuarios.map((r) => r.datos));
+        // Cuentas con perfil (v0.25). Si la base aún no tiene usuarios, la aplicación usa los de ejemplo y los sube.
+        if (c.usuarios.length) escribir("cuentas", Object.fromEntries(c.usuarios.map((r) => [r.id, r.datos]))); else quitar("cuentas");
+        escribir("avisos", (c.avisos || []).map((r) => r.datos));
         escribir("procesos", Object.fromEntries(c.procesos.map((r) => [r.id, r.datos])));
         escribir("bitacora", d.bitacora);
       }

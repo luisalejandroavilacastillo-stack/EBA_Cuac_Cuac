@@ -1,0 +1,140 @@
+<div>
+@switch (tipo()) {
+  @case ('auto') {
+    <div class="bloque"><h3>Lo que se observa</h3>
+      @if (m().aux; as lista) {
+        <div class="fila">@for (a of lista; track $index) { @if (a[1] === 'num') {
+          <div class="campo"><label [for]="'ax' + $index">{{ a[0] }}</label><input [id]="'ax' + $index" type="number" min="0" [value]="auxVal($index) ?? ''" [disabled]="!ed()" (input)="aux($index, $any($event.target).value)"></div> } }</div>
+        @for (a of lista; track $index) { @if (a[1] === 'chk') {
+          <label class="chk"><input type="checkbox" [checked]="!!auxVal($index)" [disabled]="!ed()" (change)="aux($index, $any($event.target).checked)">{{ a[0] }}</label> } }
+      }
+      <p class="ayuda-campo">Marque lo que se cumple. La calificación se asigna sola con la escala de la norma.</p>
+      @if (avisoPredio()) {
+        <p class="ayuda-campo" style="background:#FFF8E1;border:1px solid #EAD48A;border-radius:8px;padding:8px 10px">Este indicador califica el predio{{ ctx().plan.corrales === 2 ? ' (los dos galpones)' : '' }}. Si algún galpón o corral no cumple una condición, déjela sin marcar y escriba en la observación cuál falla (p. ej., «Galpón 2 sin rampas de acceso a las perchas»).</p>
+      }
+    </div>
+    <ng-container *ngTemplateOutlet="escalaAuto" />
+  }
+  @case ('radio') {
+    <div class="bloque"><h3>Lo que se encontró</h3>
+      @for (o of m().opts; track $index) { <label class="chk"><input type="radio" name="op" [value]="$index" [checked]="r['opt'] === $index" [disabled]="!ed()" (change)="opcion($index)">{{ o[0] }}</label> }
+    </div>
+    <div class="bloque"><h3>Calificación</h3><ng-container *ngTemplateOutlet="botonesAuto" /></div>
+  }
+  @case ('direct') {
+    <div class="bloque"><h3>Calificación</h3>
+      <div class="escala" [style.--k]="kEscala()">@for (e of escala(); track e.j) {
+        <button type="button" class="nivel" [style.--c]="e.c" [attr.aria-pressed]="nivelSel(e.p, e.j)" [attr.tabindex]="ed() ? null : -1" (click)="elegirNivel(e.p, e.j)"><span class="p">{{ e.p }}</span>{{ e.t }}</button> }</div>
+    </div>
+  }
+  @case ('flex') {
+    <div class="bloque"><h3>Recurso más cercano a cada punto</h3><p class="ayuda-campo" style="margin-top:0">Se registra en el recorrido por puntos: el recurso más cercano a cada punto, aunque lo comparta con otro punto.</p>
+      <div class="envoltura-tabla"><table class="tabla"><tbody>@for (p of puntosFlex(); track $index) { <tr><td>{{ p.nombre }}</td><td [innerHTML]="p.txt | html"></td></tr> }</tbody></table></div>
+      @if (ev().sp === 'pato') { <a class="btn btn-primario" style="margin-top:10px" [routerLink]="['/visitas', ev().id, 'recorrido']">Registrar en el recorrido por puntos</a> }
+    </div>
+  }
+  @case ('units') {
+    <div class="bloque"><div class="contador-u"><span>{{ textoUnidad() }}</span><span class="muted" style="font-weight:600;font-size:13px">{{ ctx().plan.texto.split(':')[0] }}</span></div>
+      <div class="unidades">@for (u of unidades().lista; track u.i) {
+        <button type="button" class="unidad" [class.hecha]="u.v != null" [class.actual]="u.i === unidades().idx" [style.--c]="u.c" [title]="u.lugar"
+          [attr.aria-label]="(m().unit || 'unidad') + ' ' + (u.i + 1) + ' (' + u.lugar + ')' + (u.v != null ? ': ' + u.v : '')" [disabled]="!ed()" (click)="elegirUnidad(u.i)">{{ u.txt }}</button> }</div>
+      <p class="ayuda-campo" style="margin-top:8px">{{ ayudaUnidades() }}</p></div>
+    <div class="bloque"><h3>{{ m().kind === 'cc' ? 'Condición corporal del ave (1 a 5, por palpación)' : 'Calificación de la unidad' }}</h3>
+      @if (m().kind === 'cc') {
+        <div class="escala" style="--k:5">@for (o of ccOpciones(); track o.s) {
+          <button type="button" class="nivel" [style.--c]="COL[o.nv]" [disabled]="!ed()" (click)="ponerUnidad(o.s)"><span class="p">{{ o.s }}</span>{{ o.nv }} puntos</button> }</div>
+        <p class="muted" style="margin-top:8px">Escala de {{ escalaHuevo() ? 'producción de huevo' : 'producción de carne' }}.</p>
+      } @else {
+        <div class="escala" [style.--k]="kEscala()">@for (e of escala(); track e.j) {
+          <button type="button" class="nivel" [style.--c]="e.c" aria-pressed="false" [attr.tabindex]="ed() ? null : -1" (click)="elegirNivel(e.p, e.j)"><span class="p">{{ e.p }}</span>{{ e.t }}</button> }</div>
+      }
+      @if (ed()) { <button type="button" class="btn btn-fantasma btn-chico" style="margin-top:10px" (click)="resto()">Calificar las restantes con el último nivel</button> }
+    </div>
+  }
+  @case ('pctGalpon') {
+    <div class="bloque"><h3>Conteo en cada galpón</h3><p class="ayuda-campo" style="margin-top:0">Se observa desde afuera y desde el centro de cada galpón, antes de cualquier otra medición.</p>
+      @for (g of [0, 1]; track g) {
+        <div class="fila"><div class="campo"><label [for]="'pt' + g">Galpón {{ g + 1 }} · {{ m().total }}</label><input [id]="'pt' + g" type="number" min="0" [value]="gv(g, 'total')" [disabled]="!ed()" (input)="pg(g, 'total', $any($event.target).value)"></div>
+          <div class="campo"><label [for]="'pp' + g">Galpón {{ g + 1 }} · {{ m().part }}</label><input [id]="'pp' + g" type="number" min="0" [value]="gv(g, 'part')" [disabled]="!ed()" (input)="pg(g, 'part', $any($event.target).value)"></div></div>
+      }
+      <p class="ayuda-campo">El porcentaje de la finca suma los conteos de los dos galpones; cada galpón se muestra aparte y genera alerta si queda en un nivel más bajo.</p></div>
+    <ng-container *ngTemplateOutlet="escalaAuto" />
+  }
+  @case ('pctRecorrido') {
+    <div class="bloque"><h3>Conteo del recorrido por puntos</h3>
+      <div class="fila"><div class="campo"><label>{{ m().total }}</label><input [value]="r['total'] ?? '—'" disabled></div><div class="campo"><label>{{ m().part }}</label><input [value]="r['part'] ?? '—'" disabled></div></div>
+      @if (m().extra) { <label class="chk"><input type="checkbox" disabled [checked]="!!r['extra']">{{ m().extra }}</label> }
+      <p class="ayuda-campo">Se registra en el recorrido: {{ code().startsWith('GR') ? 'en cada punto, el recurso más cercano' : 'ganso por ganso, solo lo que se encuentra' }}.{{ m().extra && code() !== 'GA05' ? ' La evidencia de tratamiento se marca al final del recorrido.' : '' }}</p>
+      <ng-container *ngTemplateOutlet="tratamiento" />
+      <a class="btn btn-sec" [routerLink]="['/visitas', ev().id, 'recorrido']">Registrar en el recorrido por puntos</a></div>
+    <ng-container *ngTemplateOutlet="escalaAuto" />
+  }
+  @case ('pct') {
+    <div class="bloque"><h3>Conteo</h3>
+      <div class="fila"><div class="campo"><label for="pt">{{ m().total }}</label><input id="pt" type="number" min="0" [value]="r['total'] ?? ''" [disabled]="!ed()" (input)="campo('total', $any($event.target).value)">
+          @if (muestraGanso(); as mg) { <span class="ayuda-campo">Muestra de esta finca: {{ mg }} gansos (Tabla 3).</span><span class="aviso-seg">{{ avisoMuestra() }}</span> }</div>
+        <div class="campo"><label for="pp">{{ m().part }}</label><input id="pp" type="number" min="0" [value]="r['part'] ?? ''" [disabled]="!ed()" (input)="campo('part', $any($event.target).value)"></div></div>
+      @if (m().extra) { <label class="chk"><input type="checkbox" id="px" [checked]="!!r['extra']" [disabled]="!ed()" (change)="campo('extra', $any($event.target).checked)">{{ m().extra }}</label> }
+      <ng-container *ngTemplateOutlet="tratamiento" />
+      @if (code() === 'PR03') { <p class="ayuda-campo">Si en el predio no hay bebederos, escriba 0 en «Bebederos inspeccionados»: la Tabla 7 da 0 puntos.</p> }
+    </div>
+    <ng-container *ngTemplateOutlet="escalaAuto" />
+  }
+  @case ('density') {
+    <div class="bloque"><h3>Datos del galpón o corral</h3><div class="fila">
+      <div class="campo"><label for="d1">Número de aves</label><input id="d1" type="number" min="0" [value]="r['aves'] ?? ''" [disabled]="!ed()" (input)="campo('aves', $any($event.target).value)"></div>
+      <div class="campo"><label for="d2">Peso promedio (kg)</label><input id="d2" type="number" step="0.01" min="0" [value]="r['peso'] ?? ''" [disabled]="!ed()" (input)="campo('peso', $any($event.target).value)"></div>
+      <div class="campo"><label for="d3">Área útil (m²)</label><input id="d3" type="number" min="0" [value]="r['area'] ?? ''" [disabled]="!ed()" (input)="campo('area', $any($event.target).value)"></div></div></div>
+    <ng-container *ngTemplateOutlet="escalaAuto" />
+  }
+  @case ('bpumv') {
+    <div class="bloque"><h3>Buenas prácticas para el uso de medicamentos veterinarios</h3>
+      @for (t of BPUMV; track $index) { <label class="chk"><input type="checkbox" [checked]="!!r['checks']?.[$index]" [disabled]="!ed()" (change)="bp($index, $any($event.target).checked)">{{ t }}</label> }
+      <p class="ayuda-campo">Se verifica en los documentos y en la bodega de medicamentos.</p></div>
+    <ng-container *ngTemplateOutlet="escalaAuto" />
+  }
+  @case ('doc') {
+    <div class="bloque"><h3>Documento</h3><p class="ayuda-campo" style="margin-top:0">El inspector revisa el documento que presenta el productor y marca lo que verifica; la calificación sale de esa verificación.</p>
+      <div class="campo"><label for="dfile">Soporte (opcional)</label><input #df id="dfile" type="file" accept=".pdf,.jpg,.jpeg,.png" [disabled]="!ed()" (change)="archivo(df)">
+        <span class="ayuda-campo">{{ r['archivo'] ? 'Archivo: ' + r['archivo'] : 'Solo si el productor entrega el documento después de la visita (plazo de 1 día hábil). PDF o imagen, hasta 20 MB.' }}</span></div>
+      <div class="campo"><label>Estado</label><div>@for (t of ESTADOS_DOC; track t) {
+        <label class="chk" style="display:inline-flex;margin-right:14px"><input type="radio" name="est" [value]="t" [checked]="r['estado'] === t" [disabled]="!ed()" (change)="campo('estado', t)">{{ t }}</label> }</div></div>
+      @for (q of reqDoc(); track q[0]) { <label class="chk"><input type="checkbox" [checked]="!!r[q[0]]" [disabled]="!ed()" (change)="campo(q[0], $any($event.target).checked)">{{ q[1] }}</label> }
+      <p class="ayuda-campo">Si el documento queda pendiente, el productor tiene 1 día hábil después del cierre para entregarlo.</p></div>
+    <ng-container *ngTemplateOutlet="escalaAuto" />
+  }
+}
+
+<div class="bloque"><h3>Observación del inspector</h3>
+  <div class="campo" style="margin:0"><textarea maxlength="1000" placeholder="Describa lo observado. Es obligatoria si el indicador queda en 0 en las medidas del animal." [value]="obs()" [disabled]="!ed()" (input)="ponerObs($any($event.target).value)"></textarea></div>
+  @if (ind().g === 'MBA') { <p class="ayuda-campo" style="margin-top:8px">Las medidas del animal se verifican por inspección visual de las aves (la norma no pide adjuntar fotos).</p> }
+  @else { <div class="campo" style="margin-top:10px"><label [for]="'evi' + code()">Foto de apoyo (opcional)</label><input #evi [id]="'evi' + code()" type="file" accept="image/*,.pdf,video/mp4" [disabled]="!ed()" (change)="evidencia(evi)"><div class="ayuda-campo">{{ evidencias() }}</div></div> }
+</div>
+</div>
+
+<div>
+  <div class="bloque"><h3>Cálculo</h3>
+    <div class="resultado-ind"><div class="dial" [style.--v]="calc().score ?? 0" [style.--c]="colorCalc()"><span>{{ calc().score == null ? '—' : fmt(calc().score) }}</span></div>
+      <div><div class="formula">{{ ind().formula }}</div><p style="margin:8px 0 0"><b>{{ calc().det || 'Diligencie los campos para calcular.' }}</b></p>
+        @if (calc().score != null) { <p style="margin:6px 0 0" class="muted">Puntaje del indicador: <b>{{ fmt(calc().score) }}</b> de 100</p> }</div></div>
+    @if (anterior(); as a) { <div class="aplica" style="margin-top:12px"><span>↻</span><span [innerHTML]="a | html"></span></div> }
+  </div>
+  @if (galpones(); as g) {
+    <div class="bloque"><h3>Por galpón</h3><div class="barras" [innerHTML]="g.html | html"></div>
+      @if (g.alerta) { <div class="aplica" style="background:#F8EDEC;color:var(--rojo);margin-top:8px"><span>⚠</span><span>Un galpón queda por debajo del puntaje de la finca: registre una observación (es obligatoria para cerrar) e inclúyalo en el plan de mejora.</span></div> }
+    </div>
+  }
+  <div class="bloque"><h3>Gráfica</h3><div [innerHTML]="grafica() | html"></div></div>
+  @if (calc().score === 0 && ind().g === 'MBA') { <div class="aplica" style="background:#F8EDEC;color:var(--rojo)"><span>⚠</span><span>Hallazgo: el indicador quedó en 0. Registre una observación antes de cerrar.</span></div> }
+  @if (ind().cond && ind().cond !== 'Siempre') { <div class="aplica"><span>ℹ</span><span>{{ ind().cond }}</span></div> }
+</div>
+
+<ng-template #botonesAuto>
+  <div class="escala" [style.--k]="kEscala()">@for (e of escala(); track e.j) {
+    <button type="button" class="nivel auto" [style.--c]="e.c" [attr.aria-pressed]="nivelAuto(e.p)" tabindex="-1"><span class="p">{{ e.p }}</span>{{ e.t }}</button> }</div>
+</ng-template>
+<ng-template #escalaAuto><div class="bloque"><h3>Calificación automática</h3><ng-container *ngTemplateOutlet="botonesAuto" /></div></ng-template>
+<ng-template #tratamiento>
+  @if (tratAnimal()) { <p class="ayuda-campo">Evidencia de tratamiento: se observa en el animal (p. ej., herida curada o pata tratada). Es una verificación visual; no se adjunta archivo.</p> }
+  @if (tratDoc()) { <p class="ayuda-campo">Evidencia de tratamiento: se verifica con el documento, foto o video reciente que muestra el productor. Es una verificación visual; no se adjunta archivo.</p> }
+</ng-template>

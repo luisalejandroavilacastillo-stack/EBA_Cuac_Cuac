@@ -100,7 +100,7 @@ describe('Sincronización del prototipo con MariaDB', { skip: !disponible && 'Ma
   const finca = { id: 'FIN-2026-00500', nombre: 'Granja Sincronizada', productor: 'Luis Gómez Ruiz', depto: 'Tolima', mpio: 'Ibagué', vereda: '', estado: 'ACTIVA', area: 0,
     titular: { nombre: 'Luis Gómez Ruiz', tipoDoc: 'CC', doc: '79111222', correo: '', tel: '3001234567', autoriza: true },
     especies: [{ sp: 'ganso', proposito: 'Carne y plumas', sistema: 'Semi-intensivo', conCorral: true, inventario: [{ cat: 'Engorde', n: 220, edad: 14, peso: 4.2 }, { cat: 'Reproductores', n: 40, edad: 60, peso: 5 }] }] };
-  const put = (col, id, cuerpo) => fetch(`${base}/sincronizacion/${col}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-EBA-Usuario': encodeURIComponent('Camilo Andrés Peña') }, body: JSON.stringify(cuerpo) });
+  const put = (col, id, cuerpo) => fetch(`${base}/sincronizacion/${col}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-EBA-Rol': 'coordinador', 'X-EBA-Clave': 'coordinador', 'X-EBA-Usuario': encodeURIComponent('Camilo Andrés Peña') }, body: JSON.stringify(cuerpo) });
 
   it('el productor no puede registrar fincas (403)', async () => {
     const r = await fetch(`${base}/sincronizacion/fincas/FIN-2026-00777`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-EBA-Rol': 'productor' },
@@ -132,21 +132,66 @@ describe('Sincronización del prototipo con MariaDB', { skip: !disponible && 'Ma
     const ev = { id: 'EVA-2026-00900', finca: finca.id, sp: 'ganso', fecha: '2026-11-07', estado: 'En proceso', inspector: 'inspector', proceso: 'PRC-2026-0900', visita: 0,
       resp: { GA01: { total: 15, part: 2 } }, rg: { aves: { 0: [{ m: ['GA01'], ok: false }] } }, obs: {}, firmas: {} };
     assert.equal((await put('evals', ev.id, { version: null, datos: ev })).status, 200);
-    const d = await (await fetch(`${base}/sincronizacion`)).json();
+    const d = await (await fetch(`${base}/sincronizacion`, { headers: { 'X-EBA-Rol': 'admin' } })).json();
     assert.deepEqual(d.colecciones.evals.find((e) => e.id === ev.id).datos, ev);
     assert.equal(d.vacio, false);
   });
 
   it('no elimina una finca con evaluaciones', async () => {
-    const r = await fetch(`${base}/sincronizacion/fincas/${finca.id}?version=2`, { method: 'DELETE' });
+    const r = await fetch(`${base}/sincronizacion/fincas/${finca.id}?version=2`, { method: 'DELETE', headers: { 'X-EBA-Rol': 'coordinador' } });
     assert.equal(r.status, 409);
+  });
+
+  it('permisos v0.25: solo el coordinador o el administrador eliminan fincas', async () => {
+    const r = await fetch(`${base}/sincronizacion/fincas/${finca.id}?version=2`, { method: 'DELETE', headers: { 'X-EBA-Rol': 'inspector' } });
+    assert.equal(r.status, 403);
+  });
+
+  it('permisos v0.25: usuarios con perfil; solo el administrador los crea', async () => {
+    const u = { nombre: 'Julián Andrés Mora', perfil: 'inspector', tipoDoc: 'CC', doc: '1020304050', correo: 'j.mora@ica.gov.co', tel: '3201234567', estado: 'Activo' };
+    const conRol = (rol) => fetch(`${base}/sincronizacion/usuarios/u_prueba`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-EBA-Rol': rol, 'X-EBA-Clave': rol }, body: JSON.stringify({ version: null, datos: u }) });
+    assert.equal((await conRol('coordinador')).status, 403);
+    assert.equal((await conRol('admin')).status, 200);
+    const c = await mariadb.createConnection({ ...bd, database: nombreBd });
+    const [fila] = await c.query("SELECT nombre, perfil, documento FROM usuario WHERE clave = 'u_prueba'"); await c.end();
+    assert.deepEqual({ ...fila }, { nombre: 'Julián Andrés Mora', perfil: 'inspector', documento: '1020304050' });
   });
 
   it('la bitácora no repite entradas', async () => {
     const e = { h: 'abc123', t: '2026-11-07T10:00:00.000Z', u: 'Camilo Andrés Peña', a: 'Prueba de bitácora' };
-    const post = () => fetch(`${base}/sincronizacion/bitacora`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ entradas: [e] }) });
+    const post = (h = { 'X-EBA-Rol': 'inspector' }) => fetch(`${base}/sincronizacion/bitacora`, { method: 'POST', headers: { 'Content-Type': 'application/json', ...h }, body: JSON.stringify({ entradas: [e] }) });
+    assert.equal((await post({})).status, 401);
     assert.equal((await (await post()).json()).insertadas, 1);
     assert.equal((await (await post()).json()).insertadas, 0);
+  });
+
+  it('sin sesión no se cambia nada', async () => {
+    const r = await fetch(`${base}/sincronizacion/fincas/FIN-2026-00778`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ version: null, datos: { ...finca, id: 'FIN-2026-00778' } }) });
+    assert.equal(r.status, 403);
+  });
+
+  it('cada perfil recibe solo lo suyo (sin correo ni documento de otros, sin bitácora)', async () => {
+    const { recortar } = await import('../src/modulos/sincronizacion/recorte.js');
+    const reg = (id, datos) => ({ id, version: 1, datos });
+    const cols = {
+      usuarios: [reg('u1', { nombre: 'Ana', perfil: 'productor', estado: 'Activo', correo: 'a@x.co', doc: '123' })],
+      fincas: [reg('F1', { productor: 'Ana' }), reg('F2', { productor: 'Otro' })],
+      evals: [reg('E1', { finca: 'F1', proceso: 'P1', estado: 'En proceso', inspector: 'i1', resp: { PR01: {} }, obs: { PR01: 'x' } }),
+        reg('E2', { finca: 'F2', proceso: 'P2', estado: 'Finalizada', inspector: 'i2', resp: {}, obs: {} })],
+      procesos: [reg('P1', {}), reg('P2', {})], avisos: [reg('A1', { para: 'productor' }), reg('A2', { para: 'coordinador' })],
+    };
+    const bit = [{ a: 'x' }];
+    assert.equal(recortar(cols, bit, { rol: 'admin' }).bitacora.length, 1);
+    const prod = recortar(cols, bit, { rol: 'productor', clave: 'u1', nombre: 'Ana' });
+    assert.deepEqual(prod.bitacora, []);
+    assert.deepEqual(prod.colecciones.fincas.map((r) => r.id), ['F1']);
+    assert.deepEqual(prod.colecciones.evals[0].datos.resp, {});
+    assert.equal(prod.colecciones.usuarios[0].datos.correo, 'a@x.co');   // su propio registro, completo
+    assert.deepEqual(Object.keys(recortar(cols, bit, { rol: 'coordinador', clave: 'c1' }).colecciones.usuarios[0].datos).sort(), ['estado', 'nombre', 'perfil']);
+    assert.deepEqual(prod.colecciones.avisos.map((r) => r.id), ['A1']);
+    const ins = recortar(cols, bit, { rol: 'inspector', clave: 'i2', nombre: 'I' });
+    assert.deepEqual(ins.colecciones.fincas.map((r) => r.id), ['F2']);
+    assert.equal(recortar(cols, bit, { rol: 'coordinador' }).colecciones.fincas.length, 2);
   });
 });
 

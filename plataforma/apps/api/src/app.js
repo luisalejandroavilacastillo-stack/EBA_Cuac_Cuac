@@ -5,6 +5,7 @@ import { seguridad } from './middlewares/seguridad.js';
 import { registro } from './middlewares/registro.js';
 import { manejarErrores, rutaNoEncontrada } from './middlewares/errores.js';
 import { rutas } from './rutas/index.js';
+import { leerSesion, mismoOrigen } from './modulos/auth/sesiones.js';
 
 /** Crea la aplicación Express (separada del arranque para poder probarla). */
 export function crearApp({ registrar = true } = {}) {
@@ -15,6 +16,7 @@ export function crearApp({ registrar = true } = {}) {
   app.use(seguridad);
   app.use(cors(config.origenesWeb));
   app.use(express.json({ limit: config.limiteCuerpo }));
+  app.use('/api', mismoOrigen, leerSesion);   // sesión real (cookie) en todas las rutas de la API
   app.use('/api', rutas);
   app.use(rutaNoEncontrada);
   app.use(manejarErrores);

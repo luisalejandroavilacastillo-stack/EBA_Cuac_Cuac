@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { EnConstruccion } from '../../compartido/en-construccion';
 
-/** Asistente de la norma: Panel flotante disponible en todas las pantallas; responde solo sobre la norma. */
+/** Asistente de bienestar animal: conversación con el contexto de una finca o evaluación (también en ventana flotante). */
 export const RUTAS_ASISTENTE: Routes = [
-  { path: '', component: EnConstruccion, data: { titulo: 'Asistente de la norma', descripcion: 'Panel flotante disponible en todas las pantallas; responde solo sobre la norma.', cu: 'CU-22' } },
+  { path: '', title: 'Asistente · EBA', loadComponent: () => import('./asistente').then((m) => m.PaginaAsistente) },
+  { path: ':id', title: 'Asistente · EBA', loadComponent: () => import('./asistente').then((m) => m.PaginaAsistente) },
 ];

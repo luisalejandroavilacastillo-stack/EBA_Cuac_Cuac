@@ -1,5 +1,6 @@
 import { limpiarDocumento, limpiarTelefono } from '@eba/norma';
 import { ErrorApi } from '../../utilidades/errores.js';
+import { activacion } from '../auth/cuentas.js';
 
 /**
  * Cómo se guarda cada colección del prototipo en MariaDB.
@@ -12,6 +13,7 @@ const leer = (t) => (t == null ? null : typeof t === 'string' ? JSON.parse(t) : 
 const fechaISO = (v) => (/^\d{4}-\d{2}-\d{2}/.test(String(v ?? '')) ? String(v).slice(0, 10) : null);
 
 /** Documento sin puntos ni espacios: es la llave del usuario. */
+const sinActivacion = ({ activacion: _a, ...u }) => u;
 export const llaveUsuario = (d) => String(d ?? '').replace(/[^0-9A-Za-z]/g, '').toUpperCase().slice(0, 20);
 
 /* ---------------------------------------------------------------- fincas */
@@ -94,6 +96,36 @@ async function escribirFinca(con, id, f, version, usuario) {
   return true;
 }
 
+/* ---------------------------------------------------------------- evaluación: revisión, reprogramaciones y constancia (v0.25) */
+
+export const PERFILES = ['admin', 'coordinador', 'inspector', 'productor'];
+const fecha = (v) => (v && !isNaN(Date.parse(v)) ? new Date(v) : null);
+const REVISION = { Enviada: 'Enviada', Reenviada: 'Reenviada', Devuelta: 'Devuelta', Aprobada: 'Aprobada' };
+
+/** Copia en tablas consultables lo que la aplicación guarda dentro de la evaluación (se ven en DBeaver). */
+async function escribirHijosEvaluacion(con, id, e) {
+  await con.query('DELETE FROM revision_evaluacion WHERE evaluacion = ?', [id]);
+  for (const r of Array.isArray(e.revision) ? e.revision : []) {
+    if (!REVISION[r.accion] || !fecha(r.fecha)) continue;
+    await con.query('INSERT IGNORE INTO revision_evaluacion (evaluacion, accion, usuario, fecha, observacion) VALUES (?, ?, ?, ?, ?)',
+      [id, r.accion, String(r.por ?? '—').slice(0, 40), fecha(r.fecha), r.obs ? String(r.obs).slice(0, 1000) : null]);
+  }
+  await con.query('DELETE FROM reprogramacion WHERE evaluacion = ?', [id]);
+  for (const r of Array.isArray(e.reprogramaciones) ? e.reprogramaciones : []) {
+    if (!fechaISO(r.antes) || !fechaISO(r.nueva) || r.antes === r.nueva || !fecha(r.fecha)) continue;
+    await con.query('INSERT IGNORE INTO reprogramacion (evaluacion, fecha_anterior, fecha_nueva, motivo, usuario, registrada_en) VALUES (?, ?, ?, ?, ?, ?)',
+      [id, fechaISO(r.antes), fechaISO(r.nueva), String(r.motivo ?? '').slice(0, 300) || '—', r.por ? String(r.por).slice(0, 40) : null, fecha(r.fecha)]);
+  }
+  const c = e.constancia;
+  if (c && /^CER-\d{4}-\d{5}$/.test(c.codigo) && fecha(c.emitida) && fechaISO(c.vence)) {
+    // La constancia no cambia una vez emitida: solo se inserta.
+    await con.query(`INSERT IGNORE INTO constancia (codigo, verificacion, evaluacion, finca_codigo, especie, puntaje, nivel, emitida_en, vence, aprobada_por)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [c.codigo, String(c.verificacion ?? '').slice(0, 9), id, e.finca, e.sp,
+      Number.isFinite(c.puntaje) ? c.puntaje : null, c.nivel ? String(c.nivel).slice(0, 20) : null, fecha(c.emitida), fechaISO(c.vence),
+      e.aprobada && e.aprobada.por ? String(e.aprobada.por).slice(0, 40) : null]);
+  }
+}
+
 /* ---------------------------------------------------------------- definición de colecciones */
 
 export const COLECCIONES = {
@@ -110,16 +142,22 @@ export const COLECCIONES = {
     async escribir(con, id, e, version, usuario) {
       if (!/^EVA-\d{4}-\d{5}$/.test(id) || e.id !== id) throw new ErrorApi(400, 'Código de evaluación inválido');
       if (!['pato', 'ganso'].includes(e.sp)) throw new ErrorApi(400, 'Especie inválida');
-      const cols = [e.finca, e.sp, String(e.estado ?? 'Programada').slice(0, 30), fechaISO(e.fecha), e.inspector ? String(e.inspector).slice(0, 30) : null,
+      const asig = e.asignacion || {}, apr = e.aprobada || {};
+      const cols = [e.finca, e.sp, String(e.estado ?? 'Programada').slice(0, 30), fechaISO(e.fecha), e.inspector ? String(e.inspector).slice(0, 40) : null,
+        asig.por ? String(asig.por).slice(0, 40) : null, fecha(asig.fecha), e.estado === 'Programada' ? null : fecha(e.finalizada),
+        apr.por ? String(apr.por).slice(0, 40) : null, fecha(apr.fecha),
         e.proceso ? String(e.proceso).slice(0, 14) : null, Math.max(0, Math.min(255, Number(e.visita) || 0)), json(e), usuario];
       if (version == null) {
-        await con.query(`INSERT INTO evaluacion (finca_codigo, especie, estado, fecha, inspector, proceso, visita, datos, modificado_por, codigo)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [...cols, id]);
-        return true;
+        await con.query(`INSERT INTO evaluacion (finca_codigo, especie, estado, fecha, inspector, asignado_por, asignado_en, enviada_en, aprobada_por, aprobada_en,
+          proceso, visita, datos, modificado_por, codigo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [...cols, id]);
+      } else {
+        const r = await con.query(`UPDATE evaluacion SET finca_codigo = ?, especie = ?, estado = ?, fecha = ?, inspector = ?, asignado_por = ?, asignado_en = ?,
+          enviada_en = ?, aprobada_por = ?, aprobada_en = ?, proceso = ?, visita = ?, datos = ?, modificado_por = ?, version = version + 1
+          WHERE codigo = ? AND version = ?`, [...cols, id, version]);
+        if (!r.affectedRows) return null;
       }
-      const r = await con.query(`UPDATE evaluacion SET finca_codigo = ?, especie = ?, estado = ?, fecha = ?, inspector = ?, proceso = ?, visita = ?,
-        datos = ?, modificado_por = ?, version = version + 1 WHERE codigo = ? AND version = ?`, [...cols, id, version]);
-      return r.affectedRows ? true : null;
+      await escribirHijosEvaluacion(con, id, e);
+      return true;
     },
   },
   procesos: {
@@ -135,15 +173,43 @@ export const COLECCIONES = {
     },
   },
   usuarios: {
-    tabla: 'usuario', llave: 'documento',
+    tabla: 'usuario', llave: 'clave',
     async leer(con) {
-      return (await con.query('SELECT documento, version, datos FROM usuario ORDER BY creado_en, documento')).map((f) => ({ id: f.documento, version: f.version, datos: leer(f.datos) }));
+      // «activacion» (Activa, Pendiente de activación, Enlace vencido, Sin enlace) la calcula el servidor; no se guarda.
+      return (await con.query('SELECT * FROM usuario ORDER BY creado_en, clave'))
+        .map((f) => ({ id: f.clave, version: f.version, datos: { ...leer(f.datos), activacion: activacion(f) } }));
     },
     async escribir(con, id, u, version) {
-      if (!id || llaveUsuario(u.d) !== id) throw new ErrorApi(400, 'Documento de usuario inválido');
-      const cols = [String(u.n ?? '').slice(0, 120), String(u.r ?? '').slice(0, 60), u.c && u.c !== '—' ? String(u.c).slice(0, 120) : null, String(u.e ?? 'Activo').slice(0, 20), json(u)];
-      if (version == null) { await con.query('INSERT INTO usuario (nombre, rol, correo, estado, datos, documento) VALUES (?, ?, ?, ?, ?, ?)', [...cols, id]); return true; }
-      const r = await con.query('UPDATE usuario SET nombre = ?, rol = ?, correo = ?, estado = ?, datos = ?, version = version + 1 WHERE documento = ? AND version = ?', [...cols, id, version]);
+      if (!/^[A-Za-z0-9_-]{1,40}$/.test(id)) throw new ErrorApi(400, 'Clave de usuario inválida');
+      if (!PERFILES.includes(u.perfil)) throw new ErrorApi(400, 'Perfil inválido');
+      const correo = String(u.correo ?? '').trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(correo)) throw new ErrorApi(400, 'Correo inválido');
+      const doc = llaveUsuario(u.doc);
+      if (!doc) throw new ErrorApi(400, 'Documento inválido');
+      const cols = [String(u.nombre ?? '').trim().slice(0, 120), u.perfil, String(u.tipoDoc ?? 'CC').slice(0, 5), doc, correo,
+        limpiarTelefono(u.tel ?? '') || null, u.estado === 'Inactivo' ? 'Inactivo' : 'Activo', json(sinActivacion(u))];
+      try {
+        if (version == null) { await con.query('INSERT INTO usuario (nombre, perfil, tipo_documento, documento, correo, telefono, estado, datos, clave) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', [...cols, id]); return true; }
+        const r = await con.query(`UPDATE usuario SET nombre = ?, perfil = ?, tipo_documento = ?, documento = ?, correo = ?, telefono = ?, estado = ?, datos = ?,
+          version = version + 1 WHERE clave = ? AND version = ?`, [...cols, id, version]);
+        return r.affectedRows ? true : null;
+      } catch (e) {
+        if (e.code === 'ER_DUP_ENTRY' && /correo|documento/.test(e.message)) throw new ErrorApi(422, 'Ya existe un usuario con ese correo o documento.');
+        throw e;
+      }
+    },
+  },
+  avisos: {
+    tabla: 'aviso', llave: 'id',
+    async leer(con) {
+      return (await con.query('SELECT * FROM (SELECT id, version, datos, creado_en FROM aviso ORDER BY creado_en DESC LIMIT 500) a ORDER BY creado_en')).map((f) => ({ id: f.id, version: f.version, datos: leer(f.datos) }));
+    },
+    async escribir(con, id, a, version) {
+      if (!/^AV-[a-z0-9]{4,24}$/.test(id) || a.id !== id) throw new ErrorApi(400, 'Aviso inválido');
+      const t = isNaN(Date.parse(a.t)) ? new Date() : new Date(a.t);
+      const cols = [String(a.para ?? '').slice(0, 40), a.tipo ? String(a.tipo).slice(0, 20) : null, String(a.txt ?? '').slice(0, 400), String(a.href ?? '').slice(0, 200) || null, Boolean(a.leido), t, json(a)];
+      if (version == null) { await con.query('INSERT INTO aviso (para, tipo, texto, enlace, leido, creado_en, datos, id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [...cols, id]); return true; }
+      const r = await con.query('UPDATE aviso SET para = ?, tipo = ?, texto = ?, enlace = ?, leido = ?, creado_en = ?, datos = ?, version = version + 1 WHERE id = ? AND version = ?', [...cols, id, version]);
       return r.affectedRows ? true : null;
     },
   },

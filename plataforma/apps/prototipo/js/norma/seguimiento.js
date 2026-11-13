@@ -57,7 +57,7 @@ function estadoProceso(pid) {
   const v = visitasProceso(pid), ultima = v[v.length - 1], max = maxSeguimientos(pid);
   const usados = Math.max(0, ...v.map((e) => e.visita || 0));
   const abierta = v.find((e) => e.estado !== "Finalizada");
-  const otraAbierta = EVALS.some((e) => e.finca === ultima.finca && e.sp === ultima.sp && ["En proceso", "Programada"].includes(e.estado));
+  const otraAbierta = EVALS.some((e) => e.finca === ultima.finca && e.sp === ultima.sp && esAbierta(e));
   const visitaCumple = v.find((e) => e.estado === "Finalizada" && verificarCumplimiento(e).cumple);
   const ver = ultima.estado === "Finalizada" ? verificarCumplimiento(ultima) : null;
   const agotado = usados >= max, puedeAmpliar = !visitaCumple && !abierta && agotado && max < MAX_SEGUIMIENTOS;
@@ -74,7 +74,7 @@ function ampliarProceso(pid, motivo) {
   const st = estadoProceso(pid);
   if (!st.puedeAmpliar) return { error: "El proceso no requiere ampliación." };
   if (!String(motivo || "").trim()) return { error: "Escriba el motivo de la ampliación." };
-  PROCESOS[pid] = Object.assign({}, PROCESOS[pid], { ampliado: { motivo: String(motivo).trim(), por: USUARIOS[SES.rol].nombre, fecha: new Date().toISOString() } });
+  PROCESOS[pid] = Object.assign({}, PROCESOS[pid], { ampliado: { motivo: String(motivo).trim(), por: yo().nombre, fecha: new Date().toISOString() } });
   log(`Ampliación del proceso ${pid} a ${MAX_SEGUIMIENTOS} seguimientos: ${motivo}`); guardar();
   return { ok: true };
 }
@@ -92,18 +92,27 @@ function avisoFechaSeguimiento(ev, fechaISO) {
   const s = fechaSugeridaSeguimiento(ev);
   return s.plazoMax && fechaISO && fechaISO <= s.plazoMax ? `La visita queda antes de que venza la acción ${s.accion} (plazo ${fecha(new Date(s.plazoMax + "T07:00"))}). Puede continuar si así se acordó con el productor.` : "";
 }
-/** Programa el siguiente seguimiento del proceso con la fecha indicada (al cerrar sin cumplir o al ampliar). */
-function programarSeguimiento(pid, fechaISO) {
-  const r = crearSeguimiento(pid); if (r.error) return r;
-  r.ev.fecha = fechaISO || r.ev.fecha; log(`${nombreVisita(r.ev)} programado para el ${r.ev.fecha} (${r.ev.id})`); guardar();
+/** Programa el siguiente seguimiento del proceso con la fecha indicada (lo hace el coordinador al aprobar o al ampliar).
+ *  inspector = clave del inspector asignado (por defecto, el de la visita anterior). */
+function programarSeguimiento(pid, fechaISO, inspector) {
+  const r = crearSeguimiento(pid, inspector); if (r.error) return r;
+  r.ev.fecha = fechaISO || r.ev.fecha; if (r.ev.asignacion) r.ev.asignacion.fechaVisita = r.ev.fecha;
+  log(`${nombreVisita(r.ev)} programado para el ${r.ev.fecha} (${r.ev.id})`); guardar();
   return r;
 }
+/** Datos de la asignación (quién asignó, cuándo y a quién). */
+const datosAsignacion = (inspector, fechaVisita) => ({ por: SES ? yoClave() : null, fecha: new Date().toISOString(), inspector, fechaVisita });
 /** Cambia la fecha de un seguimiento programado que aún no se ha iniciado. */
-function reprogramarSeguimiento(ev, fechaISO) {
+function reprogramarSeguimiento(ev, fechaISO, motivo) {
   if (!ev || ev.estado !== "Programada") return { error: "Solo se puede reprogramar una visita que aún no se ha iniciado." };
   if (!fechaISO) return { error: "Indique la nueva fecha." };
   if (fechaISO < new Date().toISOString().slice(0, 10)) return { error: "La fecha no puede ser anterior a hoy." };
-  const antes = ev.fecha; ev.fecha = fechaISO; log(`Reprogramación de ${ev.id}: ${antes} → ${fechaISO}`); guardar();
+  if (fechaISO === ev.fecha) return { error: "La nueva fecha es igual a la actual." };
+  motivo = String(motivo == null ? "Sin motivo (reprogramación interna)" : motivo).trim();
+  if (motivo.length < 5) return { error: "Escriba el motivo de la reprogramación." };
+  const antes = ev.fecha; ev.fecha = fechaISO; if (ev.asignacion) ev.asignacion.fechaVisita = fechaISO;
+  ev.reprogramaciones = (ev.reprogramaciones || []).concat([{ antes, nueva: fechaISO, motivo, por: SES ? yoClave() : null, fecha: new Date().toISOString() }]);
+  log(`Reprogramación de ${ev.id}: ${antes} → ${fechaISO} · ${motivo}`); guardar();
   return { ok: true };
 }
 /** Foto de la evaluación base para comparar: puntaje de cada indicador y total. */
@@ -120,21 +129,24 @@ function evaluacionDesde(base, extra) {
     anterior: fotoEvaluacion(base), base: base.id }, extra);
 }
 /** Crea la visita de seguimiento siguiente: retoma todo lo registrado en la última evaluación finalizada del proceso. */
-function crearSeguimiento(pid) {
+function crearSeguimiento(pid, inspector) {
   const st = estadoProceso(pid);
   if (!st.puedeSeguimiento) return { error: st.cumplido ? "La finca ya cumple: el proceso está cerrado y no requiere más seguimientos."
     : st.puedeAmpliar ? `Se usaron los ${st.max} seguimientos programados: el coordinador puede ampliar a ${MAX_SEGUIMIENTOS}.`
     : st.completo ? `El proceso ya usó sus ${st.max} seguimientos.` : "La última visita del proceso debe estar finalizada y no puede haber otra evaluación abierta de esta finca y especie." };
-  const ev = evaluacionDesde(st.ultima, { proceso: pid, visita: st.usados + 1 });
+  const insp = inspector || st.ultima.inspector || "inspector";
+  const ev = evaluacionDesde(st.ultima, { proceso: pid, visita: st.usados + 1, inspector: insp });
+  ev.asignacion = datosAsignacion(insp, ev.fecha);
   EVALS.push(ev); log(`Visita de seguimiento ${ev.visita} de ${st.max} (${ev.id}) del proceso ${pid}, retomando ${st.ultima.id}`); guardar();
   return { ev };
 }
 /** Inicia un proceso nuevo para una finca y especie, desde cero o retomando una evaluación anterior (que queda en el histórico). */
-function crearProceso(fincaId, sp, retomarId, fecha) {
-  if (EVALS.some((e) => e.finca === fincaId && e.sp === sp && ["En proceso", "Programada"].includes(e.estado))) return { error: "Ya hay una evaluación abierta para esta finca y especie." };
+function crearProceso(fincaId, sp, retomarId, fecha, inspectorAsignado) {
+  if (EVALS.some((e) => e.finca === fincaId && e.sp === sp && esAbierta(e))) return { error: "Ya hay una evaluación abierta para esta finca y especie." };
   const pid = nuevoIdProceso(), base = retomarId && EVALS.find((e) => e.id === retomarId);
-  const ev = base ? evaluacionDesde(base, { proceso: pid, visita: 0, fecha: fecha || new Date().toISOString().slice(0, 10) })
-    : { id: nuevoIdEvaluacion(), finca: fincaId, sp, fecha: fecha || new Date().toISOString().slice(0, 10), inspector: "inspector", estado: "Programada", apertura: {}, pobConfirmada: null, resp: {}, obs: {}, firmas: {}, guardado: null, proceso: pid, visita: 0 };
+  const ev = base ? evaluacionDesde(base, { proceso: pid, visita: 0, fecha: fecha || new Date().toISOString().slice(0, 10), inspector: inspectorAsignado || base.inspector || "inspector" })
+    : { id: nuevoIdEvaluacion(), finca: fincaId, sp, fecha: fecha || new Date().toISOString().slice(0, 10), inspector: inspectorAsignado || "inspector", estado: "Programada", apertura: {}, pobConfirmada: null, resp: {}, obs: {}, firmas: {}, guardado: null, proceso: pid, visita: 0 };
+  ev.asignacion = datosAsignacion(ev.inspector, ev.fecha);
   EVALS.push(ev); log(`Nuevo proceso ${pid} (${ev.id})${base ? ` retomando ${base.id}` : " desde cero"}`); guardar();
   return { ev };
 }

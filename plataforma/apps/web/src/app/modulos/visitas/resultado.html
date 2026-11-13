@@ -1,0 +1,208 @@
+@if (datos.cargando() || !ev() || !r()) { <p class="muted">Cargando…</p> }
+@else if (!permitida()) {
+  <div class="panel bloqueo"><div class="icono">🔒</div><h2>No tiene permiso para ver esta visita</h2><a class="btn btn-primario" routerLink="/fincas">Volver a fincas</a></div>
+}
+@else {
+@let e = ev()!; @let res = r()!;
+<div class="encabezado"><div><h1>Resultado de la evaluación</h1><p>{{ f()?.nombre }} · {{ especie() }} · {{ res.ctx.tramo === 'comercial' ? 'Comercial' : 'Traspatio' }} · {{ e.id }}</p></div>
+  <div class="no-imprimir" style="display:flex;gap:10px;flex-wrap:wrap">
+    <button type="button" class="btn btn-sec" (click)="imprimir()">Descargar PDF</button>
+    @if (puedeAsistente()) { <a class="btn btn-sec" [routerLink]="['/asistente', e.id]">Preguntar al asistente</a> }
+    @if (puedeEvaluar()) { <app-enlace-visita [id]="e.id" paso="cierre" clase="btn btn-primario">Ir al cierre</app-enlace-visita> }
+  </div>
+</div>
+
+<!-- Revisión del coordinador -->
+@if (productor()) {
+  @if (ultimaRev('Aprobada'); as ap) { <div class="aplica aviso-aprobada no-imprimir"><span>✔</span><span>Resultado aprobado por el ICA ({{ nombreUsuario(ap.por) }}, {{ fecha(ap.fecha) }}).</span></div> }
+} @else if (revisiones().length || e.estado === 'Pendiente de aprobación') {
+  <section class="panel panel-revision" [class.pendiente]="e.estado === 'Pendiente de aprobación'">
+    <div class="panel-cab"><h3>Revisión del coordinador
+      @if (e.estado === 'Pendiente de aprobación') { <span class="etiqueta e-rev">Pendiente de aprobación</span> }
+      @else if (e.estado === 'Devuelta') { <span class="etiqueta e-alerta">Devuelta</span> }
+      @else if (e.estado === 'Finalizada') { <span class="etiqueta e-ok">Aprobada</span> }</h3></div>
+    @if (e.estado === 'Pendiente de aprobación') {
+      <p style="margin:0">{{ nombreUsuario(e.inspector) }} finalizó la visita. El puntaje se calculó automáticamente con la metodología: <b>{{ fmt(res.total) }} · {{ res.nivel[0] }}</b> ·
+        @if (ver()?.cumple) { <span class="etiqueta e-ok">Cumple los criterios</span> } @else { <span class="etiqueta e-gris">No cumple</span> }.
+        El coordinador no modifica las calificaciones: aprueba o devuelve con una observación.</p>
+      @if (propuesta()) { <p style="margin:8px 0 0">{{ propuesta() }}</p> }
+    }
+    @if (e.estado === 'Devuelta' && ultimaRev('Devuelta'); as d) {
+      <div class="aplica aviso-devuelta"><span>↩</span><span><b>El coordinador devolvió la visita</b> ({{ nombreUsuario(d.por) }}, {{ fecha(d.fecha) }}): «{{ d.obs }}». Corrija lo indicado y vuelva a enviarla desde el cierre.</span></div>
+    }
+    @if (revisiones().length) {
+      <ul class="lista-revision">@for (x of revisiones(); track $index) {
+        <li><b>{{ txtRev[x.accion] || x.accion }}</b> · {{ nombreUsuario(x.por) }} · {{ fecha(x.fecha) }} {{ x.fecha.slice(11, 16) }}@if (x.obs) { <br><span class="muted">«{{ x.obs }}»</span> }</li>
+      }</ul>
+    }
+    @if (e.estado === 'Pendiente de aprobación' && coordinador()) {
+      <div class="acciones"><button type="button" class="btn btn-sec" (click)="abrir('devolver')">Devolver con observación</button><button type="button" class="btn btn-primario" (click)="abrir('aprobar')">Aprobar inspección</button></div>
+    }
+  </section>
+}
+
+<!-- Constancia o plan de mejora -->
+@if (e.estado === 'Finalizada' && constancia(); as c) {
+  <section class="panel panel-constancia no-imprimir" [class.vencida]="!c.vigente"><div class="pc-cuerpo"><span class="pc-sello" aria-hidden="true">{{ c.vigente ? '✔' : '⌛' }}</span><div>
+    <h3 style="margin:0">{{ c.vigente ? 'Finca certificada' : 'Constancia vencida' }} · {{ especie() }}</h3>
+    <p style="margin:4px 0 0">Constancia de cumplimiento de bienestar animal <b>{{ c.codigo }}</b> · {{ c.vigente ? 'vigente hasta' : 'venció el' }} <b>{{ fecha(c.vence) }}</b>.{{ c.vigente ? '' : ' Se requiere una nueva inspección.' }}</p></div></div>
+    <a class="btn btn-primario" [routerLink]="['/visitas', e.id, 'constancia']">Descargar constancia</a></section>
+} @else if (planProductor(); as p) {
+  <section class="panel panel-plan no-imprimir"><h3 style="margin:0 0 6px">Plan de mejora</h3>
+    <p style="margin:0 0 8px">La finca aún no cumple los criterios para la constancia de cumplimiento. Estas son las acciones acordadas con el inspector@if (p.proxima) {; la próxima visita es el <b>{{ p.proxima }}</b>}.</p>
+    @if (p.acciones.length) { <ul class="lista-revision">@for (a of p.acciones; track a.texto) { <li><b>{{ a.texto }}</b>: {{ a.accion }}{{ a.plazo ? ' · plazo ' + a.plazo : '' }}</li> }</ul> }
+    @else { <p class="muted" style="margin:0">El detalle del plan está más abajo, en el diagnóstico.</p> }
+  </section>
+}
+
+<!-- Puntaje -->
+<section class="panel"><div class="marcador">
+  <div class="anillo" [style.--v]="res.total" [style.--c]="res.nivel[1]"><div><span><b>{{ fmt(res.total) }}</b><small>de 100</small></span></div></div>
+  <div><span class="nivel-final" [style.--c]="res.nivel[1]">{{ res.nivel[0] }}</span>
+    @if (res.provisional) { <span class="etiqueta e-medio">Provisional: hay documentos pendientes</span> }
+    @switch (e.estado) {
+      @case ('Finalizada') { <span class="etiqueta e-ok">{{ res.provisional ? 'Aprobado' : 'Definitivo · aprobado' }}</span> }
+      @case ('Pendiente de aprobación') { <span class="etiqueta e-rev">Pendiente de aprobación del coordinador</span> }
+      @case ('Devuelta') { <span class="etiqueta e-alerta">Devuelta al inspector</span> }
+      @default { <span class="etiqueta e-gris">Preliminar · evaluación en proceso</span> }
+    }
+    <div class="barras ancho" style="margin-top:18px;max-width:620px">
+      @for (g of medidas; track g) { @if (res.pesos[g] > 0) {
+        <div class="barra-h"><span>{{ NOMBRE_MEDIDA[g] }} · {{ res.pesos[g] * 100 }} %</span><div class="pista"><div class="relleno" [style.width.%]="res.med[g] ?? 0" [style.--c]="COLOR_MEDIDA[g]"></div></div>
+          <b>{{ fmt(res.med[g]) }} · aporta {{ fmt((res.med[g] ?? 0) * res.pesos[g]) }}</b></div>
+      } }
+    </div>
+    <app-escala-nivel [total]="res.total" />
+    @if (res.pend) { <p class="etiqueta e-medio" style="margin-top:8px">{{ res.pend }} indicadores sin calificar: el puntaje es preliminar y solo promedia los calificados.</p> }
+  </div></div></section>
+
+<section class="panel" style="margin-top:18px"><h3>Detalle del cálculo (5.4 y Tabla 1)</h3><div class="envoltura-tabla"><table class="tabla">
+  <thead><tr><th>Grupo de medidas</th><th class="num">Indicadores calificados</th><th class="num">Promedio del grupo</th><th class="num">Peso</th><th class="num">Aporte al total</th></tr></thead><tbody>
+  @for (g of medidas; track g) { @if (res.pesos[g] > 0) {
+    <tr><td><b>{{ g }}</b> · {{ MEDIDA[g] }}</td><td class="num">{{ res.n[g] }} de {{ res.aplican[g] }}</td><td class="num">{{ fmt(res.med[g], 2) }}</td><td class="num">{{ res.pesos[g] * 100 }} %</td>
+      <td class="num">{{ fmt(res.med[g] ?? 0, 2) }} × {{ (res.pesos[g] + '').replace('.', ',') }} = <b>{{ fmt(res.aporte[g], 2) }}</b></td></tr>
+  } }
+  <tr><td colspan="4"><b>Puntaje total</b> (suma de aportes, redondeada a 1 decimal)</td><td class="num"><b>{{ fmt(res.total) }}</b> · {{ res.nivel[0] }}</td></tr></tbody></table></div></section>
+
+@if (dosGalpones()) {
+  <section class="panel"><h3>Detalle por galpón @if (alertas().length) { <span class="etiqueta e-alerta">{{ alertas().length }} alerta{{ alertas().length > 1 ? 's' : '' }}</span> }</h3>
+    <p class="muted" style="margin:4px 0 10px">El puntaje de cada indicador es el promedio de los dos galpones (las 50 aves cuentan igual). ⚠ = el galpón queda más de 10 puntos por debajo de la finca, o en un nivel más bajo con al menos 5 puntos de diferencia; requiere observación y conviene incluirlo en el plan de mejora.</p>
+    @if (alertasTexto().length) {
+      <ul style="margin:0 0 12px;padding-left:18px">@for (a of alertasTexto(); track a.titulo) {
+        <li><b>{{ a.titulo }}</b>: {{ a.texto }} · @if (a.obs) { <span class="muted">{{ a.obs }}</span> } @else { <app-enlace-visita [id]="e.id" [paso]="a.code">falta observación</app-enlace-visita> }</li>
+      }</ul>
+    }
+    <div class="envoltura-tabla"><table class="tabla"><thead><tr><th>Indicador</th><th class="num">Galpón 1</th><th class="num">Galpón 2</th><th class="num">Finca</th></tr></thead><tbody>
+      @for (x of galpones(); track x.texto) {
+        <tr><td>{{ x.texto }}</td>@for (c of x.celdas; track $index) {
+          <td class="num" [style.background]="c.alerta ? '#F8EDEC' : null" [style.color]="c.alerta ? 'var(--rojo)' : null" [style.font-weight]="c.alerta ? 800 : null">{{ c.v }}@if (c.pct) { <span class="muted"> ({{ c.pct }} %)</span> }{{ c.alerta ? ' ⚠' : '' }}</td>
+        }<td class="num"><b>{{ x.finca }}</b></td></tr>
+      }</tbody></table></div>
+  </section>
+}
+
+<!-- Seguimiento y continuidad -->
+@if (seguimiento(); as s) {
+  <section class="panel">
+    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:start"><div>
+      <h3>Seguimiento y continuidad · {{ e.proceso }} <span [class]="'etiqueta ' + colorProceso[s.st.estado]">{{ s.st.estado }}</span></h3>
+      <p class="muted" style="margin:4px 0 0">Cada visita se valida cuando el coordinador la aprueba: si la finca cumple, el proceso se cierra y no pide más seguimientos; si no, se programan hasta {{ BASE }} seguimientos (ampliables a {{ MAX }}). Seguimientos usados: <b>{{ s.st.usados }} de {{ s.st.max }}</b>. Las visitas finalizadas no se modifican.</p>
+      @if (s.ampliacion) { <p class="muted" style="font-size:13px;margin:6px 0 0">Ampliado a {{ MAX }} seguimientos por {{ s.ampliacion.por }} el {{ s.ampliacion.fecha }}: «{{ s.ampliacion.motivo }}».</p> }
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      @if (s.asignarSeg) { <button type="button" class="btn btn-primario" (click)="acc.asignando.set(e.finca + '|' + e.sp)">Asignar seguimiento {{ s.st.usados + 1 }} de {{ s.st.max }}</button> }
+      @if (s.ampliar) { <button type="button" class="btn btn-primario" (click)="abrir('ampliar')">Ampliar a {{ MAX }} seguimientos</button> }
+      @if (s.nuevo) { <button type="button" class="btn btn-sec" (click)="acc.asignando.set(e.finca + '|' + e.sp)">Asignar nuevo proceso</button> }
+    </div></div>
+    @if (ver(); as v) {
+      <div class="aplica" style="margin-top:12px" [style.background]="v.cumple ? '#E8F4EA' : null" [style.color]="v.cumple ? 'var(--semilla)' : null"><span>{{ v.cumple ? '✔' : 'ℹ' }}</span><span>
+        @if (v.cumple) { <b>Esta visita cumple todos los criterios</b> (puntaje ≥ {{ CRITERIO.puntajeMin }}, ningún indicador en 0 y sin información pendiente){{ e.estado === 'Finalizada' ? ': el proceso quedó cumplido y no requiere más seguimientos.' : '. Cuando el coordinador la apruebe, el proceso se cierra y no se piden más seguimientos.' }} }
+        @else { <b>{{ e.estado === 'Finalizada' ? 'Esta visita no cumplió' : e.estado === 'Pendiente de aprobación' ? 'Esta visita no cumple' : 'Para cumplir en esta visita falta' }}:</b> {{ v.motivos.join(' · ') }}. }
+      </span></div>
+    }
+    @if (s.prog) {
+      <div class="aplica aviso-programado"><span>📅</span><span><b>{{ s.progNombre }} programado para el {{ s.progFecha }}</b>@if (!productor()) { · {{ nombreUsuario(s.prog.inspector) }} }
+        @if (s.progVencido) { <span class="etiqueta e-alerta">Vencido</span> }. Retoma lo registrado en esta visita; el inspector actualiza lo que cambió.</span>
+        @if (s.puedeReprog) { <button type="button" class="btn btn-sec btn-chico" (click)="acc.reprogramando.set(s.prog.id)">Reprogramar</button> }</div>
+    }
+    @if (s.final; as fi) {
+      <div class="panel" style="margin-top:12px;box-shadow:none" [style.border]="'2px solid ' + (s.st.cumplido ? 'var(--campo)' : 'var(--ocre)')"><h4 style="margin:0">Resultado final del proceso</h4>
+        <p style="margin:6px 0 0"><b style="font-size:22px">{{ fi.total }}</b> · {{ fi.nivel }} · {{ fi.nombre }} ({{ fi.id }}, {{ fi.fecha }}) · {{ s.st.cumplido ? 'La finca cumple todos los criterios.' : 'Se agotaron los seguimientos sin cumplir todos los criterios.' }}
+          @if (fi.otra) { <a [routerLink]="['/visitas', fi.id, 'resultado']">Ver la visita final</a> }</p></div>
+    }
+    <div style="margin-top:12px"><div class="envoltura-tabla"><table class="tabla">
+      <thead><tr><th>Visita</th><th>Fecha</th><th>Estado</th><th class="num">MBA</th><th class="num">MBR</th><th class="num">MBG</th><th class="num">Total</th><th>Nivel</th><th class="num">Cambio</th><th>Criterios</th></tr></thead><tbody>
+      @for (x of s.filas; track x.e.id) {
+        <tr [style.background]="x.actual ? '#F7FAF2' : null"><td><b>{{ x.nombre }}</b><br><app-enlace-visita [id]="x.e.id" [paso]="x.paso">{{ x.e.id }}</app-enlace-visita></td><td>{{ x.fecha }}</td>
+          <td><span [class]="'etiqueta ' + x.color">{{ x.estado }}</span></td>@for (m of x.med; track $index) { <td class="num">{{ m }}</td> }
+          <td class="num"><b>{{ x.total }}</b></td><td>{{ x.nivel }}</td>
+          <td class="num">@if (x.cambio; as c) { <b [style.color]="c.color">{{ c.txt }}</b> } @else { — }</td>
+          <td>@if (x.cumple === true) { <span class="etiqueta e-ok">Cumple</span> } @else if (x.cumple === false) { <span class="etiqueta e-gris">No cumple</span> } @else { — }</td></tr>
+      }</tbody></table></div>
+      <div style="max-width:620px">@if (s.puntos.length) { <app-evolucion [puntos]="s.puntos" /> } @else { <p class="muted">Todavía no hay evaluaciones para graficar.</p> }</div></div>
+    @if (s.cambios; as cam) {
+      <div class="rejilla r-3" style="margin-top:14px">
+        <div><h4>Mejoraron · {{ cam.mejoro.length }}</h4>@if (cam.mejoro.length) { <ul style="margin:6px 0 0;padding-left:18px">@for (x of cam.mejoro; track x[0].code) { <li>{{ x[0].num }} {{ x[0].name }}: {{ fmt(x[1]) }} → <b>{{ fmt(x[2]) }}</b></li> }</ul> } @else { <p class="muted" style="margin:6px 0 0">—</p> }</div>
+        <div><h4>Completados en esta visita · {{ cam.completado.length }}</h4>@if (cam.completado.length) { <ul style="margin:6px 0 0;padding-left:18px">@for (x of cam.completado; track x[0].code) { <li>{{ x[0].num }} {{ x[0].name }}: <b>{{ fmt(x[1]) }}</b></li> }</ul> } @else { <p class="muted" style="margin:6px 0 0">—</p> }</div>
+        <div><h4>Bajaron · {{ cam.empeoro.length }}</h4>@if (cam.empeoro.length) { <ul style="margin:6px 0 0;padding-left:18px">@for (x of cam.empeoro; track x[0].code) { <li>{{ x[0].num }} {{ x[0].name }}: {{ fmt(x[1]) }} → <b>{{ fmt(x[2]) }}</b></li> }</ul> } @else { <p class="muted" style="margin:6px 0 0">—</p> }</div>
+      </div>
+      <p class="muted" style="font-size:13px;margin-top:8px">{{ cam.igual }} indicadores sin cambio{{ cam.pendiente.length ? ' · ' + cam.pendiente.length + ' todavía sin calificar' : '' }}. Comparado con {{ cam.anterior.id }} ({{ fmt(cam.anterior.total) }} puntos).</p>
+    }
+  </section>
+}
+
+<!-- Diagnóstico -->
+@if (diag(); as d) {
+  <div class="rejilla r-3" style="margin-top:18px">
+    <section class="panel"><h3>Fortalezas · {{ d.fort.length }}</h3><ul class="diag">@for (x of d.fort; track x.texto) { <li style="--c:var(--campo)"><b>{{ x.texto }}</b> · {{ x.puntaje }} puntos@if (x.obs) { <br><span class="muted">{{ x.obs }}</span> }</li> } @empty { <li class="muted">—</li> }</ul></section>
+    <section class="panel"><h3>Oportunidades de mejora · {{ d.opo.length }}</h3><ul class="diag">@for (x of d.opo; track x.texto) { <li style="--c:var(--cosecha)"><b>{{ x.texto }}</b> · {{ x.puntaje }} puntos@if (x.obs) { <br><span class="muted">{{ x.obs }}</span> }</li> } @empty { <li class="muted">—</li> }</ul></section>
+    <section class="panel"><h3>Incumplimientos · {{ d.inc.length }}</h3><ul class="diag">@for (x of d.inc; track x.texto) { <li style="--c:var(--rojo)"><b>{{ x.texto }}</b> · {{ x.puntaje }} puntos@if (x.obs) { <br><span class="muted">{{ x.obs }}</span> }</li> } @empty { <li class="muted">—</li> }</ul></section>
+  </div>
+}
+
+<section class="panel"><h3>Plan de mejora</h3><p class="muted">Se acuerda con el productor a partir de los indicadores que no obtuvieron 100 puntos.</p>
+  <div class="envoltura-tabla"><table class="tabla"><thead><tr><th>Indicador</th>@if (dosGalpones()) { <th>Galpón</th> }<th>Acción</th><th>Responsable</th><th>Plazo</th></tr></thead><tbody>
+    @for (p of planFilas(); track p.code) {
+      <tr><td><b>{{ p.num }}</b> {{ p.texto }}</td>
+        @if (dosGalpones()) { <td><select class="entrada-plan" [disabled]="!puedeEvaluar()" [value]="p.p['galpon'] ?? ''" (change)="cambiarPlan(p.code, 'galpon', $any($event.target).value)"><option value="">Ambos</option><option>Galpón 1</option><option>Galpón 2</option></select></td> }
+        <td><input class="entrada-plan" style="width:100%" placeholder="Acción acordada" [disabled]="!puedeEvaluar()" [value]="p.p.accion ?? ''" (input)="cambiarPlan(p.code, 'accion', $any($event.target).value)"></td>
+        <td><input class="entrada-plan" style="width:130px" placeholder="Responsable" [disabled]="!puedeEvaluar()" [value]="p.p['resp'] ?? ''" (input)="cambiarPlan(p.code, 'resp', $any($event.target).value)"></td>
+        <td><input class="entrada-plan" type="date" [disabled]="!puedeEvaluar()" [value]="p.p.plazo ?? ''" (change)="cambiarPlan(p.code, 'plazo', $any($event.target).value)"></td></tr>
+    }</tbody></table></div></section>
+
+<!-- Ventanas -->
+@if (ventana(); as v) {
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="titV" (keydown.escape)="ventana.set(null)">
+    <div [class.modal-medio]="v === 'aprobar'">
+      @switch (v) {
+        @case ('devolver') {
+          <h3 id="titV">Devolver al inspector</h3><p>La visita vuelve a {{ nombreUsuario(e.inspector) }} para que corrija y la reenvíe. Escriba qué debe revisar.</p>
+          <div class="campo"><label for="obsDev">Observación</label><textarea id="obsDev" rows="3" placeholder="Ej.: falta la observación del indicador 6.2.1 del galpón 2" [ngModel]="obs()" (ngModelChange)="obs.set($event)"></textarea><span class="error-campo">{{ error() }}</span></div>
+          <div class="acciones"><button type="button" class="btn btn-sec" (click)="ventana.set(null)">Cancelar</button><button type="button" class="btn btn-peligro" [disabled]="guardando()" (click)="confirmar()">Devolver</button></div>
+        }
+        @case ('aprobar') {
+          @if (aprobacion(); as a) {
+            <div class="modal-cab"><h3 id="titV">Aprobar inspección</h3><p class="muted">{{ f()?.nombre }} · {{ especie() }} · {{ flujo().nombreVisita(e) }} · {{ e.id }}</p></div>
+            <div class="modal-cuerpo">
+              <p style="margin-top:0">Resultado: <b>{{ fmt(res.total) }} · {{ res.nivel[0] }}</b>.
+                @if (a.cumple) { La finca <b>cumple</b> todos los criterios: el proceso se cierra. } @else { La finca <b>no cumple</b> ({{ a.motivos }}). } Al aprobar, el productor ve el resultado.</p>
+              @if (a.sigue) {
+                <div class="bloque-seg"><h4>Seguimiento {{ a.sig }} de {{ a.max }}</h4><div class="fila">
+                  <div class="campo"><label for="apF">Fecha de la visita</label><input type="date" id="apF" [min]="hoy" [ngModel]="segFecha()" (ngModelChange)="segFecha.set($event)"><span class="ayuda-campo">{{ a.propuesta ? 'Propuesta por el inspector.' : 'Sugerida según el plan de mejora.' }}</span></div>
+                  <div class="campo"><label for="apI">Inspector</label><select id="apI" [ngModel]="segInspector()" (ngModelChange)="segInspector.set($event)">@for (i of inspectores(); track i[0]) { <option [value]="i[0]">{{ i[1] }}</option> }</select></div>
+                </div></div>
+              } @else if (!a.cumple) { <p class="aplica"><span>ℹ</span><span>No quedan seguimientos en el proceso: después de aprobar puede ampliarlo a {{ MAX }} desde el resultado.</span></p> }
+              <span class="error-campo">{{ error() }}</span></div>
+            <div class="acciones"><button type="button" class="btn btn-sec" (click)="ventana.set(null)">Cancelar</button><button type="button" class="btn btn-primario" [disabled]="guardando()" (click)="confirmar()">Aprobar</button></div>
+          }
+        }
+        @case ('ampliar') {
+          <h3 id="titV">Ampliar a {{ MAX }} seguimientos</h3><p>El proceso {{ e.proceso }} usó los {{ BASE }} seguimientos programados sin cumplir. Indique por qué se amplía.</p>
+          <div class="campo"><label for="motAmp">Motivo</label><textarea id="motAmp" rows="3" placeholder="Ej.: el productor está ejecutando el plan de mejora del galpón 2" [ngModel]="obs()" (ngModelChange)="obs.set($event)"></textarea><span class="error-campo">{{ error() }}</span></div>
+          <div class="acciones"><button type="button" class="btn btn-sec" (click)="ventana.set(null)">Cancelar</button><button type="button" class="btn btn-primario" [disabled]="guardando()" (click)="confirmar()">Ampliar</button></div>
+        }
+      }
+    </div>
+  </div>
+}
+}

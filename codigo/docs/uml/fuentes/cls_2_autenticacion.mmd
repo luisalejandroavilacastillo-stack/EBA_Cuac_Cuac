@@ -1,35 +1,58 @@
-%% Vista 2 · Autenticación y sesión (RF01, RF04)
+%% Vista 2 · Autenticación y sesión · plataforma 1.0 (RF01, RF04; tablas de 004_ingreso_real.sql)
 classDiagram
-  class Sesion {
-    +rol
-    +inicio
-    +ultimaActividad
-    +LIMITE 15 min
-    +iniciarSesion(rol)
-    +cerrarSesion(motivo)
-    +tic()
-  }
-  class vIngreso {
-    <<vista>>
-    +formIngreso
-    +formCodigo
-    +formRecuperar
-    +intentos
-  }
-  class CodigoDobleFactor {
-    +6 dígitos
-    +validar()
-  }
-  class Recuperacion {
+  class Usuario {
+    +clave
+    +nombre
+    +perfil
     +correo
-    +enviarEnlace()
+    +clave_hash (scrypt)
+    +enlace_enviado_en
+    +enlace_vence
+    +activado_en
+    +intentos_fallidos
+    +bloqueado_hasta
+    +ultimo_ingreso
   }
-  class vCuenta {
-    <<vista>>
-    +datos
-    +sesionesActivas
+  class EnlaceCuenta {
+    +token_hash SHA-256
+    +tipo (activacion | recuperacion)
+    +expira_en (48 h | 30 min)
+    +usado_en
   }
-  vIngreso ..> CodigoDobleFactor
-  vIngreso ..> Recuperacion
-  vIngreso ..> Sesion : iniciarSesion
-  vCuenta ..> Sesion
+  class CodigoVerificacion {
+    +desafio
+    +codigo_hash SHA-256
+    +expira_en (10 min)
+    +intentos
+    +reenvios
+    +usado_en
+  }
+  class Sesion {
+    +id (huella del token)
+    +ultima_actividad
+    +expira_en (máx. 12 h)
+    +ip
+    +navegador
+    +cerrada_en
+  }
+  class Ingreso {
+    <<Angular>>
+    +ingresar()
+    +verificar()
+    +recuperar()
+  }
+  class Activar {
+    <<Angular>>
+    +crearContraseña()
+  }
+  class MiCuenta {
+    <<Angular>>
+    +cambiarContraseña()
+  }
+  Usuario "1" --> "0..*" EnlaceCuenta
+  Usuario "1" --> "0..*" CodigoVerificacion
+  Usuario "1" --> "0..*" Sesion
+  Ingreso ..> CodigoVerificacion : verificar código
+  Ingreso ..> Sesion : cookie eba_sesion
+  Activar ..> EnlaceCuenta : enlace de un solo uso
+  MiCuenta ..> Usuario : cambiar contraseña

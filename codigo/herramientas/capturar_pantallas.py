@@ -22,7 +22,6 @@ PANTALLAS = [  # (archivo, dirección, preparación)
     ("10_indicador_6.2.1_jadeo", "#/eval/EVA-2026-00088/PA01", None),
     ("11_indicador_6.2.3_por_ave", "#/eval/EVA-2026-00088/PA03", None),
     ("12_indicador_6.3.10_medicamentos", "#/eval/EVA-2026-00088/PG10", None),
-    ("13_indicador_7.2.1_heridas_gansos", "#/eval/EVA-2026-00091/GA01", None),
     ("14_ficha_del_indicador", "#/eval/EVA-2026-00088/PA01", "[data-ayuda]"),
     ("15_cierre", "#/eval/EVA-2026-00088/cierre", None),
     ("16_resultado_y_plan_de_mejora", "#/eval/EVA-2026-00088/resultado", None),
@@ -30,9 +29,8 @@ PANTALLAS = [  # (archivo, dirección, preparación)
     ("18_reportes", "#/reportes", None),
     ("19_mi_cuenta_y_seguridad", "#/cuenta", None),
     # v0.24
-    ("26_registro_finca_especies", "#/fincas", "#nueva"),
     ("27_recorrido_patos", "#/eval/EVA-2026-00088/recorrido", None),
-    ("28_recorrido_gansos", "#/eval/EVA-2026-00091/recorrido", None),
+    ("38_ficha_del_ave_patos", "#/eval/EVA-2026-00088/recorrido", "#evalAves"),
     ("29_asistente_flotante", "#/eval/EVA-2026-00088/PA01", "#fab-asistente"),
 ]
 
@@ -47,11 +45,14 @@ FINALIZAR = """(id => { const ev = EVALS.find(e => e.id === id), ctx = contexto(
   ev.plan = { PA03: { accion: 'Ajustar bebederos', responsable: 'Encargado', plazo: '2099-01-10' } }; guardar(); })('EVA-2026-00088')"""
 
 
-def entrar(pg, rol="inspector"):
+def entrar(pg, rol="inspector", correo=None, limpiar=True):
+    """v0.25: un botón por perfil y el correo del usuario (sin correo, el que viene escrito)."""
     pg.goto(BASE)
-    pg.evaluate("() => { try { localStorage.clear(); sessionStorage.clear(); } catch (e) {} }")
-    pg.goto(BASE)
+    if limpiar: pg.evaluate("() => { try { localStorage.clear(); } catch (e) {} }")
+    pg.evaluate("() => { try { sessionStorage.clear(); } catch (e) {} }")
+    pg.goto(BASE); pg.reload(); pg.wait_for_timeout(200)
     pg.click(f'[data-rol="{rol}"]')
+    if correo: pg.fill("#correo", correo)
     pg.click("text=Continuar")
     for i, d in enumerate("482073"):
         pg.locator(".codigo input").nth(i).fill(d)
@@ -76,23 +77,44 @@ with sync_playwright() as p:
         pg.keyboard.press("Escape"); pg.evaluate("() => { cerrarCapas && cerrarCapas(); }")
     pg.evaluate("cerrarAsistenteFlotante()"); pg.evaluate(FINALIZAR)
     pg.goto(BASE + "#/eval/EVA-2026-00088/cierre"); pg.wait_for_timeout(300)
-    pg.screenshot(path=str(OUT / "30_cierre_con_seguimiento.png"), full_page=True)
+    pg.screenshot(path=str(OUT / "30_cierre_finalizar_y_enviar.png"), full_page=True)
     pg.click("#fin"); pg.wait_for_timeout(300)
-    pg.screenshot(path=str(OUT / "31_resultado_seguimiento_programado.png"), full_page=True)
+    pg.screenshot(path=str(OUT / "31_enviada_pendiente_de_aprobacion.png"), full_page=True)
+    # gansos: la visita de Santa Clara está asignada a la segunda inspectora
+    entrar(pg, "inspector", "d.ortiz@ica.gov.co", limpiar=False)
+    for nombre, ruta, accion in [("13_indicador_7.2.1_heridas_gansos", "#/eval/EVA-2026-00091/GA01", None), ("28_recorrido_gansos", "#/eval/EVA-2026-00091/recorrido", None),
+                                 ("39_ficha_del_ave_gansos", "#/eval/EVA-2026-00091/recorrido", "#evalAves")]:
+        pg.goto(BASE + ruta); pg.wait_for_timeout(300)
+        if accion: pg.click(accion); pg.wait_for_timeout(250)
+        pg.screenshot(path=str(OUT / f"{nombre}.png"), full_page=accion is None); pg.evaluate("() => { cerrarCapas && cerrarCapas(); }")
+    entrar(pg, "coordinador", limpiar=False)
+    pg.screenshot(path=str(OUT / "20_inicio_coordinadora.png"), full_page=True)
+    pg.goto(BASE + "#/fincas"); pg.wait_for_timeout(300); pg.click("#nueva"); pg.wait_for_timeout(250)
+    pg.screenshot(path=str(OUT / "26_registro_finca_especies.png")); pg.evaluate("cerrarCapas()")
+    pg.locator('[data-nueva="FIN-2025-00198|ganso"]').click(); pg.wait_for_timeout(250)
+    pg.screenshot(path=str(OUT / "33_asignar_inspeccion.png")); pg.evaluate("cerrarCapas()")
+    pg.goto(BASE + "#/eval/EVA-2026-00088/resultado"); pg.wait_for_timeout(300)
+    pg.screenshot(path=str(OUT / "34_revision_del_coordinador.png"))
+    pg.click("#aprobarBtn"); pg.wait_for_timeout(250)
+    pg.screenshot(path=str(OUT / "35_aprobar_con_seguimiento.png")); pg.click(".modal [data-ok]"); pg.wait_for_timeout(300)
+    pg.screenshot(path=str(OUT / "36_resultado_aprobado_seguimiento_programado.png"), full_page=True)
     pg.goto(BASE + "#/fincas"); pg.wait_for_timeout(300)
     pg.screenshot(path=str(OUT / "32_fincas_seguimiento_programado.png"), full_page=True)
-    entrar(pg, "coordinador")
-    pg.screenshot(path=str(OUT / "20_inicio_coordinadora.png"), full_page=True)
-    entrar(pg, "productor")
+    entrar(pg, "productor", limpiar=False)
     pg.screenshot(path=str(OUT / "21_inicio_productor.png"), full_page=True)
-    entrar(pg, "admin")
+    entrar(pg, "productor", "rosa.quintero@correo.co", limpiar=False)
+    pg.goto(BASE + "#/eval/EVA-2026-00065/constancia"); pg.wait_for_timeout(300)
+    pg.screenshot(path=str(OUT / "37_constancia_de_cumplimiento.png"), full_page=True)
+    entrar(pg, "admin", limpiar=False)
     pg.goto(BASE + "#/usuarios"); pg.wait_for_timeout(300)
     pg.screenshot(path=str(OUT / "22_usuarios_admin.png"), full_page=True)
+    pg.click("#nuevoU"); pg.wait_for_timeout(250)
+    pg.screenshot(path=str(OUT / "40_crear_usuario.png")); pg.evaluate("cerrarCapas()")
     pg.goto(BASE + "#/bitacora"); pg.wait_for_timeout(300)
     pg.screenshot(path=str(OUT / "23_bitacora.png"), full_page=True)
     movil = nav.new_page(viewport={"width": 390, "height": 844}, device_scale_factor=2)
     movil.route("https://fonts.*/**", lambda r: r.abort())
-    entrar(movil)
+    entrar(movil, "inspector")
     movil.screenshot(path=str(OUT / "24_movil_inicio.png"))
     movil.goto(BASE + "#/eval/EVA-2026-00088/PR12"); movil.wait_for_timeout(300)
     movil.screenshot(path=str(OUT / "25_movil_indicador.png"), full_page=True)

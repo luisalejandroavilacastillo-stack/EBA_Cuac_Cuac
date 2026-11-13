@@ -7,6 +7,9 @@ import { rutasCatalogos } from '../modulos/catalogos/catalogos.rutas.js';
 import { rutasFincas } from '../modulos/fincas/fincas.rutas.js';
 import { rutasSincronizacion } from '../modulos/sincronizacion/sincronizacion.rutas.js';
 import { rutasAsistente } from '../modulos/asistente/asistente.rutas.js';
+import { rutasAuth } from '../modulos/auth/auth.rutas.js';
+import { rutasUsuarios } from '../modulos/usuarios/usuarios.rutas.js';
+import { requerirIdentidad } from '../modulos/auth/sesiones.js';
 
 /** Todas las rutas de la API, bajo el prefijo /api. */
 export const rutas = Router();
@@ -20,6 +23,9 @@ rutas.get('/', (req, res) => {
       'GET /api/catalogos', 'GET /api/fincas', 'GET /api/fincas/:codigo', 'POST /api/fincas',
       'GET /api/sincronizacion', 'PUT|DELETE /api/sincronizacion/:coleccion/:id', 'POST /api/sincronizacion/bitacora',
       'GET /api/asistente/estado', 'POST /api/asistente',
+      'POST /api/auth/ingresar', 'POST /api/auth/verificar', 'POST /api/auth/reenviar-codigo', 'GET /api/auth/sesion', 'POST /api/auth/salir',
+      'POST /api/auth/recuperar', 'GET|POST /api/auth/enlace/:token', 'POST /api/auth/cambiar-clave', 'GET /api/auth/reglas',
+      'GET|POST /api/usuarios', 'PATCH|DELETE /api/usuarios/:clave', 'POST /api/usuarios/:clave/estado', 'POST /api/usuarios/:clave/enlace',
     ],
     enConstruccion: MODULOS.map((m) => ({ ruta: `/api/${m.ruta}`, nombre: m.nombre, casosDeUso: m.cu, etapa: m.etapa })),
   });
@@ -28,6 +34,8 @@ rutas.use('/salud', rutasSalud);
 rutas.use('/norma', rutasNorma);
 rutas.use('/catalogos', rutasCatalogos);
 rutas.use('/fincas', rutasFincas);
-rutas.use('/sincronizacion', rutasSincronizacion);
+rutas.use('/auth', rutasAuth);
+rutas.use('/usuarios', rutasUsuarios);
+rutas.use('/sincronizacion', requerirIdentidad, rutasSincronizacion);
 rutas.use('/asistente', rutasAsistente);
 for (const m of MODULOS) rutas.use(`/${m.ruta}`, rutaPendiente(m));

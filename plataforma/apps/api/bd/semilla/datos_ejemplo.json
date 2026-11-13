@@ -1,0 +1,1919 @@
+{
+ "usuarios": [
+  {
+   "id": "admin",
+   "datos": {
+    "nombre": "Andrés Felipe Rojas",
+    "perfil": "admin",
+    "correo": "a.rojas@ica.gov.co",
+    "tipoDoc": "CC",
+    "doc": "80765432",
+    "tel": "3007654321",
+    "estado": "Activo",
+    "rol": "Administrador",
+    "ini": "AF"
+   }
+  },
+  {
+   "id": "coordinador",
+   "datos": {
+    "nombre": "Luz Marina Cárdenas",
+    "perfil": "coordinador",
+    "correo": "l.cardenas@ica.gov.co",
+    "tipoDoc": "CC",
+    "doc": "40023118",
+    "tel": "3150231180",
+    "estado": "Activo",
+    "rol": "Coordinador ICA",
+    "ini": "LM"
+   }
+  },
+  {
+   "id": "inspector",
+   "datos": {
+    "nombre": "Camilo Andrés Peña",
+    "perfil": "inspector",
+    "correo": "c.pena@ica.gov.co",
+    "tipoDoc": "CC",
+    "doc": "1110456789",
+    "tel": "3104456789",
+    "estado": "Activo",
+    "rol": "Inspector ICA",
+    "ini": "CA"
+   }
+  },
+  {
+   "id": "inspector2",
+   "datos": {
+    "nombre": "Diana Marcela Ortiz",
+    "perfil": "inspector",
+    "correo": "d.ortiz@ica.gov.co",
+    "tipoDoc": "CC",
+    "doc": "1098334120",
+    "tel": "3123341200",
+    "estado": "Activo",
+    "rol": "Inspector ICA",
+    "ini": "DM"
+   }
+  },
+  {
+   "id": "productor",
+   "datos": {
+    "nombre": "Hernán Darío Mejía",
+    "perfil": "productor",
+    "correo": "h.mejia@correo.co",
+    "tipoDoc": "CC",
+    "doc": "91234567",
+    "tel": "3154827710",
+    "estado": "Activo",
+    "rol": "Productor",
+    "ini": "HD"
+   }
+  },
+  {
+   "id": "u_pgil",
+   "datos": {
+    "nombre": "Pedro Gil Ramírez",
+    "perfil": "inspector",
+    "correo": "p.gil@ica.gov.co",
+    "tipoDoc": "CC",
+    "doc": "79331002",
+    "tel": "3017331002",
+    "estado": "Inactivo",
+    "rol": "Inspector ICA",
+    "ini": "PG"
+   }
+  },
+  {
+   "id": "u_rquintero",
+   "datos": {
+    "nombre": "Rosa Elena Quintero",
+    "perfil": "productor",
+    "correo": "rosa.quintero@correo.co",
+    "tipoDoc": "CC",
+    "doc": "20556871",
+    "tel": "3127705518",
+    "estado": "Activo",
+    "rol": "Productor",
+    "ini": "RE"
+   }
+  }
+ ],
+ "fincas": [
+  {
+   "id": "FIN-2026-00417",
+   "datos": {
+    "id": "FIN-2026-00417",
+    "nombre": "Granja La Esperanza",
+    "productor": "Hernán Darío Mejía",
+    "titular": {
+     "nombre": "Hernán Darío Mejía",
+     "tipoDoc": "CC",
+     "doc": "91234567",
+     "correo": "h.mejia@correo.co",
+     "tel": "3154827710",
+     "autoriza": true
+    },
+    "depto": "Santander",
+    "mpio": "Lebrija",
+    "vereda": "La Puente",
+    "estado": "ACTIVA",
+    "especies": [
+     {
+      "sp": "pato",
+      "proposito": "Carne",
+      "conCorral": true,
+      "permanencia": true,
+      "cama": true,
+      "bebedero": "Automatizado",
+      "inventario": [
+       {
+        "cat": "Engorde",
+        "n": 820,
+        "edad": 6,
+        "peso": 2.5
+       },
+       {
+        "cat": "Reproductores",
+        "n": 27,
+        "edad": 40,
+        "peso": 3.1
+       }
+      ]
+     }
+    ],
+    "area": 620
+   }
+  },
+  {
+   "id": "FIN-2026-00431",
+   "datos": {
+    "id": "FIN-2026-00431",
+    "nombre": "Granja Santa Clara",
+    "productor": "Marta Elena Ruiz",
+    "titular": {
+     "nombre": "Marta Elena Ruiz",
+     "tipoDoc": "CC",
+     "doc": "39567204",
+     "correo": "m.ruiz@correo.co",
+     "tel": "3106671290",
+     "autoriza": true
+    },
+    "depto": "Cundinamarca",
+    "mpio": "Fusagasugá",
+    "vereda": "Bermejal",
+    "estado": "ACTIVA",
+    "especies": [
+     {
+      "sp": "ganso",
+      "proposito": "Carne y plumas",
+      "sistema": "Semi-intensivo",
+      "conCorral": true,
+      "inventario": [
+       {
+        "cat": "Engorde",
+        "n": 220,
+        "edad": 14,
+        "peso": 4.2
+       },
+       {
+        "cat": "Reproductores",
+        "n": 40,
+        "edad": 60,
+        "peso": 5.1
+       }
+      ]
+     }
+    ],
+    "area": 900
+   }
+  },
+  {
+   "id": "FIN-2025-00198",
+   "datos": {
+    "id": "FIN-2025-00198",
+    "nombre": "Finca San Isidro",
+    "productor": "Rosa Elena Quintero",
+    "titular": {
+     "nombre": "Rosa Elena Quintero",
+     "tipoDoc": "CC",
+     "doc": "20556871",
+     "correo": "rosa.quintero@correo.co",
+     "tel": "3127705518",
+     "autoriza": true
+    },
+    "depto": "Cundinamarca",
+    "mpio": "Pacho",
+    "vereda": "San Isidro",
+    "estado": "ACTIVA",
+    "especies": [
+     {
+      "sp": "pato",
+      "proposito": "Huevo",
+      "conCorral": false,
+      "permanencia": false,
+      "cama": false,
+      "bebedero": "Artesanal",
+      "inventario": [
+       {
+        "cat": "Ponedoras",
+        "n": 18,
+        "edad": 30,
+        "peso": 2.2
+       }
+      ]
+     },
+     {
+      "sp": "ganso",
+      "proposito": "Carne",
+      "sistema": "Extensivo",
+      "conCorral": false,
+      "inventario": [
+       {
+        "cat": "Adultos",
+        "n": 9,
+        "edad": 50,
+        "peso": 5
+       }
+      ]
+     }
+    ],
+    "area": 0
+   }
+  },
+  {
+   "id": "FIN-2025-00211",
+   "datos": {
+    "id": "FIN-2025-00211",
+    "nombre": "Lote Vega",
+    "productor": "Hernán Darío Mejía",
+    "titular": {
+     "nombre": "Hernán Darío Mejía",
+     "tipoDoc": "CC",
+     "doc": "91234567",
+     "correo": "h.mejia@correo.co",
+     "tel": "3154827710",
+     "autoriza": true
+    },
+    "depto": "Santander",
+    "mpio": "Lebrija",
+    "vereda": "Vega Alta",
+    "estado": "INACTIVA",
+    "especies": [
+     {
+      "sp": "pato",
+      "proposito": "Carne",
+      "conCorral": true,
+      "permanencia": true,
+      "cama": true,
+      "inventario": [
+       {
+        "cat": "Engorde",
+        "n": 0,
+        "edad": 0,
+        "peso": 0
+       }
+      ]
+     }
+    ],
+    "area": 300
+   }
+  }
+ ],
+ "procesos": [],
+ "evals": [
+  {
+   "id": "EVA-2026-00065",
+   "datos": {
+    "id": "EVA-2026-00065",
+    "finca": "FIN-2025-00198",
+    "sp": "pato",
+    "fecha": "2026-09-10",
+    "inspector": "inspector",
+    "estado": "Finalizada",
+    "finalizada": "2026-09-10T11:20:00",
+    "proceso": "PRC-2026-0003",
+    "visita": 0,
+    "apertura": {
+     "hora": "08:00",
+     "atiende": "Rosa Elena Quintero",
+     "ingreso": "08:20",
+     "bebederos": 3,
+     "comederos": 2
+    },
+    "pobConfirmada": 27,
+    "resp": {
+     "PR01": {
+      "rev": true,
+      "aux": {
+       "0": true,
+       "1": true,
+       "2": true,
+       "3": true
+      }
+     },
+     "PR03": {
+      "total": 20,
+      "part": 17
+     },
+     "PR04": {
+      "rev": true,
+      "aux": {
+       "0": 18,
+       "1": 3,
+       "2": 6,
+       "3": false
+      }
+     },
+     "PR05": {
+      "units": [
+       100,
+       100,
+       100
+      ]
+     },
+     "PR06": {
+      "rev": true,
+      "aux": {
+       "0": true,
+       "1": true,
+       "2": true,
+       "3": true
+      }
+     },
+     "PR07": {
+      "units": [
+       100,
+       100
+      ]
+     },
+     "PR08": {
+      "rev": true,
+      "aux": {
+       "0": 18,
+       "1": 2,
+       "2": 9,
+       "3": false
+      }
+     },
+     "PR09": {
+      "rev": true,
+      "aux": {
+       "0": true,
+       "1": true,
+       "2": true
+      }
+     },
+     "PR10": {
+      "units": [
+       100,
+       100,
+       100
+      ]
+     },
+     "PR11": {
+      "aves": 18,
+      "peso": 2.2,
+      "area": 12
+     },
+     "PR12": {
+      "rev": true,
+      "aux": {
+       "0": true,
+       "1": 15,
+       "2": true,
+       "3": true,
+       "4": false
+      }
+     },
+     "PA02": {
+      "total": 18,
+      "part": 0
+     },
+     "PA03": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA04": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA05": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA06": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA07": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA08": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA09": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA11": {
+      "units": [
+       3,
+       3,
+       3,
+       4,
+       3,
+       2,
+       2,
+       3,
+       2
+      ]
+     }
+    },
+    "obs": {},
+    "firmas": {
+     "productor": "Rosa Elena Quintero",
+     "inspector": "Camilo Andrés Peña"
+    },
+    "guardado": "2026-09-10T11:20:00",
+    "obsGeneral": "Patio limpio, aves con buen plumaje y acceso al estanque.",
+    "aprobada": {
+     "por": "coordinador",
+     "fecha": "2026-09-11T09:00:00"
+    },
+    "revision": [
+     {
+      "accion": "Enviada",
+      "por": "inspector",
+      "fecha": "2026-09-10T11:20:00",
+      "obs": ""
+     },
+     {
+      "accion": "Aprobada",
+      "por": "coordinador",
+      "fecha": "2026-09-11T09:00:00",
+      "obs": ""
+     }
+    ],
+    "constancia": {
+     "codigo": "CER-2026-00001",
+     "verificacion": "7KQ2-M9XA",
+     "emitida": "2026-09-11T09:00:00",
+     "vence": "2027-09-10",
+     "puntaje": 99.6,
+     "nivel": "Excelente"
+    }
+   }
+  },
+  {
+   "id": "EVA-2026-00072",
+   "datos": {
+    "id": "EVA-2026-00072",
+    "finca": "FIN-2026-00417",
+    "sp": "pato",
+    "fecha": "2026-04-20",
+    "inspector": "inspector",
+    "estado": "Finalizada",
+    "finalizada": "2026-04-20T15:30:00",
+    "proceso": "PRC-2026-0001",
+    "visita": 0,
+    "apertura": {
+     "hora": "07:30",
+     "atiende": "Luis Pérez (mayordomo)",
+     "ingreso": "08:10"
+    },
+    "pobConfirmada": 790,
+    "resp": {
+     "PR01": {
+      "rev": true,
+      "aux": {
+       "0": true,
+       "1": true,
+       "2": true,
+       "3": true
+      }
+     },
+     "PR02": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       0,
+       55
+      ]
+     },
+     "PR03": {
+      "total": 20,
+      "part": 17
+     },
+     "PR04": {
+      "rev": true,
+      "aux": {
+       "0": 790,
+       "1": 24,
+       "2": 20,
+       "3": true
+      }
+     },
+     "PR05": {
+      "units": [
+       100,
+       55,
+       100,
+       55,
+       55,
+       100,
+       55,
+       100,
+       55,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PR06": {
+      "rev": true,
+      "aux": {
+       "0": true,
+       "1": true,
+       "2": true,
+       "3": true
+      }
+     },
+     "PR07": {
+      "units": [
+       55,
+       55
+      ]
+     },
+     "PR08": {
+      "rev": true,
+      "aux": {
+       "0": 812,
+       "1": 25,
+       "2": 24,
+       "3": false
+      }
+     },
+     "PR09": {
+      "rev": true,
+      "aux": {
+       "0": true,
+       "1": false,
+       "2": false
+      }
+     },
+     "PR11": {
+      "aves": 812,
+      "peso": 2.48,
+      "area": 100
+     },
+     "PR12": {
+      "rev": true,
+      "aux": {
+       "0": true,
+       "1": 15,
+       "2": true,
+       "3": true,
+       "4": false
+      }
+     },
+     "PA01": {
+      "total": 240,
+      "part": 121,
+      "g": [
+       {
+        "total": 120,
+        "part": 40
+       },
+       {
+        "total": 120,
+        "part": 81
+       }
+      ]
+     },
+     "PA02": {
+      "total": 240,
+      "part": 12,
+      "g": [
+       {
+        "total": 120,
+        "part": 5
+       },
+       {
+        "total": 120,
+        "part": 7
+       }
+      ]
+     },
+     "PA03": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       55,
+       55,
+       100,
+       100,
+       100,
+       100,
+       55,
+       55,
+       100,
+       100,
+       55,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       100,
+       0,
+       55,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       55,
+       0,
+       55,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA04": {
+      "units": [
+       100,
+       100,
+       100,
+       55,
+       55,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       55,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       0,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       55,
+       55,
+       55,
+       55,
+       100,
+       100,
+       100,
+       55,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100
+      ]
+     },
+     "PA05": {
+      "units": [
+       100,
+       0,
+       55,
+       100,
+       100,
+       100,
+       55,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       100,
+       100,
+       100,
+       55,
+       55,
+       55,
+       100,
+       55,
+       55,
+       100,
+       55,
+       55,
+       100,
+       0,
+       100,
+       100,
+       55,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       0,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA06": {
+      "units": [
+       100,
+       55,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       100,
+       100,
+       100,
+       55,
+       55,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA07": {
+      "units": [
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       55,
+       100,
+       100,
+       0,
+       100,
+       0,
+       100,
+       0,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       0,
+       100,
+       0,
+       100,
+       100,
+       0,
+       55,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA08": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       0,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       0,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       55,
+       55,
+       55,
+       55,
+       100,
+       55,
+       100,
+       100,
+       55,
+       55,
+       55,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       100,
+       55,
+       100
+      ]
+     },
+     "PA09": {
+      "units": [
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       0,
+       100,
+       55,
+       0,
+       100,
+       55,
+       55,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       55,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       55,
+       0,
+       55,
+       55,
+       100,
+       100,
+       55,
+       55,
+       100,
+       100,
+       55,
+       55,
+       55,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       55
+      ]
+     },
+     "PA10": {
+      "total": 5040,
+      "part": 640
+     },
+     "PA11": {
+      "units": [
+       3,
+       3,
+       2,
+       3,
+       3,
+       4,
+       4,
+       4,
+       4,
+       4,
+       3,
+       4,
+       3,
+       3,
+       2,
+       3,
+       3,
+       4,
+       4,
+       3,
+       4,
+       4,
+       3,
+       3,
+       3,
+       3,
+       3,
+       4,
+       4,
+       3,
+       4,
+       3,
+       4,
+       3,
+       2,
+       3,
+       2,
+       3,
+       3,
+       2,
+       3,
+       3,
+       3,
+       4,
+       3,
+       4,
+       3,
+       4,
+       3,
+       2
+      ]
+     },
+     "PG01": {
+      "estado": "Válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": true,
+      "contenido": true,
+      "matricula": true
+     },
+     "PG02": {
+      "estado": "Válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": true,
+      "contenido": true,
+      "matricula": true
+     },
+     "PG03": {
+      "estado": "Válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": true,
+      "contenido": true,
+      "matricula": true
+     },
+     "PG04": {
+      "estado": "No válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": false,
+      "contenido": true
+     },
+     "PG05": {
+      "estado": "No válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": false,
+      "contenido": true
+     },
+     "PG06": {
+      "estado": "No presentado"
+     },
+     "PG07": {
+      "estado": "No válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": false,
+      "contenido": true
+     },
+     "PG08": {
+      "estado": "Válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": true,
+      "contenido": true,
+      "matricula": true
+     },
+     "PG09": {
+      "estado": "No presentado"
+     },
+     "PG10": {
+      "revisado": true,
+      "checks": [
+       true,
+       false,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       false
+      ]
+     }
+    },
+    "obs": {
+     "PA01": "Galpón 1: 40 de 120 aves con jadeo; galpón 2: 81 de 120, sin ventilación.",
+     "PA10": "Mortalidad acumulada de 12,7 % en los últimos 5 ciclos."
+    },
+    "firmas": {
+     "productor": "Hernán Darío Mejía",
+     "inspector": "Camilo Andrés Peña"
+    },
+    "guardado": "2026-04-20T15:30:00",
+    "aprobada": {
+     "por": "coordinador",
+     "fecha": "2026-04-21T10:00:00"
+    },
+    "obsGeneral": "Primera visita del proceso. Se acuerda plan de mejora en ventilación y documentos del POE.",
+    "plan": {
+     "PA01": {
+      "accion": "Instalar ventiladores en el galpón 2",
+      "resp": "Hernán Mejía",
+      "plazo": "2026-07-30"
+     },
+     "PG04": {
+      "accion": "POE firmado por el MVZ",
+      "resp": "Hernán Mejía",
+      "plazo": "2026-06-30"
+     }
+    }
+   }
+  },
+  {
+   "id": "EVA-2026-00088",
+   "datos": {
+    "id": "EVA-2026-00088",
+    "finca": "FIN-2026-00417",
+    "sp": "pato",
+    "fecha": "2026-10-15",
+    "inspector": "inspector",
+    "estado": "En proceso",
+    "proceso": "PRC-2026-0001",
+    "visita": 1,
+    "base": "EVA-2026-00072",
+    "apertura": {
+     "hora": "07:10",
+     "atiende": "Luis Pérez (mayordomo)",
+     "ingreso": "08:00"
+    },
+    "pobConfirmada": 812,
+    "resp": {
+     "PR01": {
+      "rev": true,
+      "aux": {
+       "0": true,
+       "1": true,
+       "2": true,
+       "3": true
+      }
+     },
+     "PR02": {
+      "units": [
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55
+      ]
+     },
+     "PR03": {
+      "total": 20,
+      "part": 17
+     },
+     "PR04": {
+      "rev": true,
+      "aux": {
+       "0": 812,
+       "1": 30,
+       "2": 20,
+       "3": false
+      }
+     },
+     "PR05": {
+      "units": [
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       0,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       55,
+       100,
+       100
+      ]
+     },
+     "PR06": {
+      "rev": true,
+      "aux": {
+       "0": true,
+       "1": true,
+       "2": true,
+       "3": true
+      }
+     },
+     "PR07": {
+      "units": [
+       100,
+       100
+      ]
+     },
+     "PR08": {
+      "rev": true,
+      "aux": {
+       "0": 812,
+       "1": 25,
+       "2": 24,
+       "3": false
+      }
+     },
+     "PR09": {
+      "rev": true,
+      "aux": {
+       "0": true,
+       "1": true,
+       "2": false
+      }
+     },
+     "PR12": {
+      "rev": true,
+      "aux": {
+       "0": true,
+       "1": 15,
+       "2": true,
+       "3": true,
+       "4": false
+      }
+     },
+     "PA01": {
+      "total": 240,
+      "part": 80,
+      "g": [
+       {
+        "total": 120,
+        "part": 6
+       },
+       {
+        "total": 120,
+        "part": 74
+       }
+      ]
+     },
+     "PA02": {
+      "total": 240,
+      "part": 12,
+      "g": [
+       {
+        "total": 120,
+        "part": 4
+       },
+       {
+        "total": 120,
+        "part": 8
+       }
+      ]
+     },
+     "PA03": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       55,
+       55,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       0,
+       100,
+       55,
+       0,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA04": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       0,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55
+      ]
+     },
+     "PA05": {
+      "units": [
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       55,
+       0,
+       55,
+       100,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       55,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       55
+      ]
+     },
+     "PA06": {
+      "units": [
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       0,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       55,
+       100,
+       100,
+       0,
+       100,
+       100
+      ]
+     },
+     "PA07": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       0,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       0,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA08": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       0,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA09": {
+      "units": [
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       55,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100,
+       100,
+       0,
+       100,
+       55,
+       100,
+       55,
+       100,
+       100,
+       100,
+       100,
+       100
+      ]
+     },
+     "PA10": {
+      "total": 5040,
+      "part": 312
+     },
+     "PG01": {
+      "estado": "Válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": true,
+      "contenido": true,
+      "matricula": true
+     },
+     "PG02": {
+      "estado": "Válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": true,
+      "contenido": true,
+      "matricula": true
+     },
+     "PG03": {
+      "estado": "Válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": true,
+      "contenido": true,
+      "matricula": true
+     },
+     "PG04": {
+      "estado": "No válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": false,
+      "contenido": true
+     },
+     "PG05": {
+      "estado": "No válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": false,
+      "contenido": true
+     },
+     "PG06": {
+      "estado": "Pendiente"
+     },
+     "PG07": {
+      "estado": "Válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": true,
+      "contenido": true,
+      "matricula": true
+     },
+     "PG08": {
+      "estado": "Válido",
+      "legible": true,
+      "sinCorr": true,
+      "firmado": true,
+      "contenido": true,
+      "matricula": true
+     },
+     "PG10": {
+      "revisado": true,
+      "checks": [
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       true,
+       false,
+       false
+      ]
+     }
+    },
+    "obs": {
+     "PA01": "Galpón 1 mejoró con ventiladores (6 de 120). Galpón 2: ventiladores apagados, 74 de 120 aves con jadeo."
+    },
+    "firmas": {},
+    "guardado": null,
+    "plan": {
+     "PA01": {
+      "accion": "Instalar ventiladores en el galpón 2",
+      "resp": "Hernán Mejía",
+      "plazo": "2026-07-30"
+     },
+     "PG04": {
+      "accion": "POE firmado por el MVZ",
+      "resp": "Hernán Mejía",
+      "plazo": "2026-06-30"
+     }
+    },
+    "anterior": {
+     "id": "EVA-2026-00072",
+     "fecha": "2026-04-20",
+     "visita": 0,
+     "total": 69.2,
+     "med": {
+      "MBR": 61.59090909090909,
+      "MBA": 79.72727272727273,
+      "MBG": 40
+     },
+     "scores": {
+      "PR01": 100,
+      "PR02": 85.5,
+      "PR03": 100,
+      "PR04": 0,
+      "PR05": 82,
+      "PR06": 100,
+      "PR07": 55,
+      "PR08": 55,
+      "PR09": 0,
+      "PR10": null,
+      "PR11": 0,
+      "PR12": 100,
+      "PA01": 55,
+      "PA02": 100,
+      "PA03": 82.5,
+      "PA04": 83.6,
+      "PA05": 79.6,
+      "PA06": 88.3,
+      "PA07": 81.7,
+      "PA08": 81.6,
+      "PA09": 75.1,
+      "PA10": 55,
+      "PA11": 94.6,
+      "PG01": 100,
+      "PG02": 100,
+      "PG03": 100,
+      "PG04": 0,
+      "PG05": 0,
+      "PG06": 0,
+      "PG07": 0,
+      "PG08": 100,
+      "PG09": 0,
+      "PG10": 0
+     }
+    }
+   }
+  },
+  {
+   "id": "EVA-2026-00091",
+   "datos": {
+    "id": "EVA-2026-00091",
+    "finca": "FIN-2026-00431",
+    "sp": "ganso",
+    "fecha": "2026-10-17",
+    "inspector": "inspector2",
+    "estado": "Programada",
+    "asignacion": {
+     "por": "coordinador",
+     "fecha": "2026-10-01T09:00:00",
+     "inspector": "inspector2",
+     "fechaVisita": "2026-10-17"
+    },
+    "proceso": "PRC-2026-0002",
+    "visita": 0,
+    "apertura": {},
+    "pobConfirmada": null,
+    "resp": {},
+    "obs": {},
+    "firmas": {},
+    "guardado": null
+   }
+  }
+ ]
+}

@@ -5,7 +5,7 @@ set -euo pipefail
 BD="${1:-eba}"
 DIR="$(cd "$(dirname "$0")" && pwd)"
 createdb "$BD" 2>/dev/null || echo "La base de datos $BD ya existe: se recrea el esquema eba."
-for f in 01_esquema 02_catalogos 03_metodologia 04_datos_ejemplo 05_pruebas 06_actualizacion_v0_24; do
+for f in 01_esquema 02_catalogos 03_metodologia 04_datos_ejemplo 05_pruebas 06_actualizacion_v0_24 07_actualizacion_v0_25 08_pruebas_v0_25; do
   echo "→ $f.sql"
   psql -d "$BD" -v ON_ERROR_STOP=1 -q -f "$DIR/$f.sql" > /dev/null
 done

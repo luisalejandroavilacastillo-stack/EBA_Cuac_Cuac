@@ -4,9 +4,10 @@
 
 /* ---------------- sesión y seguridad ---------------- */
 const LIMITE = 15 * 60; // segundos de inactividad
-let SES = null, restante = LIMITE, reloj = null, intentos = 0, bloqueoHasta = 0, rolElegido = "inspector";
-function iniciarSesion(rol) {
-  SES = { rol, desde: new Date().toISOString() }; restante = LIMITE;
+let SES = null, restante = LIMITE, reloj = null, intentos = 0, bloqueoHasta = 0, rolElegido = "inspector", usuarioIngreso = null;   // perfil elegido y usuario que pasó la contraseña
+/** k = clave del usuario de demostración; el perfil (rol) sale de USUARIOS[k].perfil. */
+function iniciarSesion(k) {
+  SES = { rol: (USUARIOS[k] && USUARIOS[k].perfil) || k, u: k, desde: new Date().toISOString() }; restante = LIMITE;
   try { sessionStorage.setItem("eba.ses", JSON.stringify(SES)); } catch (e) { }
   log("Inicio de sesión con verificación en dos pasos");
   clearInterval(reloj); reloj = setInterval(tic, 1000);
@@ -16,6 +17,8 @@ function cerrarSesion(motivo) {
   if (SES) log(motivo || "Cierre de sesión");
   SES = null; clearInterval(reloj);
   try { sessionStorage.removeItem("eba.ses"); } catch (e) { }
+  // Cierra también la sesión real del servidor (si se ingresó por la plataforma Angular).
+  try { if (window.EBA_BD && window.EBA_BD.modo === "bd") fetch("/api/auth/salir", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ motivo: motivo || "Cierre de sesión" }) }).catch(() => {}); } catch (e) { }
   cerrarCapas(); location.hash = "#/ingreso"; render();
   if (motivo) toast(motivo);
 }

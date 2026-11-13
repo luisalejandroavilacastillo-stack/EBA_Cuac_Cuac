@@ -9,7 +9,7 @@ let COMPARAR_REP = "";
 /** Evaluaciones que entran en el reporte según los filtros (las anuladas nunca cuentan). */
 function datosReporte(flt) {
   const vis = fincasVisibles().map((f) => f.id);
-  return EVALS.filter((e) => e.estado !== "Anulada" && vis.includes(e.finca) && (!flt.sp || e.sp === flt.sp) && (!flt.finca || e.finca === flt.finca)
+  return EVALS.filter((e) => e.estado !== "Anulada" && vis.includes(e.finca) && enHistorial(e) && (!flt.sp || e.sp === flt.sp) && (!flt.finca || e.finca === flt.finca)
       && (!flt.estado || e.estado === flt.estado) && (!flt.visita || (flt.visita === "inicial" ? !e.visita : !!e.visita))
       && (!flt.desde || e.fecha >= flt.desde) && (!flt.hasta || e.fecha <= flt.hasta))
     .sort((a, b) => (b.fecha || "").localeCompare(a.fecha || "") || (b.visita || 0) - (a.visita || 0));

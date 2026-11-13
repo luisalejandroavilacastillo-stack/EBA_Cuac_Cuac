@@ -1,0 +1,40 @@
+@if (copia(); as ev) {
+<div class="encabezado"><div><h1>Cierre de la visita</h1><p>Se presentan los resultados al productor y se deja copia de la forma oficial. Al finalizar, la visita pasa al coordinador para su aprobación.</p></div>
+  <a class="btn btn-sec" [routerLink]="['/visitas', ev.id, 'resultado']">Ver resultado preliminar</a></div>
+@if (devuelta(); as d) {
+  <div class="aplica aviso-devuelta"><span>↩</span><span><b>El coordinador devolvió la visita</b> ({{ datos.nombreUsuario(d.por) }}, {{ fechaCorta(d.fecha) }}): «{{ d.obs }}». Corrija lo indicado y vuelva a enviarla desde el cierre.</span></div>
+}
+@if (ev.estado === 'Pendiente de aprobación') {
+  <div class="aplica aviso-revision"><span>⏳</span><span><b>Enviada al coordinador.</b> La visita está pendiente de aprobación; no se puede modificar mientras la revisa.</span></div>
+}
+<div class="rejilla r-2">
+  <section class="panel"><h3>Antes de finalizar</h3>
+    @if (faltantes().length) {
+      <ul style="margin:0;padding-left:0;list-style:none;display:grid;gap:8px">@for (x of faltantes(); track x[0]) {
+        <li class="aplica" style="background:#F8EDEC;color:var(--rojo);margin:0;justify-content:space-between"><span>{{ x[0] }}</span>
+          @if (x[1]; as paso) { <a class="btn btn-sec btn-chico" [routerLink]="['/visitas', ev.id, paso]">Ir</a> }</li> }</ul>
+    } @else { <p class="etiqueta e-ok" style="font-size:14px">Todo lo obligatorio está diligenciado.</p> }
+    @if (r()?.provisional) { <div class="aplica"><span>ℹ</span><span>Hay documentos pendientes: el resultado quedará provisional y el productor tiene 1 día hábil para entregarlos.</span></div> }
+  </section>
+  <section class="panel"><h3>Firmas</h3>
+    <div class="rejilla r-2">
+      <div><div class="etq">Productor o encargado</div><div class="firma" [class.ok]="firmas().productor" tabindex="0" role="button" (click)="firmar('productor')" (keydown.enter)="firmar('productor')">{{ firmas().productor || 'Toque para firmar' }}</div></div>
+      <div><div class="etq">Inspector</div><div class="firma" [class.ok]="firmas().inspector" tabindex="0" role="button" (click)="firmar('inspector')" (keydown.enter)="firmar('inspector')">{{ firmas().inspector || 'Toque para firmar' }}</div></div>
+    </div>
+    <div class="campo" style="margin-top:14px"><label for="og">Observación general</label><textarea id="og" [value]="ev['obsGeneral'] || ''" [disabled]="!ed()" (input)="obsGeneral($any($event.target).value)"></textarea></div>
+    @if (seg(); as s) {
+      @if (s.programa) {
+        <div class="bloque-seg"><h4>Seguimiento {{ s.sig }} de {{ s.max }}</h4>
+          <p class="muted texto-chico" style="margin:2px 0 8px">La finca no cumple ({{ s.motivos.join(' · ') }}). Proponga la fecha acordada con el productor: el coordinador la confirma al aprobar la inspección.</p>
+          <div class="campo"><label for="segF">Fecha propuesta para la próxima visita</label><input type="date" id="segF" [min]="hoy" [value]="s.fecha" (change)="segFecha($any($event.target).value)">
+            <span class="ayuda-campo">{{ sugerencia() }}</span><span class="aviso-seg">{{ s.aviso }}</span></div></div>
+      } @else if (s.ultimo) {
+        <p class="aplica"><span>ℹ</span><span>Es el último seguimiento del proceso: si no cumple, el coordinador decide si lo amplía a {{ MAX }}.</span></p>
+      }
+    }
+    <span class="error-campo" role="alert">{{ error() }}</span>
+    <div class="acciones"><span class="estado-guardado" [class.sin-conexion]="trabajo.estado() === 'sin-conexion'" style="margin-right:auto" role="status">{{ textoGuardado() }}</span>
+      <button type="button" class="btn btn-primario" [disabled]="faltantes().length > 0 || !ed() || enviando()" (click)="finalizar()">{{ ev.estado === 'Devuelta' ? 'Corregida: reenviar a aprobación' : 'Finalizar y enviar a aprobación' }}</button></div>
+  </section>
+</div>
+}

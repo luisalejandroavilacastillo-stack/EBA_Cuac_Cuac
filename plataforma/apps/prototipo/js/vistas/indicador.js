@@ -43,7 +43,7 @@ function pieIndicadorHTML(ev, code, prev, next) {
 /* ---- pantalla de un indicador ---- */
 function vIndicador(ev, code) {
   const ind = IND[code]; if (!ind || ind.sp !== ev.sp) return vApertura(ev);
-  const ctx = contexto(ev), na = aplica(ind, ctx), ed = SES.rol !== "productor" && ev.estado !== "Finalizada";
+  const ctx = contexto(ev), na = aplica(ind, ctx), ed = puedeEvaluar(ev);
   const r = (ev.resp[code] = ev.resp[code] || {});
   const todos = lista(ev), k = todos.indexOf(ind), prev = todos[k - 1], next = todos[k + 1];
   const html = `<div class="eval"><nav class="panel indice ${leerPref("soloPend") ? "solo-pend" : ""}" aria-label="Indicadores de la norma" id="indice">${indiceEvalHTML(ev, code)}</nav>
@@ -73,7 +73,7 @@ function vIndicador(ev, code) {
 /** Captura y cálculo de un indicador dentro de un contenedor con #captura y #calculo: la pantalla del indicador
  *  o una ventana flotante (p. ej., jadeo y amontonamiento desde el recorrido). Cada cambio se guarda de inmediato. */
 function montarCaptura(ev, code, cont, alGuardar) {
-  const ind = IND[code], ctx = contexto(ev), ed = SES.rol !== "productor" && ev.estado !== "Finalizada";
+  const ind = IND[code], ctx = contexto(ev), ed = puedeEvaluar(ev);
   const r = (ev.resp[code] = ev.resp[code] || {});
   const cap = cont.querySelector("#captura"), calc = cont.querySelector("#calculo");
   const dis = ed ? "" : "disabled";
@@ -252,7 +252,7 @@ function lugarUnidad(ind, ctx, i) {
 /** Ventana flotante para calificar un indicador sin salir de la pantalla actual (p. ej., jadeo y amontonamiento desde el recorrido).
  *  Usa la misma captura y cálculo de la pantalla del indicador; lo registrado se guarda al instante. alCerrar refresca la pantalla de fondo. */
 function abrirIndicadorFlotante(ev, code, alCerrar) {
-  const ind = IND[code], ed = SES.rol !== "productor" && ev.estado !== "Finalizada";
+  const ind = IND[code], ed = puedeEvaluar(ev);
   modal(`<div class="modal-cab"><div class="num-ind">${ind.num} · ${MEDIDA[ind.g]}</div><h3>${esc(ind.name)} ${btnFicha(code)}</h3><p class="pregunta">${esc(ind.q)}</p></div>
     <div class="modal-cuerpo"><div class="ficha-cuerpo ficha-flotante"><div id="captura"></div><div id="calculo"></div></div></div>
     <div class="acciones"><span class="guardado" id="guardadoF" style="margin-right:auto">${ev.guardado ? "💾 Guardado " + hora(new Date(ev.guardado)) : ""}</span><button class="btn btn-primario" data-ok>${ed ? "Guardar y volver" : "Cerrar"}</button></div>`, (c) => {

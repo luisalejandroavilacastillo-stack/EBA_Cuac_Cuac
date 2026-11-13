@@ -1,0 +1,24 @@
+%% Asignar, evaluar, aprobar o devolver · v0.25 (CU-08, CU-27, CU-15, CU-28, CU-29)
+flowchart LR
+  subgraph COORD [Coordinador / Administrador]
+    A([Especie «Por asignar»]) --> B[Asignar inspección:<br/>tipo de visita, fecha, inspector]
+    B --> RA{¿Reasignar?}
+    RA -- Sí --> B2[Otro inspector u otra fecha<br/>avisos al nuevo y al anterior] --> RA
+  end
+  subgraph INSP [Inspector asignado]
+    C[Aviso «Nueva inspección asignada»] --> D[Apertura · recorrido por puntos<br/>ficha del ave · lista de indicadores]
+    D --> E[Cierre: plan de mejora,<br/>fecha propuesta, firmas]
+    E --> F[Finalizar y enviar]
+    DV2[Ver observación · corregir] --> F
+  end
+  subgraph REV [Solo el coordinador]
+    G{Revisar puntaje automático} -- Devolver con observación --> DV[Devuelta]
+    G -- Aprobar --> H[Finalizada · Aprobada]
+  end
+  RA -- No --> C
+  F --> P[Pendiente de aprobación] --> G
+  DV --> DV2
+  H --> I{¿Cumple?}
+  I -- Sí --> J[Constancia de cumplimiento]
+  I -- No --> K[Seguimiento programado]
+  H --> L[Productor ve el resultado]

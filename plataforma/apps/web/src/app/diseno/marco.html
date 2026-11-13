@@ -1,14 +1,47 @@
-<aside class="menu">
-  <a class="marca" routerLink="/inicio"><img src="logo-eba-blanco.svg" alt="EBA Cuac Cuac"></a>
-  <nav>
-    @for (o of opciones(); track o.ruta) {
-      <a [routerLink]="'/' + o.ruta" routerLinkActive="activo">{{ o.texto }}</a>
+<div class="app">
+  <nav class="rail" [class.abierto]="menuAbierto()" id="rail" aria-label="Módulos">
+    <div class="rail-logo"><img src="logo-eba-blanco.svg" alt="EBA Cuac Cuac · Bienestar animal en patos y gansos"></div>
+    <ul class="nav">
+      @for (o of opciones(); track o.ruta) {
+        <li><a [routerLink]="'/' + o.ruta" routerLinkActive #rla="routerLinkActive" [attr.aria-current]="rla.isActive ? 'page' : null">
+          <app-icono [nombre]="o.modulo" /><span>{{ o.texto }}</span></a></li>
+      }
+    </ul>
+    @if (sesion.usuario(); as u) {
+      <div class="rail-pie"><strong>{{ u.nombre }}</strong>{{ sesion.nombrePerfil() }}<br>
+        <button type="button" class="btn btn-sec btn-chico" style="margin-top:10px" (click)="salir()">Cerrar sesión</button></div>
     }
+    <div class="rail-franja" aria-hidden="true"></div>
   </nav>
-  <label class="rol">Perfil (temporal)
-    <select [value]="rol()" (change)="cambiarRol($any($event.target).value)">
-      @for (r of roles; track r.valor) { <option [value]="r.valor">{{ r.texto }}</option> }
-    </select>
-  </label>
-</aside>
-<main><router-outlet /></main>
+  <div class="principal">
+    <header class="barra">
+      <button type="button" class="btn btn-sec btn-chico menu-movil" aria-controls="rail" [attr.aria-expanded]="menuAbierto()" (click)="menuAbierto.set(!menuAbierto())">Menú</button>
+      <div class="ruta"><a routerLink="/inicio">Inicio</a>
+        @if (migas.niveles(); as ns) { @for (n of ns; track n.texto) { / @if (n.ruta) { <a [routerLink]="n.ruta">{{ n.texto }}</a> } @else { <b>{{ n.texto }}</b> } } }
+        @else if (titulo() && titulo() !== 'Inicio') { / <b>{{ titulo() }}</b> }</div>
+      <div class="notif">
+        <button type="button" class="btn-notif" aria-controls="notif-panel" [attr.aria-expanded]="panelAbierto()" (click)="alternarPanel($event)">
+          <app-icono nombre="campana" /><span class="txt">Notificaciones</span>
+          @if (avisos.mios().length) { <span class="burbuja">{{ avisos.mios().length }}</span> }
+        </button>
+        <div class="notif-panel" id="notif-panel" [hidden]="!panelAbierto()">
+          <div class="notif-cab"><b>Avisos</b><span class="muted">{{ avisos.mios().length }} sin leer</span></div>
+          @for (a of avisos.mios(); track a.id) {
+            <a class="notif-item aviso" href="" (click)="$event.preventDefault(); abrirAviso(a.id, a.href)">
+              <span class="punto" style="--c:var(--azul)"></span><span><b>{{ a.txt }}</b><small>{{ a.t.slice(0, 10) }}</small></span></a>
+          } @empty {
+            <p class="muted" style="padding:14px 16px;margin:0">No tiene avisos.</p>
+          }
+          <a class="notif-pie" routerLink="/inicio">Ver todo en el inicio</a>
+        </div>
+      </div>
+    </header>
+    <main class="contenido" id="contenido">
+      @if (datos.sinConexion() || sesion.sinConexion()) { <p class="aviso-sin-senal no-imprimir" role="status">📶 Sin señal: está trabajando con los datos guardados en este equipo. Lo que registre se envía solo cuando vuelva la conexión.</p> }
+      <router-outlet /></main>
+    <app-ventanas-visita />
+    <app-ficha-indicador />
+    <app-asistente-flotante />
+    <div class="pie" aria-hidden="true"></div>
+  </div>
+</div>

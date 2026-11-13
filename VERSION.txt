@@ -1,1 +1,1 @@
-b87b9fc Pruebas: elegir el departamento cuando el registro usa el catálogo de la platafor
+1.0.0 · plataforma completa (Angular + API + MariaDB) y documentación actualizada

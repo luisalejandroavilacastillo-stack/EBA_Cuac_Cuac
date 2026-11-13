@@ -9,8 +9,14 @@
 /* ---------------- configuración (la define el administrador en Parametrización) ---------------- */
 const ASIS_MODELOS = [["claude-sonnet-5-5", "Claude Sonnet 5.5 (equilibrado)"], ["claude-haiku-5-5", "Claude Haiku 5.5 (rápido y económico)"], ["claude-opus-5-5", "Claude Opus 5.5 (más capaz)"]];
 const ASIS_CFG_DEF = { modo: "local", endpoint: "https://api.anthropic.com/v1/messages", modelo: "claude-sonnet-5-5", clave: "", maxTokens: 900 };
-const cfgAsistente = () => Object.assign({}, ASIS_CFG_DEF, store.get("asistente", {}));
-const nombreModo = (m) => ({ local: "Modo local (sin conexión)", claude: "IA · Claude (conexión directa)", proxy: "IA · Claude (servidor intermedio)" })[m] || m;
+/** Configuración vigente. Si el servidor de la plataforma tiene Gemini configurado (GEMINI_API_KEY en el .env), se usa ese. */
+const iaServidor = () => (window.EBA_BD && window.EBA_BD.asistenteServidor && window.EBA_BD.asistenteServidor.disponible ? window.EBA_BD.asistenteServidor : null);
+const cfgAsistente = () => {
+  const c = Object.assign({}, ASIS_CFG_DEF, store.get("asistente", {})), s = iaServidor();
+  if (s) Object.assign(c, { modo: "gemini", modelo: s.modelo, clave: "", endpoint: "/api/asistente" });
+  return c;
+};
+const nombreModo = (m) => ({ local: "Modo local (sin conexión)", claude: "IA · Claude (conexión directa)", proxy: "IA · Claude (servidor intermedio)", gemini: "IA · Gemini (servidor de la plataforma)" })[m] || m;
 let CHAT = {};   // conversaciones de esta sesión, por evaluación
 
 /* ---------------- consejos prácticos por indicador (orientativos; complementan la escala de la norma) ---------------- */
@@ -97,7 +103,7 @@ function evaluacionesDeFinca(fid) {
   return EVALS.filter((e) => e.finca === fid && e.estado !== "Programada" && e.estado !== "Anulada").sort((a, b) => b.fecha.localeCompare(a.fecha));
 }
 function fincasAsistente() {
-  const u = USUARIOS[SES.rol];
+  const u = yo();
   return SES.rol === "productor" ? FINCAS.filter((f) => f.productor === u.nombre) : FINCAS;
 }
 /** Evaluación por defecto: la última finalizada de la finca; si no hay, la última registrada. */
@@ -247,6 +253,8 @@ async function preguntarIA(q, cx, historial) {
   mensajes.push({ role: "user", content: q });
   const cuerpo = { model: cfg.modelo, max_tokens: +cfg.maxTokens || 900, system: typeof promptAsistente === "function" ? promptAsistente(cx, q) : promptSistema(cx), messages: mensajes };
   const cab = { "content-type": "application/json" };
+  // El servidor cambia los nombres de fincas por «[finca]» antes de enviarlos; aquí se devuelve el nombre real.
+  if (cfg.modo === "gemini") return preguntarServidor(cuerpo).then((t) => t.replace(/\[finca\]/g, cx && cx.f ? cx.f.nombre : "la finca"));
   if (cfg.modo === "claude") {
     if (!cfg.clave) throw new Error("falta la clave de la API");
     Object.assign(cab, { "x-api-key": cfg.clave, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" });
@@ -263,6 +271,19 @@ async function preguntarIA(q, cx, historial) {
     return texto;
   } catch (e) { throw new Error(e.name === "AbortError" ? "la IA tardó demasiado en responder" : e.message || "sin conexión"); }
   finally { clearTimeout(t); }
+}
+
+/** Gemini por medio de la API de la plataforma: la clave queda en el servidor y allí se quitan los datos personales. */
+async function preguntarServidor(cuerpo) {
+  let res;
+  try {
+    res = await fetch("/api/asistente", { method: "POST", headers: { "content-type": "application/json" }, cache: "no-store",
+      body: JSON.stringify({ sistema: cuerpo.system, mensajes: cuerpo.messages, maxTokens: cuerpo.max_tokens }), signal: AbortSignal.timeout(45000) });
+  } catch (e) { throw new Error(e.name === "TimeoutError" ? "la IA tardó demasiado en responder" : "sin conexión con el servidor"); }
+  const datos = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(datos.error || `error ${res.status}`);
+  if (!datos.texto) throw new Error("respuesta vacía");
+  return datos.texto;
 }
 
 /* ---------------- formato de las respuestas (Markdown mínimo y seguro) ---------------- */
@@ -335,7 +356,7 @@ function vAsistente(evId) {
     conv.push({ rol: "u", texto: q }); pinta();
     const c = cfgAsistente();
     if (c.modo === "local") conv.push({ rol: "a", texto: typeof responderAsistente === "function" ? responderAsistente(q, cx) : responderLocal(q, cx), fuente: "local", nota: "Respuesta con los datos de su evaluación y la norma." });
-    else if (typeof dentroDeTema === "function" && !dentroDeTema(q, cx)) conv.push({ rol: "a", texto: FUERA_DE_TEMA, fuente: "local" });
+    else if (c.modo !== "gemini" && typeof dentroDeTema === "function" && !dentroDeTema(q, cx)) conv.push({ rol: "a", texto: FUERA_DE_TEMA, fuente: "local" });
     else {
       caja.insertAdjacentHTML("beforeend", '<div class="msg msg-a msg-escribiendo" id="escr">El asistente está escribiendo…</div>'); caja.scrollTop = caja.scrollHeight;
       try { conv.push({ rol: "a", texto: await preguntarIA(q, cx, previo), fuente: "ia", nota: "Respuesta generada con IA a partir de su evaluación. Verifique con el inspector o su veterinario." }); }
@@ -354,7 +375,12 @@ function vAsistente(evId) {
 
 /* ---------------- configuración en Parametrización (administrador) ---------------- */
 function panelConfigAsistente() {
-  const c = cfgAsistente();
+  const c = cfgAsistente(), srv = iaServidor();
+  if (srv) return `<section class="panel" id="cfgAsis"><h3>Asistente de la norma (IA)</h3>
+    <p style="margin-top:0"><span class="etiqueta e-ok">Activo</span> El asistente responde con <b>Gemini</b> (modelo <code>${esc(srv.modelo)}</code>) desde el servidor de la plataforma, para todos los perfiles.</p>
+    <p class="muted">La clave está en el archivo <code>.env</code> del servidor (GEMINI_API_KEY) y nunca llega al navegador. Antes de enviar cada pregunta, el servidor quita nombres de personas y fincas, documentos, correos y teléfonos. Para cambiar el modelo, edite GEMINI_MODELO en el <code>.env</code> y reinicie la API. Si Gemini no responde, el asistente contesta en modo local con el texto de la norma.</p>
+    <div class="acciones" style="justify-content:flex-start"><button class="btn btn-sec" id="cfProbar">Probar conexión</button></div>
+    <p class="muted" id="cfRes" style="font-size:13px"></p></section>`;
   return `<section class="panel" id="cfgAsis"><h3>Asistente de la norma (IA)</h3>
     <p class="muted" style="margin-top:0">El asistente está en todos los perfiles y responde solo sobre la norma del ICA y las evaluaciones. En modo local no usa internet. Con IA, envía la pregunta y el resumen de la evaluación (sin documento, correo ni teléfono) a la API de Mensajes de Claude.</p>
     <div class="fila"><div class="campo"><label for="cfMod">Modo</label><select id="cfMod">
@@ -372,6 +398,12 @@ function panelConfigAsistente() {
 }
 function enlazarConfigAsistente(rerender) {
   const q = (s) => raiz.querySelector(s); if (!q("#cfgAsis")) return;
+  if (!q("#cfMod")) {                                          // Gemini configurado en el servidor
+    q("#cfProbar").onclick = async () => { q("#cfRes").textContent = "Probando…";
+      try { const t = await preguntarIA("Responda solo: conexión correcta.", { f: null, especies: ["pato", "ganso"] }, []); q("#cfRes").textContent = "✔ Conexión correcta. Respuesta: " + t.slice(0, 120); }
+      catch (e) { q("#cfRes").textContent = "✖ No se pudo conectar: " + e.message; } };
+    return;
+  }
   const vis = () => { const m = q("#cfMod").value; q("#cfEndC").style.display = m === "proxy" ? "" : "none"; q("#cfClvC").style.display = m === "claude" ? "" : "none"; q("#cfMdl").disabled = m === "local"; };
   vis(); q("#cfMod").onchange = vis;
   const leer = () => {

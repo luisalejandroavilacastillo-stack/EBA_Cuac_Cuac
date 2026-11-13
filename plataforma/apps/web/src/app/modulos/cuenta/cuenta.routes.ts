@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
-import { EnConstruccion } from '../../compartido/en-construccion';
 
-/** Mi cuenta y seguridad: Datos de acceso y sesiones activas. */
+/** Mi cuenta y seguridad (CU-03). */
 export const RUTAS_CUENTA: Routes = [
-  { path: '', component: EnConstruccion, data: { titulo: 'Mi cuenta y seguridad', descripcion: 'Datos de acceso y sesiones activas.', cu: 'CU-03' } },
+  { path: '', title: 'Mi cuenta y seguridad · EBA', loadComponent: () => import('./cuenta').then((m) => m.Cuenta) },
 ];

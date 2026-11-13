@@ -1,0 +1,56 @@
+@if (copia(); as ev) { @if (ctx(); as c) {
+<div class="encabezado"><div><h1>Apertura de la visita</h1>
+    <p>{{ c.f.nombre }} · {{ ev.sp === 'pato' ? 'Patos' : 'Gansos' }} · {{ c.e.proposito }} · <b>{{ ev.proceso }} · {{ nombreVisita() }}</b></p></div>
+  @if (ev.estado === 'Finalizada') { <a class="btn btn-primario" [routerLink]="['/visitas', ev.id, 'resultado']">Ver resultados</a> }
+  @else {
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn btn-sec" [routerLink]="['/visitas', ev.id, destinoLista()]">Continuar evaluando lista de indicadores</a>
+      <a class="btn btn-primario" [routerLink]="['/visitas', ev.id, 'recorrido']">Ir al recorrido por puntos</a></div>
+  }
+</div>
+@if (anterior(); as a) {
+  <div class="aplica" style="margin-bottom:16px"><span>↻</span><span><b>{{ nombreVisita() }}.</b> Se retomó lo registrado en {{ a.id }} ({{ fechaLarga(a.fecha) }}, {{ fmt(a.total) }} puntos). Actualice los indicadores que cambiaron y complete los que quedaron pendientes; cada pantalla muestra el puntaje de la visita anterior. La evaluación anterior no se modifica.</span></div>
+}
+<div class="rejilla r-2">
+  <section class="panel"><h3>Datos de la apertura</h3>
+    <form (submit)="$event.preventDefault()">
+      <div class="fila">
+        <div class="campo"><label for="a1">Hora de inicio</label><input id="a1" type="time" [value]="ap()['hora'] || ''" [disabled]="!ed()" (input)="campo('hora', $any($event.target).value)"></div>
+        <div class="campo"><label for="a3">Ingreso a galpones</label><input id="a3" type="time" [value]="ap()['ingreso'] || ''" [disabled]="!ed()" (input)="campo('ingreso', $any($event.target).value)"></div></div>
+      <div class="campo"><label for="a2">Persona que atiende</label><input id="a2" [value]="ap().atiende || ''" [disabled]="!ed()" (input)="campo('atiende', $any($event.target).value)"></div>
+      <div [class.fila]="mixta()" [class.pob-especies]="mixta()">
+        @for (x of especies(); track x.sp) {
+          <div class="campo" [class.campo-actual]="mixta() && x.actual"><label [for]="'a4_' + x.sp">{{ nombreEspecie(x.sp) }} en la finca el día de la visita@if (mixta() && x.actual) { <span class="etiqueta e-info">se inspecciona</span> }</label>
+            <input [id]="'a4_' + x.sp" type="number" min="0" [value]="x.n" [disabled]="!ed()" (change)="poblacion(x.sp, $any($event.target).value, true)"></div>
+        }
+      </div>
+      <p class="tramo-reg" [class.t-trasp]="c.tramo === 'traspatio'" [class.t-com]="c.tramo !== 'traspatio'"><b>{{ nombreEsp() }}: {{ c.nEsp }} aves · {{ c.tramo === 'traspatio' ? 'Traspatio' : 'Comercial' }}</b>
+        <span>{{ mixta() ? '(' + c.pobFinca + ' aves en la finca). ' : '' }}El tramo (200 aves o más = comercial) y la muestra (Tabla 3) se calculan con las aves de la especie que se inspecciona.</span></p>
+      @if (c.e.conCorral === false) {
+        <div class="fila">
+          <div class="campo"><label for="a5">Puntos de inspección (1 a 3)</label><input id="a5" type="number" min="1" max="3" [value]="c.plan.puntos" [disabled]="!ed()" (change)="campo('puntosSC', $any($event.target).value)"></div>
+          <div class="campo"><label for="a6">Aves por punto (2 a 5)</label><input id="a6" type="number" min="2" max="5" [value]="c.plan.avesPunto" [disabled]="!ed()" (change)="campo('avesPuntoSC', $any($event.target).value)"></div></div>
+      }
+      @if (c.tramo === 'traspatio' && ev.sp === 'pato') {
+        <div class="fila">
+          <div class="campo"><label for="a7">Bebederos en el predio</label><input id="a7" type="number" min="1" [value]="ap().bebederos ?? 2" [disabled]="!ed()" (change)="campo('bebederos', $any($event.target).value)"><span class="ayuda-campo">En traspatio se revisan todos (6.1.3 y 6.1.5).</span></div>
+          <div class="campo"><label for="a8">Comederos en el predio</label><input id="a8" type="number" min="1" [value]="ap().comederos ?? 2" [disabled]="!ed()" (change)="campo('comederos', $any($event.target).value)"><span class="ayuda-campo">En traspatio se revisan todos (6.1.7).</span></div></div>
+      }
+    </form>
+    <p class="estado-guardado" [class.sin-conexion]="trabajo.estado() === 'sin-conexion'" role="status">{{ textoGuardado() }}</p>
+  </section>
+  <section class="panel"><div class="panel-cab"><h3>Plan de muestreo</h3></div>
+    <div class="rejilla r-3">
+      <div class="kpi" style="--c:var(--semilla)"><div class="v">{{ c.plan.corrales || '—' }}</div><div class="l">Galpones o corrales a inspeccionar</div></div>
+      <div class="kpi" style="--c:var(--siembra)"><div class="v">{{ c.plan.puntosCorral }}</div><div class="l">{{ c.plan.corrales ? 'Puntos por galpón o corral' : 'Puntos' }}</div></div>
+      <div class="kpi" style="--c:var(--campo)"><div class="v">{{ c.plan.aves }}</div><div class="l">Tamaño de la muestra (aves)</div></div></div>
+    <div [innerHTML]="grafica() | html"></div>
+    <p style="margin-top:12px">{{ c.plan.texto }}. Se priorizan las aves de mayor edad.</p>
+    <p><span class="etiqueta" [class.e-info]="c.tramo === 'comercial'" [class.e-gris]="c.tramo !== 'comercial'">{{ c.tramo === 'comercial' ? 'Comercial (200 aves o más): pesos 60 / 25 / 15 y revisión documental' : 'Traspatio (menos de 200 aves): pesos 70 / 30 y sin revisión documental' }}</span></p>
+  </section>
+</div>
+<section class="panel"><h3>Indicadores que no aplican en esta finca</h3>
+  @if (noAplican().length) { <ul style="margin:0;padding-left:18px">@for (x of noAplican(); track x.i.code) { <li><b>{{ x.i.num }} {{ x.i.name }}</b> — {{ x.motivo }}</li> }</ul> }
+  @else { <p class="muted">Todos los indicadores aplican.</p> }
+</section>
+} }

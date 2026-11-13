@@ -3,17 +3,45 @@
 "use strict";
 
 /* ---------------- datos de ejemplo ---------------- */
-const USUARIOS = {
-  inspector: { nombre: "Camilo Andrés Peña", rol: "Inspector ICA", correo: "c.pena@ica.gov.co", doc: "1.110.456.789", ini: "CP" },
-  coordinador: { nombre: "Luz Marina Cárdenas", rol: "Coordinadora ICA", correo: "l.cardenas@ica.gov.co", doc: "40.023.118", ini: "LC" },
-  productor: { nombre: "Hernán Darío Mejía", rol: "Productor", correo: "h.mejia@correo.co", doc: "91.234.567", ini: "HM" },
-  admin: { nombre: "Andrés Felipe Rojas", rol: "Administrador", correo: "a.rojas@ica.gov.co", doc: "80.765.432", ini: "AR" }
+/* Usuarios de demostración. La clave es el usuario; «perfil» es el rol que define los permisos (v0.25):
+   - admin: gestiona usuarios y ve todo el sistema en solo lectura (no evalúa ni aprueba).
+   - coordinador: registra fincas, asigna cada inspección a un inspector y aprueba o devuelve lo que el inspector finaliza.
+   - inspector: solo ve las fincas que le asignaron; diligencia la visita en campo y la finaliza (queda «Pendiente de aprobación»).
+   - productor: ve solo sus fincas y el resultado cuando el coordinador lo aprueba. */
+/* Nombre visible de cada perfil: es el mismo para hombres y mujeres (decisión del 11 de noviembre de 2026). */
+const PERFILES = { admin: "Administrador", coordinador: "Coordinador ICA", inspector: "Inspector ICA", productor: "Productor" };
+const ORDEN_PERFILES = ["inspector", "coordinador", "productor", "admin"];
+const USUARIOS0 = {
+  inspector: { nombre: "Camilo Andrés Peña", perfil: "inspector", correo: "c.pena@ica.gov.co", tipoDoc: "CC", doc: "1110456789", tel: "3104456789", estado: "Activo" },
+  inspector2: { nombre: "Diana Marcela Ortiz", perfil: "inspector", correo: "d.ortiz@ica.gov.co", tipoDoc: "CC", doc: "1098334120", tel: "3123341200", estado: "Activo" },
+  coordinador: { nombre: "Luz Marina Cárdenas", perfil: "coordinador", correo: "l.cardenas@ica.gov.co", tipoDoc: "CC", doc: "40023118", tel: "3150231180", estado: "Activo" },
+  productor: { nombre: "Hernán Darío Mejía", perfil: "productor", correo: "h.mejia@correo.co", tipoDoc: "CC", doc: "91234567", tel: "3154827710", estado: "Activo" },
+  admin: { nombre: "Andrés Felipe Rojas", perfil: "admin", correo: "a.rojas@ica.gov.co", tipoDoc: "CC", doc: "80765432", tel: "3007654321", estado: "Activo" },
+  u_rquintero: { nombre: "Rosa Elena Quintero", perfil: "productor", correo: "rosa.quintero@correo.co", tipoDoc: "CC", doc: "20556871", tel: "3127705518", estado: "Activo" },
+  u_pgil: { nombre: "Pedro Gil Ramírez", perfil: "inspector", correo: "p.gil@ica.gov.co", tipoDoc: "CC", doc: "79331002", tel: "3017331002", estado: "Inactivo" }
 };
+/** Cuentas de usuario (las crea, edita e inactiva el administrador). La clave es el identificador interno. */
+const USUARIOS = (typeof store !== "undefined" && store.get("cuentas", null)) || JSON.parse(JSON.stringify(USUARIOS0));
+/** Completa los campos derivados: nombre del perfil e iniciales. */
+function completarUsuario(x) { x.rol = PERFILES[x.perfil] || x.perfil; x.ini = x.nombre.split(" ").filter(Boolean).map((w) => w[0]).slice(0, 2).join("").toUpperCase(); x.estado = x.estado || "Activo"; return x; }
+Object.values(USUARIOS).forEach(completarUsuario);
+/** Usuario de la sesión actual (SES.u es la clave del usuario; SES.rol, su perfil). */
+const yoClave = () => (SES ? SES.u || SES.rol : null);
+const yo = () => (SES ? USUARIOS[yoClave()] : null);
+/** Inspectores disponibles para asignar: [[clave, usuario], …]. */
+const inspectores = () => Object.entries(USUARIOS).filter(([, x]) => x.perfil === "inspector" && x.estado === "Activo");
+/** Nombre del inspector de una evaluación (guarda la clave del usuario). */
+const nombreInspector = (k) => (USUARIOS[k] ? USUARIOS[k].nombre : k || "Sin asignar");
+/** Estados de una visita que aún no está aprobada (cuentan como «abierta»: no se puede crear otra para la misma finca y especie). */
+const ESTADOS_ABIERTOS = ["Programada", "En proceso", "Devuelta", "Pendiente de aprobación"];
+const esAbierta = (e) => ESTADOS_ABIERTOS.includes(e.estado);
+/** Nombre visible del estado de una visita: la finalizada es la que el coordinador aprobó. */
+const etqEstadoEv = (e) => ({ Programada: "Asignada", Finalizada: "Aprobada" })[e] || e;
 const PERMISOS = {
   inspector: ["inicio", "fincas", "evaluaciones", "reportes", "asistente", "ayuda", "cuenta"],
   coordinador: ["inicio", "fincas", "evaluaciones", "reportes", "asistente", "ayuda", "cuenta"],
   productor: ["inicio", "fincas", "evaluaciones", "asistente", "ayuda", "cuenta"],
-  /* El administrador ve y opera todos los módulos (RN-140: «administrador (todo)»). */
+  /* El administrador tiene todos los permisos (usuarios, fincas, asignación y seguimientos) menos aprobar o devolver inspecciones, que es solo del coordinador. */
   admin: ["inicio", "fincas", "evaluaciones", "reportes", "asistente", "usuarios", "parametros", "bitacora", "ayuda", "cuenta"]
 };
 const FINCAS0 = [
@@ -34,14 +62,14 @@ const HIST = {};   // sin registros anteriores al sistema: las gráficas usan so
 let FINCAS = store.get("fincas", null) || JSON.parse(JSON.stringify(FINCAS0));
 let EVALS = store.get("evals", null);
 let BITACORA = store.get("bitacora", []);
-let PROCESOS = store.get("procesos", {});   // ampliaciones de seguimiento por proceso: { PRC-…: { ampliado: {motivo, por, fecha} } }
-let USUARIOS_LISTA = store.get("usuarios", null) || [
-  { n: "Camilo Andrés Peña", r: "Inspector ICA", d: "1.110.456.789", c: "c.pena@ica.gov.co", e: "Activo", h: 14 },
-  { n: "Luz Marina Cárdenas", r: "Coordinadora ICA", d: "40.023.118", c: "l.cardenas@ica.gov.co", e: "Activo", h: 38 },
-  { n: "Hernán Darío Mejía", r: "Productor", d: "91.234.567", c: "h.mejia@correo.co", e: "Activo", h: 3 },
-  { n: "Rosa Elena Quintero", r: "Productora de traspatio", d: "20.556.871", c: "—", e: "Activo", h: 1 },
-  { n: "Pedro Gil Ramírez", r: "Inspector ICA", d: "79.331.002", c: "p.gil@ica.gov.co", e: "Inactivo", h: 9 },
-  { n: "Ana Lucía Díaz", r: "Consultora externa", d: "52.884.120", c: "a.diaz@uni.edu.co", e: "Pendiente", h: 0 }
-];
-const guardar = () => { store.set("fincas", FINCAS); store.set("evals", EVALS); store.set("bitacora", BITACORA.slice(-200)); store.set("usuarios", USUARIOS_LISTA); store.set("procesos", PROCESOS); };
-const log = (accion) => { BITACORA.push({ t: new Date().toISOString(), u: SES ? USUARIOS[SES.rol].nombre : "—", a: accion }); guardar(); };
+let PROCESOS = store.get("procesos", {});
+let AVISOS = store.get("avisos", []);       // avisos dentro de la aplicación: { id, para (usuario o perfil), t, txt, href, leido }   // ampliaciones de seguimiento por proceso: { PRC-…: { ampliado: {motivo, por, fecha} } }
+
+const guardar = () => { store.set("fincas", FINCAS); store.set("evals", EVALS); store.set("bitacora", BITACORA.slice(-200)); store.set("cuentas", USUARIOS); store.set("procesos", PROCESOS); store.set("avisos", AVISOS.slice(-100)); };
+const log = (accion) => { BITACORA.push({ t: new Date().toISOString(), u: SES ? yo().nombre : "—", a: accion }); guardar(); };
+/** Deja un aviso para un usuario (clave) o para todos los de un perfil ("coordinador"). */
+function avisar(para, txt, href, tipo) {
+  AVISOS.push({ id: "AV-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5), para, t: new Date().toISOString(), txt, href: href || "#/inicio", leido: false, tipo: tipo || "" }); guardar();
+}
+/** Avisos sin leer del usuario actual (los dirigidos a él o a su perfil). */
+const misAvisos = () => (SES ? AVISOS.filter((a) => !a.leido && (a.para === yoClave() || a.para === SES.rol || (SES.rol === "admin" && a.para === "coordinador" && a.tipo !== "aprobar"))) : []);   // aprobar es solo del coordinador

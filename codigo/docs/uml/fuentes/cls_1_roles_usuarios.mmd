@@ -1,6 +1,6 @@
-%% Vista 1 · Roles y usuarios (RF02, RF03)
+%% Vista 1 · Roles y usuarios (RF02, RF03) · v0.25
 classDiagram
-  class Rol {
+  class Perfil {
     <<enumeration>>
     inspector
     coordinador
@@ -8,39 +8,51 @@ classDiagram
     admin
   }
   class Usuario {
+    +clave
     +nombre
-    +rol
-    +documento
-    +correo
-    +estado Activo|Inactivo|Pendiente
-    +historial
-    +inactivar(motivo)
-    +eliminar()
+    +perfil
+    +tipoDoc
+    +doc
+    +correo_unico
+    +tel
+    +estado Activo|Inactivo
+    +creado_por_fecha
+    +completarUsuario()
   }
   class Permisos {
-    +PERMISOS: Map~Rol, Modulo[]~
-    +puede(rol, modulo) bool
+    +PERMISOS: Map~Perfil, Modulo[]~
+    +puede(sec)
+    +esGestor()
+    +puedeEvaluar(ev)
+    +puedeVerEval(ev)
   }
-  class Modulo {
-    <<enumeration>>
-    inicio
-    fincas
-    evaluaciones
-    reportes
-    asistente
-    usuarios
-    parametros
-    bitacora
-    ayuda
-    cuenta
+  class Sesion {
+    +rol perfil
+    +u clave del usuario
+    +desde
+    +iniciarSesion(clave)
+    +yo() Usuario
+  }
+  class Aviso {
+    +para usuario o perfil
+    +txt
+    +href
+    +tipo
+    +leido
+    +avisar(para, txt, href, tipo)
+    +misAvisos()
   }
   class vUsuarios {
     <<vista>>
-    +render()
-    +eliminarOInactivar()
+    +crearUsuario()
+    +editar(perfil)
+    +inactivarOReactivar()
+    +eliminarSinHistorial()
+    +vincularFincas(productor)
   }
-  Usuario --> Rol
-  Permisos --> Rol
-  Permisos --> Modulo
+  Usuario --> Perfil
+  Sesion --> Usuario
+  Permisos --> Perfil
+  Aviso ..> Usuario
   vUsuarios ..> Usuario
-  note for Permisos "inspector y coordinador: todos menos administración\nproductor: sin reportes\nadmin: todo"
+  note for Permisos "Coordinador: fincas, asignar, aprobar o devolver, seguimientos\nAdministrador: todo menos aprobar o devolver\nInspector: solo lo asignado\nProductor: sus fincas y lo aprobado"

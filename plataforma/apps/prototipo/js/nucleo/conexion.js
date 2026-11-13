@@ -1,7 +1,7 @@
 /* EBA Patos y Gansos · ICA — js/nucleo/conexion.js
    Conexión con la base de datos (MariaDB) a través de la API.
 
-   La aplicación sigue trabajando igual: lee y escribe sus listas FINCAS, EVALS, USUARIOS_LISTA, PROCESOS y BITACORA
+   La aplicación sigue trabajando igual: lee y escribe sus listas FINCAS, EVALS, USUARIOS (cuentas con perfil), PROCESOS, AVISOS y BITACORA
    y llama a guardar(). Este archivo detecta qué registros cambiaron y los envía a la API, uno por uno, con su versión:
      · si otra persona modificó el mismo registro, la API lo rechaza (409) y aquí se carga la versión más reciente;
      · si la API no responde, se reintenta solo y se muestra un aviso;
@@ -12,9 +12,8 @@
 (function () {
   const B = window.EBA_BD || (window.EBA_BD = { modo: "navegador" });
   const API = "/api/sincronizacion";
-  const ORDEN = ["fincas", "procesos", "usuarios", "evals"];         // las fincas primero: las evaluaciones las referencian
-  const CLAVES = new Set(["fincas", "evals", "bitacora", "usuarios", "procesos"]);
-  const llaveUsuario = (d) => String(d ?? "").replace(/[^0-9A-Za-z]/g, "").toUpperCase().slice(0, 20);
+  const ORDEN = ["fincas", "procesos", "usuarios", "evals", "avisos"];   // las fincas primero: las evaluaciones las referencian
+  const CLAVES = new Set(["fincas", "evals", "bitacora", "cuentas", "procesos", "avisos"]);   // claves del almacenamiento que se sincronizan
 
   /** Huella corta de una entrada de la bitácora (para no repetirla). */
   function huella(e) {
@@ -25,13 +24,13 @@
   }
 
   /* ------------------------------------------------ lo último que se sabe que está en la base */
-  const foto = { fincas: new Map(), evals: new Map(), usuarios: new Map(), procesos: new Map() };
+  const foto = { fincas: new Map(), evals: new Map(), usuarios: new Map(), procesos: new Map(), avisos: new Map() };
   let bitacoraEnBd = new Set();
   let sello = null;
 
   function tomarFoto(d) {
     for (const col of ORDEN) {
-      foto[col] = new Map((d.colecciones[col] || []).map((r) => [r.id, { version: r.version, json: JSON.stringify(r.datos) }]));
+      foto[col] = new Map((d.colecciones[col] || []).map((r) => [r.id, { version: r.version, json: JSON.stringify(col === "usuarios" ? completarUsuario(r.datos) : r.datos) }]));
     }
     bitacoraEnBd = new Set((d.bitacora || []).map((e) => e.h));
     sello = d.sello;
@@ -41,7 +40,8 @@
   function registros(col) {
     if (col === "fincas") return (FINCAS || []).map((f) => [f.id, f]);
     if (col === "evals") return (EVALS || []).map((e) => [e.id, e]);
-    if (col === "usuarios") return (USUARIOS_LISTA || []).map((u) => [llaveUsuario(u.d), u]);
+    if (col === "usuarios") return Object.entries(USUARIOS || {});
+    if (col === "avisos") return (AVISOS || []).map((a) => [a.id, a]);
     return Object.entries(PROCESOS || {});
   }
 
@@ -53,7 +53,8 @@
     };
     if (col === "fincas") reemplazar(FINCAS, (f) => f.id === id);
     else if (col === "evals") reemplazar(EVALS, (e) => e.id === id);
-    else if (col === "usuarios") reemplazar(USUARIOS_LISTA, (u) => llaveUsuario(u.d) === id);
+    else if (col === "usuarios") { if (datos == null) delete USUARIOS[id]; else USUARIOS[id] = completarUsuario(datos); }
+    else if (col === "avisos") reemplazar(AVISOS, (a) => a.id === id);
     else if (datos == null) delete PROCESOS[id]; else PROCESOS[id] = datos;
   }
 
@@ -62,7 +63,7 @@
   function escribirLocal() {
     if (!setOriginal) return;
     setOriginal("fincas", FINCAS); setOriginal("evals", EVALS); setOriginal("bitacora", BITACORA.slice(-300));
-    setOriginal("usuarios", USUARIOS_LISTA); setOriginal("procesos", PROCESOS);
+    setOriginal("cuentas", USUARIOS); setOriginal("procesos", PROCESOS); setOriginal("avisos", AVISOS.slice(-100));
   }
 
   /* ------------------------------------------------ aviso en pantalla */
@@ -81,7 +82,7 @@
 
   /* ------------------------------------------------ llamadas a la API */
   function usuarioActual() {
-    try { return typeof SES !== "undefined" && SES && USUARIOS[SES.rol] ? USUARIOS[SES.rol].nombre : ""; } catch (e) { return ""; }
+    try { return typeof SES !== "undefined" && SES && yo() ? yo().nombre : ""; } catch (e) { return ""; }
   }
   function rolActual() {
     try { return typeof SES !== "undefined" && SES ? SES.rol : ""; } catch (e) { return ""; }
@@ -89,7 +90,7 @@
   async function pedir(metodo, ruta, cuerpo) {
     const r = await fetch(API + ruta, {
       method: metodo, cache: "no-store",
-      headers: Object.assign({ "X-EBA-Usuario": encodeURIComponent(usuarioActual()), "X-EBA-Rol": rolActual() }, cuerpo ? { "Content-Type": "application/json" } : {}),
+      headers: Object.assign({ "X-EBA-Usuario": encodeURIComponent(usuarioActual()), "X-EBA-Rol": rolActual(), "X-EBA-Clave": (typeof SES !== "undefined" && SES && yoClave()) || "" }, cuerpo ? { "Content-Type": "application/json" } : {}),
       body: cuerpo ? JSON.stringify(cuerpo) : undefined,
     });
     let j = null; try { j = await r.json(); } catch (e) { }
@@ -186,7 +187,8 @@
     const c = d.colecciones;
     FINCAS = c.fincas.map((r) => r.datos);
     EVALS = c.evals.map((r) => r.datos);
-    USUARIOS_LISTA = c.usuarios.map((r) => r.datos);
+    if (c.usuarios.length) { Object.keys(USUARIOS).forEach((k) => delete USUARIOS[k]); c.usuarios.forEach((r) => { USUARIOS[r.id] = completarUsuario(r.datos); }); }
+    AVISOS = (c.avisos || []).map((r) => r.datos);
     PROCESOS = Object.fromEntries(c.procesos.map((r) => [r.id, r.datos]));
     BITACORA = d.bitacora;
     tomarFoto(d);
@@ -219,7 +221,7 @@
       return;
     }
     if (B.importar || B.inicial.vacio) {
-      foto.fincas = new Map(); foto.evals = new Map(); foto.usuarios = new Map(); foto.procesos = new Map();
+      foto.fincas = new Map(); foto.evals = new Map(); foto.usuarios = new Map(); foto.procesos = new Map(); foto.avisos = new Map();
       bitacoraEnBd = new Set(); sello = B.inicial.sello;
     } else {
       tomarFoto(B.inicial);
@@ -231,5 +233,15 @@
     window.addEventListener("beforeunload", (e) => { if (enCurso || hayPendientes()) { e.preventDefault(); e.returnValue = ""; } });
   };
   B.sincronizar = sincronizar;
+  /** Otras rutas de la API (p. ej. /usuarios/:clave/enlace). Devuelve { estado, j }. */
+  B.api = async (metodo, ruta, cuerpo) => {
+    const x = await fetch("/api" + ruta, {
+      method: metodo, cache: "no-store",
+      headers: Object.assign({ "X-EBA-Usuario": encodeURIComponent(usuarioActual()), "X-EBA-Rol": rolActual(), "X-EBA-Clave": (typeof SES !== "undefined" && SES && yoClave()) || "" }, cuerpo ? { "Content-Type": "application/json" } : {}),
+      body: cuerpo ? JSON.stringify(cuerpo) : undefined,
+    });
+    let j = null; try { j = await x.json(); } catch (e) { }
+    return { estado: x.status, j };
+  };
   B.hayPendientes = () => B.modo === "bd" && hayPendientes();
 })();

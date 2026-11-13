@@ -6,19 +6,25 @@
    Inicio · dashboard por rol
    ========================================================================== */
 function pendientesDe() {
-  const u = USUARIOS[SES.rol];
-  const fincasVisibles = SES.rol === "productor" ? FINCAS.filter((f) => f.productor === u.nombre) : FINCAS;
-  const evs = EVALS.filter((e) => fincasVisibles.some((f) => f.id === e.finca));
-  const pendientes = [];
+  const rol = SES.rol, fv = fincasVisibles();
+  // El inspector solo ve sus visitas; el productor, solo las aprobadas (documentos por entregar).
+  const evs = EVALS.filter((e) => fv.some((f) => f.id === e.finca) && e.estado !== "Anulada" && (rol !== "inspector" || e.inspector === yoClave()) && (rol !== "productor" || e.estado === "Finalizada"));
+  const pendientes = misAvisos().slice(-8).reverse().map((a) => [a.txt, fecha(new Date(a.t)), "e-info", a.href, "aviso", a.id]);
   evs.forEach((e) => {
-    const f = FINCAS.find((x) => x.id === e.finca), a = avance(e);
-    if (e.estado === "Programada") pendientes.push([`Visita programada · ${f.nombre}`, fecha(new Date(e.fecha + "T07:00")), "e-info", `#/eval/${e.id}`, "visita"]);
-    if (e.estado === "En proceso") pendientes.push([`Completar evaluación ${e.id} (${a.pct} %)`, "Hoy", "e-alerta", `#/eval/${e.id}/${pasoContinuar(e)}`, "eval"]);
-    const r = resultado(e);
-    r.filas.filter((x) => x.score === 0 && x.ind.g === "MBA" && !e.obs[x.ind.code]).forEach((x) => pendientes.push([`Observación del hallazgo ${x.ind.num} ${x.ind.name}`, "Antes de cerrar", "e-alerta", `#/eval/${e.id}/${x.ind.code}`, "obs"]));
-    lista(e).filter((i) => i.m.kind === "doc" && e.resp[i.code]?.estado === "Pendiente").forEach((i) => pendientes.push([`Documento pendiente: ${i.name}`, "1 día hábil tras el cierre", "e-medio", `#/eval/${e.id}/${i.code}`, "doc"]));
+    const f = FINCAS.find((x) => x.id === e.finca), a = avance(e), nom = `${f.nombre} · ${nombreSp(e.sp)}`;
+    if (rol === "inspector") {
+      if (e.estado === "Programada") pendientes.push([`Visita asignada · ${nom}`, fecha(new Date(e.fecha + "T07:00")), "e-info", `#/eval/${e.id}`, "visita"]);
+      if (e.estado === "En proceso") pendientes.push([`Completar evaluación ${e.id} (${a.pct} %)`, nom, "e-alerta", `#/eval/${e.id}/${pasoContinuar(e)}`, "eval"]);
+      if (e.estado === "Devuelta") pendientes.push([`Corregir: devuelta por el coordinador`, nom, "e-alerta", `#/eval/${e.id}/cierre`, "eval"]);
+    }
+    if (rol === "coordinador" && e.estado === "Pendiente de aprobación") pendientes.push([`Aprobar inspección · ${nom}`, nombreInspector(e.inspector), "e-medio", `#/eval/${e.id}/resultado`, "aprobar"]);
+    if (rol === "inspector" && ["En proceso", "Devuelta"].includes(e.estado)) {
+      const r = resultado(e);
+      r.filas.filter((x) => x.score === 0 && x.ind.g === "MBA" && !e.obs[x.ind.code]).forEach((x) => pendientes.push([`Observación del hallazgo ${x.ind.num} ${x.ind.name}`, "Antes de cerrar", "e-alerta", `#/eval/${e.id}/${x.ind.code}`, "obs"]));
+    }
+    if (rol !== "admin") lista(e).filter((i) => i.m.kind === "doc" && e.resp[i.code]?.estado === "Pendiente").forEach((i) => pendientes.push([`Documento pendiente: ${i.name}`, "1 día hábil tras el cierre", "e-medio", rol === "inspector" && puedeEvaluar(e) ? `#/eval/${e.id}/${i.code}` : `#/eval/${e.id}/resultado`, "doc"]));
   });
-  return { pendientes, evs, fincasVisibles };
+  return { pendientes, evs, fincasVisibles: fv };
 }
 /* ==========================================================================
    Tablero (dashboard) por perfil: todo se calcula con los datos guardados en el momento de abrirlo.
@@ -35,7 +41,8 @@ function enPeriodo(f, per) {
 /** Día hábil siguiente (lunes a viernes) a una fecha ISO. */
 function diaHabilSiguiente(iso) { const d = new Date(iso); do { d.setDate(d.getDate() + 1); } while ([0, 6].includes(d.getDay())); return d; }
 /* Colores de los estados en las gráficas del tablero (validados para daltonismo; siempre con etiqueta y número). */
-const COLOR_EST_GRAF = { "Por iniciar": "#3E7CB1", "En proceso": "#C99A06", Finalizada: "#048C38", "Seguimiento programado": "#7A5AA6" };
+const COLOR_EST_GRAF = { "Por asignar": "#8A9488", Asignada: "#3E7CB1", "En proceso": "#C99A06", Devuelta: "#C0392B", "Pendiente de aprobación": "#D9822B", Aprobada: "#048C38", "Seguimiento programado": "#7A5AA6",
+  "Sin programar": "#8A9488", "En evaluación": "#C99A06", "En revisión del ICA": "#D9822B", "Plan de mejora": "#7A5AA6", Certificada: "#048C38", "Constancia vencida": "#8A9488" };
 
 /** Tarjeta de indicador del tablero: valor grande, etiqueta y detalle; opcionalmente con enlace. */
 const tarjetaKPI = (v, l, det, c, attrs) => `<${attrs ? "button type=\"button\"" : "div"} class="kpi kpi-tab ${attrs ? "kpi-btn" : ""}" style="--c:${c}" ${attrs || ""}><div class="v">${v}</div><div class="l">${l}</div>${det ? `<div class="det">${det}</div>` : ""}${attrs ? '<span class="ver">Ver en Fincas ›</span>' : ""}</${attrs ? "button" : "div"}>`;
@@ -44,12 +51,12 @@ const barrasTab = (filas, max, fmtV) => `<div class="barras-tab">${filas.map(([l
 const vacioTab = (t) => `<p class="vacio-tab">${t}</p>`;
 
 function vInicio() {
-  const rol = SES.rol, u = USUARIOS[rol], productor = rol === "productor", coord = rol === "coordinador" || rol === "admin", admin = rol === "admin";
+  const rol = SES.rol, u = yo(), productor = rol === "productor", coord = rol === "coordinador" || rol === "admin", admin = rol === "admin";
   const per = PERIODO_INICIO.v;
   const fs = fincasVisibles(), activas = fs.filter((f) => f.estado === "ACTIVA"), n = contarEstados(fs);
   const pares = activas.flatMap(estadosFinca);
   const comerciales = activas.filter((f) => tramoFinca(f) === "comercial").length;
-  const evsVis = EVALS.filter((e) => fs.some((f) => f.id === e.finca) && e.estado !== "Anulada");
+  const evsVis = pendientesDe().evs;   // el inspector, solo sus visitas; el productor, solo las aprobadas
   const finPer = evsVis.filter((e) => e.estado === "Finalizada" && enPeriodo(e.fecha, coord ? per : "todo"));
   const rfPer = finPer.map((e) => ({ e, r: resultado(e) }));
   const prom = rfPer.length ? rfPer.reduce((a, x) => a + x.r.total, 0) / rfPer.length : null;
@@ -59,7 +66,7 @@ function vInicio() {
   const atender = [], hoyD = new Date(new Date().toDateString());
   const quien = (e) => `${FINCAS.find((f) => f.id === e.finca)?.nombre || e.finca} · ${nombreSp(e.sp)}`;
   const diasA = (d) => Math.round((new Date(d.toDateString()) - hoyD) / 864e5);
-  evsVis.filter((e) => e.estado !== "Programada").forEach((e) => {
+  evsVis.filter((e) => e.estado !== "Programada" && (productor || e.estado !== "Finalizada" || lista(e).some((i) => i.m.kind === "doc" && e.resp[i.code]?.estado === "Pendiente"))).forEach((e) => {
     resultado(e).filas.filter((x) => x.score === 0 && x.ind.g === "MBA" && !(e.obs[x.ind.code] || "").trim())
       .forEach((x) => atender.push(["Falta observación", `${x.ind.num} ${x.ind.name} (indicador en 0)`, quien(e), "Antes de cerrar", "e-alerta", 1]));
     lista(e).filter((i) => i.m.kind === "doc" && e.resp[i.code]?.estado === "Pendiente").forEach((i) => {
@@ -76,11 +83,11 @@ function vInicio() {
   const listaAtender = atender.length ? `<ul class="lista-atender lista-tareas">${atender.slice(0, MAXA).map(([q, d, w, t, c]) => `<li><span><b>${esc(q)}:</b> ${esc(d)}<span class="tarea-pie"><small class="muted">${esc(w)}</small><span class="etiqueta ${c}">${esc(t)}</span></span></span></li>`).join("")}</ul>${atender.length > MAXA ? `<p class="texto-chico muted" style="margin:8px 0 0">y ${atender.length - MAXA} más (ver Notificaciones).</p>` : ""}` : vacioTab("Nada pendiente por ahora.");
 
   // tarjetas comunes
-  const kFincas = tarjetaKPI(activas.length, productor ? "Mis fincas activas" : "Fincas activas", `${fs.length - activas.length ? `${fs.length - activas.length} inactiva${fs.length - activas.length > 1 ? "s" : ""} · ` : ""}${comerciales} comercial${comerciales === 1 ? "" : "es"} · ${activas.length - comerciales} traspatio`, "var(--semilla)");
+  const kFincas = tarjetaKPI(activas.length, productor ? "Mis fincas activas" : rol === "inspector" ? "Fincas asignadas" : "Fincas activas", `${fs.length - activas.length ? `${fs.length - activas.length} inactiva${fs.length - activas.length > 1 ? "s" : ""} · ` : ""}${comerciales} comercial${comerciales === 1 ? "" : "es"} · ${activas.length - comerciales} traspatio`, "var(--semilla)");
   const kEstado = (e, t) => tarjetaKPI(n[e], t, `${activas.length ? Math.round((n[e] / activas.length) * 100) : 0} % de las fincas activas`, COLOR_EST_GRAF[e]);
   const panelEstado = `<section class="panel"><h3>Estado de las evaluaciones</h3>
-    <div class="barra-apilada" role="img" aria-label="${ESTADOS_FLUJO.map((e) => `${e}: ${pares.filter((s) => s.estado === e).length}`).join(", ")}">${ESTADOS_FLUJO.map((e) => { const v = pares.filter((s) => s.estado === e).length; return v ? `<i style="flex:${v};background:${COLOR_EST_GRAF[e]}" title="${e}: ${v}"></i>` : ""; }).join("")}</div>
-    <div class="leyenda-tab">${ESTADOS_FLUJO.map((e) => `<div class="item-ley"><i style="background:${COLOR_EST_GRAF[e]}"></i>${e} <b>${pares.filter((s) => s.estado === e).length}</b></div>`).join("")}</div>
+    <div class="barra-apilada" role="img" aria-label="${estadosLista().map((e) => `${e}: ${pares.filter((s) => textoFlujo(s) === e).length}`).join(", ")}">${estadosLista().map((e) => { const v = pares.filter((s) => textoFlujo(s) === e).length; return v ? `<i style="flex:${v};background:${COLOR_EST_GRAF[e]}" title="${e}: ${v}"></i>` : ""; }).join("")}</div>
+    <div class="leyenda-tab">${estadosLista().map((e) => `<div class="item-ley"><i style="background:${COLOR_EST_GRAF[e]}"></i>${e} <b>${pares.filter((s) => textoFlujo(s) === e).length}</b></div>`).join("")}</div>
     <p class="muted texto-chico" style="margin:8px 0 0">Por finca y especie activa (${pares.length}).</p></section>`;
   const ultimosPares = pares.filter((s) => s.ultimaFin && enPeriodo(s.ultimaFin.fecha, coord ? per : "todo"));
   const niveles = { Excelente: 0, Alto: 0, Medio: 0, Bajo: 0 }; ultimosPares.forEach((s) => niveles[resultado(s.ultimaFin).nivel[0]]++);
@@ -94,13 +101,17 @@ function vInicio() {
   const cabecera = `<div class="encabezado"><div><h1>Hola, ${esc(u.nombre.split(" ")[0])}</h1><p>${sub}</p></div><div class="acciones-encabezado">${selPer}</div></div>`;
 
   if (productor) {
-    const tarjetas = fs.flatMap((f) => estadosFinca(f).map((s) => { const seg = s.estado === "Seguimiento programado", evR = seg ? s.ultimaFin : s.ev;
-      const r = evR && evR.estado !== "Programada" ? resultado(evR) : null, a = evR ? avance(evR) : null;
+    const tarjetas = fs.flatMap((f) => estadosFinca(f).map((s) => { const r = s.ultimaFin ? resultado(s.ultimaFin) : null, ab = s.abierta, seg = s.estado === "Seguimiento programado";
+      const msg = s.estado === "Pendiente de aprobación" ? "El ICA está revisando el resultado de la visita. Lo verá aquí cuando lo apruebe."
+        : ab && !seg ? `Visita del ${fecha(new Date(ab.fecha + "T07:00"))}: el resultado se publica cuando el ICA lo apruebe.` : "Aún no tiene inspecciones programadas.";
       return `<section class="panel tarjeta-finca"><div class="tf-cab"><div><h3>${esc(f.nombre)}</h3><span class="muted texto-chico">${nombreSp(s.sp)} · ${esc(f.mpio)}</span></div>${etiquetaFlujo(s)}</div>
-        ${r && (s.estado === "Finalizada" || seg || a.hechos) ? `<div class="tf-puntaje"><b style="color:${r.nivel[1]}">${fmt(r.total)}</b><span>${r.nivel[0]}<br><small class="muted">${s.estado === "Finalizada" || seg ? (r.provisional ? "Provisional: hay documentos pendientes" : "Resultado de la última visita") : `Preliminar · ${a.pct} % evaluado`}</small></span></div>`
-          : `<p class="muted">${s.estado === "En proceso" ? "Visita en curso: aún no hay indicadores calificados." : s.abierta ? `Visita programada para el ${fecha(new Date(s.abierta.fecha + "T07:00"))}.` : "Aún no tiene evaluaciones."}</p>`}
-        ${seg ? `<p class="texto-chico" style="margin:0"><b>Próxima visita:</b> ${nombreVisita(s.abierta)} · ${fecha(new Date(s.abierta.fecha + "T07:00"))}</p>` : ""}
-        ${s.proc ? `<p class="texto-chico" style="margin:0">Proceso ${esc(s.proc.id)} · ${s.proc.estado}${s.proc.estado === "Cumplido" ? "" : ` · seguimientos ${s.proc.usados} de ${s.proc.max}`}</p>` : ""}
+        ${r ? `<div class="tf-puntaje"><b style="color:${r.nivel[1]}">${fmt(r.total)}</b><span>${r.nivel[0]}<br><small class="muted">${r.provisional ? "Provisional: hay documentos pendientes" : "Último resultado aprobado"}</small></span></div>` : ""}
+        ${!r || (ab && !seg) ? `<p class="muted">${msg}</p>` : ""}
+        ${seg ? `<p class="texto-chico" style="margin:0"><b>Próxima visita:</b> ${nombreVisita(ab)} · ${fecha(new Date(ab.fecha + "T07:00"))}</p>` : ""}
+        ${s.proc && s.ultimaFin ? `<p class="texto-chico" style="margin:0">Proceso ${esc(s.proc.id)}${s.proc.estado === "Cumplido" ? " · cumplido" : ` · seguimientos ${s.proc.usados} de ${s.proc.max}`}</p>` : ""}
+        ${s.ultimaFin && s.ultimaFin.constancia ? `<p class="texto-chico" style="margin:6px 0 0"><b>Constancia ${s.ultimaFin.constancia.codigo}</b> · ${constanciaVigente(s.ultimaFin.constancia) ? "vigente hasta" : "venció el"} ${fecha(new Date(s.ultimaFin.constancia.vence + "T12:00"))}</p>` : ""}
+        ${s.ultimaFin && !s.ultimaFin.constancia && !ab ? '<p class="texto-chico" style="margin:6px 0 0">Aún no cumple los criterios de la constancia: siga su <b>plan de mejora</b>.</p>' : ""}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">${s.ultimaFin ? `<a class="btn btn-sec btn-chico" href="#/eval/${s.ultimaFin.id}/resultado">${s.ultimaFin.constancia ? "Ver resultados" : "Ver resultados y plan de mejora"}</a>` : ""}${s.ultimaFin && s.ultimaFin.constancia && constanciaVigente(s.ultimaFin.constancia) ? `<a class="btn btn-primario btn-chico" href="#/eval/${s.ultimaFin.id}/constancia">Descargar constancia</a>` : ""}</div>
         </section>`; })).join("");
     const ult = pares.filter((s) => s.ultimaFin).map((s) => ({ s, r: resultado(s.ultimaFin) })).sort((a, b) => b.s.ultimaFin.fecha.localeCompare(a.s.ultimaFin.fecha))[0];
     const planUlt = ult ? ult.s.ultimaFin.plan || {} : {};
@@ -123,12 +134,18 @@ function vInicio() {
     kpis = `<div class="kpis-tab">${kFincas}${tarjetaKPI(finPer.length, "Evaluaciones finalizadas", `${evsVis.filter((e) => e.estado !== "Finalizada").length} abiertas ahora`, "var(--campo)")}
       ${tarjetaKPI(prom == null ? "—" : fmt(prom), "Puntaje promedio", prom == null ? "Sin evaluaciones finalizadas" : `Nivel ${clasificar(prom)[0]} · ${finPer.length} evaluaciones`, prom == null ? "var(--linea)" : clasificar(prom)[1])}
       ${tarjetaKPI(finPer.length ? `${cumplen}<small> de ${finPer.length}</small>` : "—", "Cumplen los criterios", "≥ 90, sin ceros ni pendientes", "var(--azul)")}</div>`;
-    const usuarios = admin ? (() => { const roles = {}; USUARIOS_LISTA.forEach((x) => { const k = /inspector/i.test(x.r) ? "Inspector" : /coordinador/i.test(x.r) ? "Coordinador" : /productor/i.test(x.r) ? "Productor" : /admin/i.test(x.r) ? "Administrador" : x.r; roles[k] = roles[k] || { a: 0, i: 0 }; x.e === "Activo" ? roles[k].a++ : roles[k].i++; });
-      const act = USUARIOS_LISTA.filter((x) => x.e === "Activo").length;
-      return `<section class="panel"><div class="panel-cab"><h3>Usuarios</h3></div><p class="cifra-panel"><b>${act}</b> activos de ${USUARIOS_LISTA.length}</p>
-        ${barrasTab(Object.entries(roles).map(([k, v]) => [k, v.a, "var(--semilla)", v.i ? `<small class="muted">+${v.i} no activo${v.i > 1 ? "s" : ""}</small>` : ""]), Math.max(1, ...Object.values(roles).map((v) => v.a)))}</section>`; })() : "";
+    const usuarios = admin ? (() => { const todos = Object.values(USUARIOS), act = todos.filter((x) => x.estado === "Activo").length;
+      return `<section class="panel"><div class="panel-cab"><h3>Usuarios</h3></div><p class="cifra-panel"><b>${act}</b> activos de ${todos.length}</p>
+        ${barrasTab(ORDEN_PERFILES.map((p) => { const de = todos.filter((x) => x.perfil === p), ina = de.filter((x) => x.estado !== "Activo").length;
+          return [PERFILES[p], de.length - ina, "var(--semilla)", ina ? `<small class="muted">+${ina} inactivo${ina > 1 ? "s" : ""}</small>` : ""]; }), Math.max(1, ...ORDEN_PERFILES.map((p) => todos.filter((x) => x.perfil === p).length)))}</section>`; })() : "";
     const actividad = admin ? `<section class="panel"><div class="panel-cab"><h3>Actividad reciente</h3></div>${BITACORA.length ? `<ul class="lista-actividad">${BITACORA.slice(-5).reverse().map((b) => `<li><b>${esc(b.a)}</b><small>${esc(b.u)} · ${fecha(new Date(b.t))} ${hora(new Date(b.t))}</small></li>`).join("")}</ul>` : vacioTab("Aún no hay acciones registradas.")}</section>` : "";
+    // Trabajo del coordinador: lo que espera su aprobación, lo devuelto y lo que falta asignar.
+    // El administrador no aprueba: su bandeja muestra solo lo que falta asignar.
+    const ordenC = admin ? { "Por asignar": 0 } : { "Pendiente de aprobación": 0, Devuelta: 1, "Por asignar": 2 };
+    const bandeja = pares.filter((s) => s.estado in ordenC).sort((a, b) => ordenC[a.estado] - ordenC[b.estado]);
+    const panelBandeja = `<section class="panel"><h3>${admin ? "Por asignar" : "Por aprobar y por asignar"}${bandeja.length ? ` · ${bandeja.length}` : ""}</h3>${bandeja.length ? `<div class="lista-trabajo">${bandeja.slice(0, 8).map((s) => `<div class="trabajo-item"><div class="ti-cab"><b class="enlace-finca">${esc(s.f.nombre)}</b><span class="muted texto-chico">${esc(s.f.mpio)}</span></div>${lineaFlujo(s, false)}</div>`).join("")}</div>` : vacioTab(admin ? "No hay fincas por asignar." : "No hay inspecciones por aprobar ni fincas por asignar.")}</section>`;
     html = `${cabecera}${kpis}
+      ${panelBandeja ? `<div class="filas-tab">${panelBandeja}</div>` : ""}
       <div class="rejilla r-3 filas-tab">${panelEstado}${panelNivel}
         <section class="panel"><h3>Procesos de seguimiento</h3>${procs.length ? barrasTab([["En curso", cuentaProc("En curso"), COLOR_EST_GRAF["En proceso"]], ["Seguimiento programado", cuentaProc("Seguimiento programado"), COLOR_EST_GRAF["Seguimiento programado"]], ["En seguimiento", cuentaProc("En seguimiento"), "#3E7CB1"], ["Cumplidos", cuentaProc("Cumplido"), "var(--campo)"], ["Requieren ampliación", cuentaProc("Requiere ampliación"), "var(--ocre)"], ["Cerrados sin cumplir", cuentaProc("Cerrado sin cumplir"), "var(--rojo)"]], Math.max(1, procs.length))
           + `<p class="muted texto-chico" style="margin:8px 0 0">${procs.length} proceso${procs.length > 1 ? "s" : ""}: visita inicial y hasta ${SEGUIMIENTOS_BASE} seguimientos (ampliables a ${MAX_SEGUIMIENTOS}).</p>` : vacioTab("Aún no hay procesos.")}</section></div>
@@ -141,16 +158,18 @@ function vInicio() {
     // Mi trabajo: una sola lista de lo que el inspector tiene por evaluar, en orden de prioridad
     const hoyISO = new Date().toISOString().slice(0, 10);
     const vencida = (s) => s.abierta && s.abierta.estado === "Programada" && s.abierta.fecha < hoyISO;
-    const prioridad = (s) => (vencida(s) ? 0 : s.estado === "En proceso" ? 1 : s.abierta ? 2 : s.estado === "Por iniciar" ? 3 : 4);
-    const trabajo = pares.filter((s) => s.estado === "En proceso" || s.estado === "Por iniciar" || s.estado === "Seguimiento programado" || (s.secundaria && s.proc && s.proc.puedeSeguimiento))
+    const prioridad = (s) => (s.estado === "Devuelta" || vencida(s) ? 0 : s.estado === "En proceso" ? 1 : 2);
+    const trabajo = pares.filter((s) => s.abierta && s.abierta.inspector === yoClave() && ["Asignada", "En proceso", "Devuelta", "Seguimiento programado"].includes(s.estado))
       .sort((a, b) => prioridad(a) - prioridad(b) || (a.abierta && b.abierta ? a.abierta.fecha.localeCompare(b.abierta.fecha) : 0) || (prioridad(a) === 1 ? avance(b.ev).pct - avance(a.ev).pct : 0));
     const diasVencida = (s) => Math.round((new Date(hoyISO + "T12:00") - new Date(s.abierta.fecha + "T12:00")) / 864e5);
     const itemTrabajo = (s) => `<div class="trabajo-item${vencida(s) ? " vencida" : ""}"><div class="ti-cab"><b class="enlace-finca">${esc(s.f.nombre)}</b><span class="muted texto-chico">${esc(s.f.mpio)}</span>${vencida(s) ? `<span class="etiqueta e-alerta">Vencida hace ${plural(diasVencida(s), "día", "días")}</span>` : ""}</div>${lineaFlujo(s, false)}</div>`;
     const MAXT = 8;
     const ultimos = evsVis.filter((e) => e.estado === "Finalizada").sort((a, b) => b.fecha.localeCompare(a.fecha)).slice(0, 5);
-    kpis = `<div class="kpis-tab">${kFincas}${kEstado("Por iniciar", "Por iniciar")}${kEstado("En proceso", "En proceso")}${kEstado("Finalizada", "Finalizadas")}${kEstado("Seguimiento programado", "Seguimientos programados")}</div>`;
+    const mias = (e) => pares.filter((s) => s.estado === e && (!s.abierta || s.abierta.inspector === yoClave())).length;
+    const kMio = (e, t, det) => tarjetaKPI(mias(e), t, det, COLOR_EST_GRAF[e]);
+    kpis = `<div class="kpis-tab">${kFincas}${kMio("Asignada", "Asignadas", "Por iniciar")}${kMio("En proceso", "En proceso", "En campo")}${kMio("Devuelta", "Devueltas", "Corregir y reenviar")}${kMio("Pendiente de aprobación", "Por aprobar", "En revisión del coordinador")}</div>`;
     html = `${cabecera}${kpis}
-      <div class="rejilla r-21 filas-tab"><section class="panel"><h3>Mi trabajo${trabajo.length ? ` · ${trabajo.length}` : ""}</h3>${trabajo.length ? `<div class="lista-trabajo">${trabajo.slice(0, MAXT).map(itemTrabajo).join("")}</div>${trabajo.length > MAXT ? `<p class="texto-chico muted" style="margin:8px 0 0">y ${trabajo.length - MAXT} más en Fincas.</p>` : ""}` : vacioTab("No tiene inspecciones en proceso, programadas ni por iniciar.")}</section>
+      <div class="rejilla r-21 filas-tab"><section class="panel"><h3>Mi trabajo${trabajo.length ? ` · ${trabajo.length}` : ""}</h3>${trabajo.length ? `<div class="lista-trabajo">${trabajo.slice(0, MAXT).map(itemTrabajo).join("")}</div>${trabajo.length > MAXT ? `<p class="texto-chico muted" style="margin:8px 0 0">y ${trabajo.length - MAXT} más en Fincas.</p>` : ""}` : vacioTab("No tiene inspecciones asignadas por hacer.")}</section>
         <section class="panel"><h3>Tareas pendientes${atender.length ? ` · ${atender.length}` : ""}</h3>${listaAtender}</section></div>
       <div class="rejilla r-2 filas-tab"><section class="panel"><h3>Mis últimos resultados</h3>${ultimos.length ? barrasTab(ultimos.map((e) => { const r = resultado(e); return [`${esc(FINCAS.find((f) => f.id === e.finca)?.nombre || e.finca)} <small class="muted">${nombreSp(e.sp)} · ${fecha(new Date(e.fecha + "T07:00"))}</small>`, r.total, r.nivel[1], `<small class="nivel-tab">${r.nivel[0]}</small>`]; }), 100, (v) => fmt(v)) : vacioTab("Aún no hay evaluaciones finalizadas.")}</section>
         ${panelNivel}</div>`;

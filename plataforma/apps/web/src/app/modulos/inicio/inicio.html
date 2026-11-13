@@ -1,49 +1,159 @@
-<h1>Plataforma EBA Cuac Cuac</h1>
-<p class="muted">Angular · API Node.js con Express (puerto 3085) · MariaDB.</p>
-
-<div class="rejilla">
-  <section class="panel">
-    <h3>Servidor (API Express)</h3>
-    @let e = estado();
-    @if (e.cargando) {
-      <span class="etiqueta e-pend">Consultando…</span>
-    } @else if (e.salud; as s) {
-      <span class="etiqueta e-ok">Conectado</span>
-      <dl>
-        <dt>Dirección</dt><dd><code>{{ apiUrl }}</code></dd>
-        <dt>Servicio</dt><dd>{{ s.servicio }} {{ s.version }} · {{ s.entorno }}</dd>
-        <dt>Base de datos</dt>
-        <dd>
-          @if (s.baseDeDatos.estado === 'conectada') {
-            <span class="etiqueta e-ok">Conectada</span> MariaDB {{ s.baseDeDatos.version }}
-          } @else {
-            <span class="etiqueta e-error">Sin conexión</span> {{ s.baseDeDatos.motivo }}
-          }
-        </dd>
-        <dt>Asistente</dt><dd>{{ s.asistenteIA }}</dd>
-      </dl>
-    } @else {
-      <span class="etiqueta e-error">Sin conexión</span>
-      <p class="muted">No responde <code>{{ apiUrl }}</code>. Inicie la API con <code>npm run dev</code> desde la raíz del proyecto
-        y revise la IP y el puerto (3085) en <code>.env</code>.</p>
-    }
-  </section>
-
-  <section class="panel">
-    <h3>Reglas compartidas de la norma</h3>
-    <p class="muted">Caso: {{ caso.aves }} patos con MBA {{ caso.medidas.MBA }}, MBR {{ caso.medidas.MBR }} y MBG {{ caso.medidas.MBG }}.</p>
-    <dl>
-      <dt>En el navegador</dt><dd>{{ local.tramo }} · {{ local.puntaje }} puntos · {{ local.nivel }}</dd>
-      <dt>En el servidor</dt>
-      <dd>
-        @if (servidor(); as r) { {{ r.tramo }} · {{ r.puntaje }} puntos · {{ r.nivel }}
-          @if (r.puntaje === local.puntaje) { <span class="etiqueta e-ok">Coinciden</span> }
-        } @else { <span class="muted">sin respuesta</span> }
-      </dd>
-      <dt>Pesos comercial (Tabla 1)</dt><dd>MBA {{ pesos.MBA }} · MBR {{ pesos.MBR }} · MBG {{ pesos.MBG }}</dd>
-      <dt>Niveles (Tabla 2)</dt>
-      <dd>@for (n of niveles; track n.nivel) { <span class="nivel">{{ n.nivel }} ≥ {{ n.minimo }}</span> }</dd>
-      <dt>Muestreo</dt><dd>{{ ejemplo.texto }}</dd>
-    </dl>
-  </section>
+<div class="encabezado"><div><h1>Hola, {{ primerNombre() }}</h1><p>{{ subtitulo() }}</p></div>
+  @if (coord()) {
+    <div class="acciones-encabezado"><label class="selector-periodo"><span>Periodo</span>
+      <select [value]="periodo()" (change)="periodo.set($any($event.target).value)">
+        @for (p of periodos; track p[0]) { <option [value]="p[0]" [selected]="p[0] === periodo()">{{ p[1] }}</option> }
+      </select></label></div>
+  }
 </div>
+
+@if (datos.error()) { <p class="aviso-error" style="padding:10px 14px;border-radius:10px">{{ datos.error() }}</p> }
+@if (datos.cargando()) { <p class="muted">Cargando…</p> } @else {
+
+<!-- ===================== Productor ===================== -->
+@if (productor(); as p) {
+  <div class="kpis-tab">@for (k of p.kpis; track k.l) { <div class="kpi kpi-tab" [style.--c]="k.c"><div class="v">{{ k.v }}</div><div class="l">{{ k.l }}</div>@if (k.det) { <div class="det">{{ k.det }}</div> }</div> }</div>
+  <div class="rejilla r-3 tarjetas-finca" style="margin-top:18px">
+    @for (t of p.tarjetas; track t.s.f.id + t.s.sp) {
+      <section class="panel tarjeta-finca">
+        <div class="tf-cab"><div><h3>{{ t.s.f.nombre }}</h3><span class="muted texto-chico">{{ nombreEspecie(t.s.sp) }} · {{ t.s.f.mpio }}</span></div>
+          <app-etiqueta-flujo [s]="t.s" /></div>
+        @if (t.r) {
+          <div class="tf-puntaje"><b [style.color]="t.r.nivel[1]">{{ fmt(t.r.total) }}</b><span>{{ t.r.nivel[0] }}<br><small class="muted">{{ t.r.provisional ? 'Provisional: hay documentos pendientes' : 'Último resultado aprobado' }}</small></span></div>
+        }
+        @if (t.mostrarMsg) { <p class="muted">{{ t.msg }}</p> }
+        @if (t.proxima) { <p class="texto-chico" style="margin:0"><b>Próxima visita:</b> {{ t.proxima }}</p> }
+        @if (t.proceso) { <p class="texto-chico" style="margin:0">{{ t.proceso }}</p> }
+        @if (t.constancia) { <p class="texto-chico" style="margin:6px 0 0"><b>Constancia {{ t.constancia }}</b> · {{ t.vigente ? 'vigente hasta' : 'venció el' }} {{ t.vence }}</p> }
+        @if (t.plan) { <p class="texto-chico" style="margin:6px 0 0">Aún no cumple los criterios de la constancia: siga su <b>plan de mejora</b>.</p> }
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+          @if (t.s.ultimaFin; as uf) {
+            <app-enlace-visita [id]="uf.id" paso="resultado" clase="btn btn-sec btn-chico">{{ uf.constancia ? 'Ver resultados' : 'Ver resultados y plan de mejora' }}</app-enlace-visita>
+            @if (uf.constancia && constanciaVigente(uf.constancia)) { <app-enlace-visita [id]="uf.id" paso="constancia" clase="btn btn-primario btn-chico">Descargar constancia</app-enlace-visita> }
+          }
+        </div>
+      </section>
+    } @empty { <section class="panel"><p class="muted">Todavía no tiene fincas registradas. El ICA las registra con su documento.</p></section> }
+  </div>
+  <div class="rejilla r-3 filas-tab">
+    <section class="panel"><h3>Lo que debe mejorar</h3>
+      @if (p.mejorar.length) {
+        <ul class="lista-mejorar">@for (x of p.mejorar; track x.texto) {
+          <li><div><b>{{ x.texto }}</b><span class="puntaje-chico" [style.color]="x.cero ? 'var(--rojo)' : 'inherit'">{{ x.puntaje }}</span></div><small>{{ x.accion }}</small></li>
+        }</ul>
+      } @else { <p class="vacio-tab">{{ p.hayUlt ? 'Todos los indicadores calificados están en 100.' : 'Aparece cuando haya una evaluación finalizada.' }}</p> }
+    </section>
+    <section class="panel"><h3>Evolución{{ p.f0 ? ' de ' + p.f0 : '' }}</h3>
+      @if (p.hist.length > 1) { <app-evolucion [puntos]="p.hist" /> } @else { <p class="vacio-tab">La evolución aparece cuando hay dos inspecciones finalizadas.</p> }
+    </section>
+    <section class="panel"><h3>Lo que debe atender{{ v().atender.length ? ' · ' + v().atender.length : '' }}</h3><ng-container *ngTemplateOutlet="tareas" /></section>
+  </div>
+}
+
+<!-- ===================== Coordinador y administrador ===================== -->
+@if (gestion(); as g) {
+  <div class="kpis-tab">@for (k of kpisGestion(); track k.l) {
+    <div class="kpi kpi-tab" [style.--c]="k.c"><div class="v">{{ k.v }}@if (k.sub) { <small>{{ k.sub }}</small> }</div><div class="l">{{ k.l }}</div>@if (k.det) { <div class="det">{{ k.det }}</div> }</div>
+  }</div>
+  <div class="filas-tab"><section class="panel"><h3>{{ g.admin ? 'Por asignar' : 'Por aprobar y por asignar' }}{{ g.bandeja.length ? ' · ' + g.bandeja.length : '' }}</h3>
+    @if (g.bandeja.length) {
+      <div class="lista-trabajo">@for (s of g.bandeja.slice(0, 8); track s.f.id + s.sp) {
+        <div class="trabajo-item"><div class="ti-cab"><a class="enlace-finca" [routerLink]="['/fincas', s.f.id]">{{ s.f.nombre }}</a><span class="muted texto-chico">{{ s.f.mpio }}</span></div>
+          <app-linea-flujo [s]="s" [conAcciones]="false" /></div>
+      }</div>
+      @if (g.bandeja.length > 8) { <p class="texto-chico muted" style="margin:8px 0 0">y {{ g.bandeja.length - 8 }} más en <a routerLink="/fincas">Fincas</a>.</p> }
+    } @else { <p class="vacio-tab">{{ g.admin ? 'No hay fincas por asignar.' : 'No hay inspecciones por aprobar ni fincas por asignar.' }}</p> }
+  </section></div>
+  <div class="rejilla r-3 filas-tab">
+    <ng-container *ngTemplateOutlet="panelEstado" />
+    <ng-container *ngTemplateOutlet="panelNivel" />
+    <section class="panel"><h3>Procesos de seguimiento</h3>
+      @if (g.procs.length) {
+        <app-barras [filas]="g.barrasProc" [max]="g.procs.length" />
+        <p class="muted texto-chico" style="margin:8px 0 0">{{ g.procs.length }} proceso{{ g.procs.length > 1 ? 's' : '' }}: visita inicial y hasta {{ textosBase.SEGUIMIENTOS_BASE }} seguimientos (ampliables a {{ textosBase.MAX_SEGUIMIENTOS }}).</p>
+      } @else { <p class="vacio-tab">Aún no hay procesos.</p> }
+    </section>
+  </div>
+  <div class="rejilla r-3 filas-tab">
+    <section class="panel"><h3>Promedio por medida</h3>
+      @if (g.medidas.length) { <app-barras [filas]="g.medidas" [max]="100" [decimales]="true" /><p class="muted texto-chico" style="margin:8px 0 0">Evaluaciones finalizadas del periodo. En traspatio no se evalúa la gestión.</p> }
+      @else { <p class="vacio-tab">Sin evaluaciones finalizadas en el periodo.</p> }
+    </section>
+    <section class="panel"><div class="panel-cab"><h3>Criterios que requieren atención</h3></div>
+      @if (g.criterios.length) {
+        <ul class="lista-criterios">@for (x of g.criterios; track x.texto) { <li><span>{{ x.texto }}<small class="muted"> · {{ x.sp }}</small></span><b [style.color]="x.color">{{ x.prom }}</b></li> }</ul>
+      } @else { <p class="vacio-tab">{{ v().finPer.length ? 'Todos los indicadores promedian 90 o más.' : 'Sin evaluaciones finalizadas en el periodo.' }}</p> }
+    </section>
+    <section class="panel"><h3>Alertas{{ v().atender.length ? ' · ' + v().atender.length : '' }}</h3><ng-container *ngTemplateOutlet="tareas" /></section>
+  </div>
+  @if (g.admin && g.usuarios) {
+    <div class="rejilla r-2 filas-tab">
+      <section class="panel"><div class="panel-cab"><h3>Usuarios</h3><a class="btn btn-sec btn-chico" routerLink="/usuarios">Gestionar</a></div>
+        <p class="cifra-panel"><b>{{ g.usuarios.activos }}</b> activos de {{ g.usuarios.total }}</p><app-barras [filas]="g.usuarios.barras" /></section>
+      <section class="panel"><div class="panel-cab"><h3>Actividad reciente</h3></div>
+        @if (g.actividad?.length) {
+          <ul class="lista-actividad">@for (b of g.actividad; track b.h) { <li><b>{{ b.a }}</b><small>{{ b.u }} · {{ fecha(b.t) }} {{ b.t.slice(11, 16) }}</small></li> }</ul>
+        } @else { <p class="vacio-tab">Aún no hay acciones registradas.</p> }
+      </section>
+    </div>
+  }
+}
+
+<!-- ===================== Inspector ===================== -->
+@if (inspector(); as i) {
+  <div class="kpis-tab">
+    <div class="kpi kpi-tab" [style.--c]="v().kFincas.c"><div class="v">{{ v().kFincas.v }}</div><div class="l">{{ v().kFincas.l }}</div><div class="det">{{ v().kFincas.det }}</div></div>
+    @for (k of i.kpis; track k.l) { <div class="kpi kpi-tab" [style.--c]="k.c"><div class="v">{{ k.v }}</div><div class="l">{{ k.l }}</div><div class="det">{{ k.det }}</div></div> }
+  </div>
+  <div class="rejilla r-21 filas-tab">
+    <section class="panel"><h3>Mi trabajo{{ i.trabajo.length ? ' · ' + i.trabajo.length : '' }}</h3>
+      @if (i.trabajo.length) {
+        <div class="lista-trabajo">@for (t of i.trabajo.slice(0, MAXT); track t.s.f.id + t.s.sp) {
+          <div class="trabajo-item" [class.vencida]="t.vencida"><div class="ti-cab"><a class="enlace-finca" [routerLink]="['/fincas', t.s.f.id]">{{ t.s.f.nombre }}</a><span class="muted texto-chico">{{ t.s.f.mpio }}</span>
+            @if (t.vencida) { <span class="etiqueta e-alerta">Vencida hace {{ t.dias }} día{{ t.dias === 1 ? '' : 's' }}</span> }</div>
+            <app-linea-flujo [s]="t.s" [conAcciones]="false" /></div>
+        }</div>
+        @if (i.trabajo.length > MAXT) { <p class="texto-chico muted" style="margin:8px 0 0">y {{ i.trabajo.length - MAXT }} más en <a routerLink="/fincas">Fincas</a>.</p> }
+      } @else { <p class="vacio-tab">No tiene inspecciones asignadas por hacer.</p> }
+    </section>
+    <section class="panel"><h3>Tareas pendientes{{ v().atender.length ? ' · ' + v().atender.length : '' }}</h3><ng-container *ngTemplateOutlet="tareas" /></section>
+  </div>
+  <div class="rejilla r-2 filas-tab">
+    <section class="panel"><h3>Mis últimos resultados</h3>
+      @if (i.ultimos.length) { <app-barras [filas]="i.ultimos" [max]="100" [decimales]="true" /> } @else { <p class="vacio-tab">Aún no hay evaluaciones finalizadas.</p> }
+    </section>
+    <ng-container *ngTemplateOutlet="panelNivel" />
+  </div>
+}
+}
+
+<!-- ===================== Paneles compartidos ===================== -->
+<ng-template #tareas>
+  @if (v().atender.length) {
+    <ul class="lista-atender lista-tareas">@for (t of v().atender.slice(0, MAXA); track $index) {
+      <li><span><b>{{ t.que }}:</b> {{ t.detalle }}<span class="tarea-pie"><small class="muted">{{ t.donde }}</small><span [class]="'etiqueta ' + t.clase">{{ t.cuando }}</span></span></span></li>
+    }</ul>
+    @if (v().atender.length > MAXA) { <p class="texto-chico muted" style="margin:8px 0 0">y {{ v().atender.length - MAXA }} más.</p> }
+  } @else { <p class="vacio-tab">Nada pendiente por ahora.</p> }
+</ng-template>
+
+<ng-template #panelEstado>
+  <section class="panel"><h3>Estado de las evaluaciones</h3>
+    <div class="barra-apilada" role="img" [attr.aria-label]="etiquetaEstados()">
+      @for (e of v().estados; track e.e) { @if (e.v) { <i [style.flex]="e.v" [style.background]="e.c" [title]="e.e + ': ' + e.v"></i> } }
+    </div>
+    <div class="leyenda-tab">@for (e of v().estados; track e.e) {
+      <a class="item-ley" [routerLink]="['/fincas']" [queryParams]="{ estado: e.e }"><i [style.background]="e.c"></i>{{ e.e }} <b>{{ e.v }}</b></a>
+    }</div>
+    <p class="muted texto-chico" style="margin:8px 0 0">Por finca y especie activa ({{ v().pares.length }}).</p>
+  </section>
+</ng-template>
+
+<ng-template #panelNivel>
+  <section class="panel"><h3>Nivel actual de las fincas</h3>
+    @if (v().ultimosPares.length) {
+      <app-barras [filas]="v().barrasNivel" />
+      <p class="muted texto-chico" style="margin:8px 0 0">Último resultado finalizado de cada finca y especie ({{ v().ultimosPares.length }}) · Tabla 2.</p>
+    } @else { <p class="vacio-tab">Aún no hay evaluaciones finalizadas.</p> }
+  </section>
+</ng-template>

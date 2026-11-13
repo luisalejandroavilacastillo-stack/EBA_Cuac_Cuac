@@ -1,0 +1,84 @@
+<div class="encabezado"><div><h1>{{ titulo() }}</h1><p>{{ intro() }}</p></div>
+  @if (gestor()) { <button type="button" class="btn btn-primario" (click)="abrirRegistro()">Registrar finca</button> }
+</div>
+
+<section class="panel">
+  <div class="barra-filtros">
+    <div class="buscar"><label class="sr" for="qf">Buscar finca</label>
+      <input id="qf" type="search" placeholder="Buscar por nombre de la finca" autocomplete="off" [ngModel]="q()" (ngModelChange)="q.set($event)"></div>
+    <label class="filtro-estado"><span class="sr">Filtrar por estado</span>
+      <select id="fe" [ngModel]="estado()" (ngModelChange)="estado.set($event)">
+        <option value="">Todos los estados ({{ fs().length }})</option>
+        @for (e of flujo().estadosLista(); track e) { <option [value]="e">{{ e }} ({{ conteo()[e] }})</option> }
+      </select></label>
+  </div>
+  <div class="envoltura-tabla"><table class="tabla tabla-fincas">
+    <thead><tr><th>Finca</th><th>Responsable</th><th class="num">Aves</th><th>Especie</th><th>Estado</th><th class="col-eval">Evaluación</th></tr></thead>
+    @if (datos.cargando()) { <tbody><tr><td colspan="6" class="muted">Cargando…</td></tr></tbody> }
+    @else {
+      @for (x of filas(); track x.f.id) {
+        <tbody class="grupo-finca" [class.inactiva]="x.f.estado !== 'ACTIVA'" [attr.data-finca]="x.f.id">
+          @for (e of x.estados; track e.s.sp; let primero = $first) {
+            <tr>
+              @if (primero) {
+                <td data-l="Finca" [attr.rowspan]="x.estados.length" class="c-finca"><a class="enlace-finca" [routerLink]="['/fincas', x.f.id]">{{ x.f.nombre }}</a>
+                  @if (x.f.estado !== 'ACTIVA') { <span class="etiqueta e-gris">Inactiva</span> }<span class="sub">{{ x.f.mpio }}, {{ x.f.depto }} · {{ x.f.id }}</span></td>
+                <td data-l="Responsable" [attr.rowspan]="x.estados.length">@if (x.f.titular; as t) { {{ t.nombre }}<span class="sub">{{ t.tipoDoc }} {{ enmascara(t.doc) }}</span> } @else { <span class="muted">Sin registrar</span> }</td>
+                <td data-l="Aves" [attr.rowspan]="x.estados.length" class="num">{{ x.aves }}<span class="sub">{{ tramo(x.aves) === 'comercial' ? 'Comercial' : 'Traspatio' }}</span></td>
+              }
+              <td data-l="Especie" class="c-esp">{{ nombreEspecie(e.s.sp) }}</td>
+              <td data-l="Estado"><span [class]="'etiqueta ' + color[e.texto]">{{ e.texto }}</span>@if (e.inspector) { <span class="sub">{{ e.inspector }}</span> }</td>
+              <td data-l="Evaluación" class="col-eval">
+                @if (e.s.f.estado !== 'ACTIVA' && !e.s.principal) { <span class="accion-texto">Finca inactiva</span> }
+                @else if (!e.s.principal) { <span class="accion-texto">{{ e.s.nota || (flujo().esProductor && e.s.abierta ? 'En manos del ICA' : '—') }}</span> }
+                @else {
+                  <app-accion-flujo [accion]="e.s.principal!" [finca]="x.f.id" />
+                  @if (e.s.secundaria) { <app-accion-flujo [accion]="e.s.secundaria!" [finca]="x.f.id" [secundaria]="true" /> }
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      } @empty {
+        <tbody><tr><td colspan="6"><p class="muted" style="margin:6px 0">No hay fincas que coincidan{{ q() ? ' con «' + q() + '»' : '' }}{{ estado() ? ' en estado «' + estado() + '»' : '' }}.</p></td></tr></tbody>
+      }
+    }
+  </table></div>
+</section>
+
+@if (registrando()) {
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="titReg" (keydown.escape)="registrando.set(false)">
+    <div class="modal-ancho">
+      <div class="modal-cab"><h3 id="titReg">Registrar finca</h3><p class="muted">La población total de patos y gansos define si la finca es de traspatio (menos de 200 aves) o comercial.</p></div>
+      <form novalidate (ngSubmit)="registrar()"><div class="modal-cuerpo"><div class="form-2col">
+        <fieldset class="grupo-campos"><legend>Datos de la finca</legend>
+          <div class="campo"><label for="fn1">Nombre de la finca</label><input id="fn1" name="fn1" [ngModel]="nf().nombre" (ngModelChange)="cambiarF('nombre', $event)"></div>
+          <div class="fila">
+            <div class="campo"><label for="fn2">Departamento</label>
+              <select id="fn2" name="fn2" [ngModel]="nf().depto" (ngModelChange)="cambiarF('depto', $event)"><option value="">Seleccione…</option>
+                @for (d of departamentos(); track d) { <option [value]="d">{{ d }}</option> }</select></div>
+            <div class="campo"><label for="fn3">Municipio</label><input id="fn3" name="fn3" [ngModel]="nf().mpio" (ngModelChange)="cambiarF('mpio', $event)"></div>
+          </div>
+          <div class="campo"><span class="etq-campo">Especies y número de aves</span>
+            <div class="especies-reg">
+              @for (sp of especiesReg; track sp) {
+                <label class="esp-reg" [class.activa]="nf().especies[sp].si" [attr.data-sp]="sp" [for]="'fs_' + sp">
+                  <input type="checkbox" [id]="'fs_' + sp" [name]="'fs_' + sp" [ngModel]="nf().especies[sp].si" (ngModelChange)="cambiarEsp(sp, 'si', $event)">
+                  <span class="esp-nom">{{ nombreEspecie(sp) }}</span>
+                  <input [id]="'f' + sp + '_n'" [name]="'f' + sp + '_n'" class="esp-num" type="number" min="1" [disabled]="!nf().especies[sp].si" [placeholder]="nf().especies[sp].si ? '0' : '—'"
+                    [attr.aria-label]="'Número de ' + (sp === 'pato' ? 'patos' : 'gansos')" [ngModel]="nf().especies[sp].n" (ngModelChange)="cambiarEsp(sp, 'n', $event)"><span class="esp-und">aves</span>
+                </label>
+              }
+            </div>
+            <p [class]="'tramo-reg ' + textoTramo().clase">@if (textoTramo().sub) { <b>{{ textoTramo().html }}</b> <span>{{ textoTramo().sub }}</span> } @else { {{ textoTramo().html }} }</p>
+          </div>
+        </fieldset>
+        <app-campos-titular [(t)]="titular" [errores]="errT()" [traspatio]="traspatioReg()" />
+      </div>
+      <span class="error-campo" role="alert">{{ errF() }}</span></div>
+      <div class="acciones"><button type="button" class="btn btn-sec" (click)="registrando.set(false)">Cancelar</button>
+        <button class="btn btn-primario" [disabled]="guardando()">Registrar finca</button></div>
+      </form>
+    </div>
+  </div>
+}

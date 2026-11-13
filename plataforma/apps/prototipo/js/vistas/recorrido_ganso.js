@@ -6,15 +6,19 @@
 "use strict";
 
 /* Novedades que se marcan en cada ganso de la muestra (indicadores «con muestreo» del numeral 7.2). */
+/* ops: [valor, texto del botón, color]; «no» es lo normal. En la ficha del ave cada novedad se responde «No tiene» o «Sí tiene». */
 const NOV_GANSO = [
   { code: "GA01", txt: "Herida grave (más de 5 cm)" },
-  { code: "GA02", txt: "Plumaje inadecuado" },
+  { code: "GA02", txt: "Plumaje", ops: [["no", "Adecuado", 100], ["si", "Inadecuado", 0]] },
   { code: "GA03", txt: "Podo dermatitis" },
   { code: "GA04", txt: "Diarrea" },
-  { code: "GA05", txt: "Lesión en el pico", opc: [["f", "conserva la función"], ["s", "sin funcionalidad completa"]] },
+  { code: "GA05", txt: "Lesión en el pico", ops: [["no", "Sin lesión", 100], ["f", "Conserva la función", 55], ["s", "Sin funcionalidad completa", 0]] },
   { code: "GA07", txt: "Secreción ocular o conjuntivitis" },
   { code: "GA06", txt: "Cojera (sin dudas sobre su condición)" },
 ];
+const OPS_NOV = [["no", "No tiene", 100], ["si", "Sí tiene", 0]];
+/** Respuesta de un ganso a una novedad: "si" / "f" / "s" si la tiene, "no" si se respondió que no (o el ganso quedó revisado), null si falta. */
+const valorNov = (a, code) => (a.m[code] ? (a.m[code] === true ? "si" : a.m[code]) : a.ok || (a.n && a.n[code]) ? "no" : null);
 /* Agresiones (7.2.8), interacción con el humano (7.2.9) y comportamientos positivos (7.2.10) se evalúan en la lista
    de indicadores, no en el recorrido. */
 /* Indicadores que se llenan desde el recorrido de gansos. */
@@ -61,7 +65,7 @@ function derivarGansos(ev) {
 }
 
 function vRecorridoGanso(ev, pt) {
-  const ctx = contexto(ev), plan = ctx.plan, ed = SES.rol !== "productor" && ev.estado !== "Finalizada", rg = rgDe(ev);
+  const ctx = contexto(ev), plan = ctx.plan, ed = puedeEvaluar(ev), rg = rgDe(ev);
   pt = Math.min(plan.puntos - 1, Math.max(0, +pt || 0));
   try { history.replaceState(null, "", `#/eval/${ev.id}/recorrido/${pt}`); } catch (e) { }
   const aplicaInd = (c) => IND[c] && !aplica(IND[c], ctx);
@@ -80,12 +84,15 @@ function vRecorridoGanso(ev, pt) {
   const hechos = Array.from({ length: plan.puntos }, (_, p) => estadoPunto(p) === "hecho").filter(Boolean).length;
   const dis = ed ? "" : "disabled";
   const chips = Array.from({ length: plan.puntos }, (_, p) => `${plan.corrales === 2 && p % plan.puntosCorral === 0 ? `<span class="muted" style="font-size:12px;font-weight:800;width:100%;margin-top:${p ? 6 : 0}px">Galpón ${galponDePunto(plan, p) + 1}</span>` : ""}
-    <button class="chip-punto est-${estadoPunto(p)} ${p === pt ? "actual" : ""}" data-pt="${p}" title="${nombrePunto(p)}: ${TXT_EST[estadoPunto(p)]}" ${p === pt ? 'aria-current="true"' : ""}>${estadoPunto(p) === "hecho" ? "✓ " : ""}${corto(p)}<small>${nAves(p)} gansos</small></button>`).join("");
+    <button class="chip-punto est-${estadoPunto(p)} ${p === pt ? "actual" : ""}" data-pt="${p}" title="${nombrePunto(p)}: ${TXT_EST[estadoPunto(p)]}" ${p === pt ? 'aria-current="true"' : ""}>${estadoPunto(p) === "hecho" ? "✓ " : ""}${corto(p)}<small>${nAves(p)} aves</small></button>`).join("");
   const leyenda = `<p class="leyenda-puntos"><span><i class="lp est-pend"></i>Pendiente</span><span><i class="lp est-proceso"></i>En proceso</span><span><i class="lp est-hecho"></i>Evaluado</span><span><i class="lp actual"></i>Punto actual</span></p>`;
   // recursos del punto
   const dosOpc = (campo, actual, si, no) => `<div class="niveles-campo">${[[true, si, 100], [false, no, 0]].map(([v, t, c]) => `<button type="button" class="nv ${actual === v ? "sel" : ""}" style="--c:${COL[c]}" data-rec="${campo}:${v ? 1 : 0}" ${dis}><span>${esc(t)}</span></button>`).join("")}</div>`;
   const x = ptD(pt);
-  const filaRec = (code, campo, titulo, sub, si, no) => aplicaInd(code) ? `<div class="fila-recurso"><div><b>${IND[code].num} ${esc(titulo)}</b> ${btnFicha(code)}<small class="muted">${esc(sub)}</small></div>${dosOpc(campo, x[campo], si, no)}</div>` : "";
+  // Igual que en patos: con el primer punto calificado se puede copiar a todos los puntos del galpón y cambiar solo el distinto.
+  const ptsGal = Array.from({ length: plan.puntos }, (_, p) => p).filter((p) => galponDePunto(plan, p) === gal);
+  const herr = (campo) => (ed && x[campo] != null && ptsGal.length > 1 ? `<div class="herr-recurso"><button type="button" class="btn btn-fantasma btn-chico" data-igual="${campo}">Igual en todo el galpón</button></div>` : "");
+  const filaRec = (code, campo, titulo, sub, si, no) => aplicaInd(code) ? `<div class="fila-recurso"><div><b>${IND[code].num} ${esc(titulo)}</b> ${btnFicha(code)}<small class="muted">${esc(sub)}</small></div><div>${dosOpc(campo, x[campo], si, no)}${herr(campo)}</div></div>` : "";
   const recursos = filaRec("GR03", "com", "Comedero", "El más cercano al punto", "Buen estado y limpio", "Dañado, sucio o con riesgo")
     + filaRec("GR04", "beb", "Bebedero", "El más cercano al punto", "Buen estado y limpio", "Dañado, sucio o con riesgo")
     + filaRec("GR02", "agua", "Acceso al agua", `Los ${nAves(pt)} gansos del punto`, "Tienen acceso permanente", "No tienen acceso");
@@ -93,9 +100,11 @@ function vRecorridoGanso(ev, pt) {
       <div class="niveles-campo">${[[false, "Limpio, sin elementos de riesgo", 100], [true, "Con elementos de riesgo", 0]].map(([v, t, c]) => `<button type="button" class="nv ${rg.gal[gal] === v ? "sel" : ""}" style="--c:${COL[c]}" data-gal="${v ? 1 : 0}" ${dis}><span>${esc(t)}</span></button>`).join("")}</div></div>` : "";
   // gansos del punto
   const lst = avesDe(pt);
-  const novTxt = (a) => NOV_GANSO.filter((n) => a.m[n.code]).map((n) => n.txt.split(" (")[0]);
-  const tarjeta = (a, k) => { const e = a.ok ? "hecho" : Object.keys(a.m).length ? "proceso" : "pend", nv = novTxt(a);
-    return `<button type="button" class="tarjeta-ave est-${e}" data-av="${k}"><b>${a.ok ? "✓ " : ""}Ganso ${k + 1}</b><span>${a.ok ? (nv.length ? `${nv.length} novedad${nv.length > 1 ? "es" : ""}` : "Sin novedad") : e === "proceso" ? "Sin terminar" : "Sin revisar"}</span></button>`; };
+  const novAplican = NOV_GANSO.filter((n) => aplicaInd(n.code));
+  const hallG = (a) => novAplican.filter((n) => a.m[n.code]).length;
+  const estG = (a) => (a.ok ? "hecho" : Object.keys(a.m).length || Object.keys(a.n || {}).length ? "proceso" : "pend");
+  const tarjeta = (a, k) => { const e = estG(a), h = hallG(a), resp = novAplican.filter((n) => valorNov(a, n.code) != null).length;
+    return `<button type="button" class="tarjeta-ave est-${e}" data-av="${k}"><b>${a.ok ? "✓ " : ""}Ave ${k + 1}${h ? '<i class="punto-hall" aria-hidden="true"></i>' : ""}</b><span>${a.ok ? (h ? plural(h, "hallazgo", "hallazgos") : "Sin hallazgos") : e === "proceso" ? `${resp} de ${novAplican.length}` : "Sin revisar"}</span></button>`; };
   const sig = lst.findIndex((a) => !a.ok);
   const revisadas = lst.filter((a) => a.ok).length;
   // tratamiento: solo para las novedades encontradas
@@ -110,10 +119,9 @@ function vRecorridoGanso(ev, pt) {
     <div class="recorrido"><section class="panel"><h3>Puntos de muestreo</h3>${muestreoSVG(plan, pt, Array.from({ length: plan.puntos }, (_, p) => estadoPunto(p)))}<div class="chips">${chips}</div>${leyenda}</section>
     <div><section class="panel"><h2 style="margin:0">${nombrePunto(pt)}</h2>
       <h3 class="paso-punto"><span class="paso-n">1</span>Recursos más cercanos al punto</h3>${galHTML}${recursos}
-      <h3 class="paso-punto"><span class="paso-n">2</span>Gansos del punto <span class="resumen-aves">${revisadas} de ${lst.length} revisados</span></h3>
-      <p class="muted" style="margin:0 0 8px;font-size:13px">Marque solo lo que encuentre en cada ganso; si no tiene nada, «Sin novedad».</p>
+      <h3 class="paso-punto"><span class="paso-n">2</span>Aves del punto <span class="resumen-aves">${revisadas} de ${lst.length} completas</span></h3>
       ${lst.length ? `<div class="tarjetas-aves">${lst.map(tarjeta).join("")}</div>
-        <div class="evaluar-aves">${ed && sig >= 0 ? `<button type="button" class="btn btn-sec" id="restoSin" title="Marca como revisados y sin novedad los gansos que faltan">${revisadas ? "Los gansos restantes, sin novedad" : "Todos los gansos del punto, sin novedad"}</button>` : ""}<button type="button" class="btn ${sig >= 0 && ed ? "btn-primario" : "btn-sec"}" id="evalAves">${!ed ? "Ver gansos del punto" : sig < 0 ? "Revisar gansos del punto" : `Revisar el Ganso ${sig + 1} →`}</button></div>` : '<p class="muted">Este punto no tiene gansos asignados.</p>'}
+        <div class="evaluar-aves">${ed && sig >= 0 ? `<button type="button" class="btn btn-sec" id="restoSin" title="Deja normal lo que falta en las aves del punto">${lst.some((a) => estG(a) !== "pend") ? "Las aves restantes, sin hallazgos" : "Todas las aves del punto, sin hallazgos"}</button>` : ""}<button type="button" class="btn ${sig >= 0 && ed ? "btn-primario" : "btn-sec"}" id="evalAves">${!ed ? "Ver aves del punto" : sig < 0 ? "Revisar aves del punto" : `Revisar el Ave ${sig + 1} →`}</button></div>` : '<p class="muted">Este punto no tiene aves asignadas.</p>'}
       <div class="acciones" style="justify-content:space-between;margin-top:18px"><button class="btn btn-sec" id="prev" ${pt === 0 ? "disabled" : ""}>${pt === 0 ? "Punto anterior" : `Punto anterior: ${nombrePunto(pt - 1)}`}</button>
         <button class="btn btn-primario" id="next">${!ultimo ? `Siguiente punto: ${nombrePunto(pt + 1)}` : "Continuar con la evaluación por indicador"}</button></div></section>
       ${tratHTML}</div></div>`);
@@ -124,44 +132,24 @@ function vRecorridoGanso(ev, pt) {
   raiz.querySelector("#next").onclick = () => (!ultimo ? ir(pt + 1) : (location.hash = destinoLista(ev)));
   if (!ed) { const b = raiz.querySelector("#evalAves"); if (b) b.onclick = () => abrirGansos(0); }
   raiz.querySelectorAll("[data-rec]").forEach((b) => (b.onclick = () => { const [c, v] = b.dataset.rec.split(":"); ptD(pt)[c] = v === "1"; cambio(); ir(pt); }));
+  raiz.querySelectorAll("[data-igual]").forEach((b) => (b.onclick = () => { const c = b.dataset.igual, v = ptD(pt)[c];
+    ptsGal.forEach((p) => (ptD(p)[c] = v)); cambio(); toast(`Se copió a los ${ptsGal.length} puntos del galpón; cambie solo el que sea distinto.`); ir(pt); }));
   raiz.querySelectorAll("[data-gal]").forEach((b) => (b.onclick = () => { rg.gal[gal] = b.dataset.gal === "1"; cambio(); ir(pt); }));
   raiz.querySelectorAll("[data-trat]").forEach((b) => (b.onchange = () => { rg.trat[b.dataset.trat] = b.checked; cambio(); }));
   raiz.querySelectorAll("[data-av]").forEach((b) => (b.onclick = () => abrirGansos(+b.dataset.av)));
-  const rs = raiz.querySelector("#restoSin"); if (rs) rs.onclick = () => { lst.forEach((a) => { if (!a.ok) { if (!Object.keys(a.m || {}).length) a.m = {}; a.ok = true; } }); cambio(); toast("Gansos del punto marcados como revisados."); ir(pt); };
+  const rs = raiz.querySelector("#restoSin"); if (rs) rs.onclick = () => { lst.forEach((a) => { a.ok = true; }); cambio(); toast("Aves del punto completas: solo se llenó lo que faltaba."); ir(pt); };
   const ev0 = raiz.querySelector("#evalAves"); if (ev0) ev0.onclick = () => abrirGansos(sig >= 0 ? sig : 0);
 
-  /* Gansos del punto en ventana flotante: uno a la vez, se marca solo lo que tiene. */
+  /* Aves del punto en la ficha del ave (la misma de patos): un renglón por novedad y «Sin hallazgos · siguiente ave». */
   function abrirGansos(k0) {
-    let k = Math.min(Math.max(0, k0), lst.length - 1);
-    modal(`<div class="modal-cab"><div class="cab-aves"><div><small class="muted">${nombrePunto(pt)}</small><h3 id="gTit"></h3></div><button type="button" class="btn btn-sec btn-chico" id="gCerrar">Cerrar</button></div><div class="chips" id="gTabs"></div></div>
-      <div class="modal-cuerpo" id="gCuerpo"></div><div class="acciones" id="gPie"></div>`, (c) => {
-      c.querySelector(".modal > div").classList.add("modal-medio", "modal-aves");
-      const volver = () => { cerrarCapas(); ir(pt); };
-      c.querySelector("#gCerrar").onclick = volver;
-      const pinta = () => {
-        const a = lst[k];
-        c.querySelector("#gTit").textContent = `Ganso ${k + 1} de ${lst.length}`;
-        c.querySelector("#gTabs").innerHTML = lst.map((x, j) => `<button type="button" class="chip-punto est-${x.ok ? "hecho" : Object.keys(x.m).length ? "proceso" : "pend"} ${j === k ? "actual" : ""}" data-g="${j}">${x.ok ? "✓ " : ""}G${j + 1}</button>`).join("");
-        c.querySelector("#gCuerpo").innerHTML = `<p class="muted" style="margin:0 0 10px">Marque lo que encuentre en este ganso.</p>
-          <div class="novedades">${NOV_GANSO.filter((n) => aplicaInd(n.code)).map((n) => n.opc
-            ? `<div class="nov-fila ${a.m[n.code] ? "sel" : ""}"><span class="nov-txt">${esc(n.txt)}</span>${btnFicha(n.code)}<div class="nov-opc">${n.opc.map(([v, t]) => `<button type="button" class="nov-btn ${a.m[n.code] === v ? "sel" : ""}" data-nov="${n.code}:${v}" ${dis}>${esc(t)}</button>`).join("")}</div></div>`
-            : `<div class="nov-fila nov-con-ficha ${a.m[n.code] ? "sel" : ""}"><button type="button" class="nov-toggle" data-nov="${n.code}:1" ${dis}><span class="nov-caja">${a.m[n.code] ? "✓" : ""}</span><span class="nov-txt">${esc(n.txt)}</span></button>${btnFicha(n.code)}</div>`).join("")}</div>`;
-        const siguiente = lst.findIndex((x, j) => j > k && !x.ok);
-        c.querySelector("#gPie").innerHTML = !ed ? `<button class="btn btn-sec" id="gAnt" ${k === 0 ? "disabled" : ""}>← Anterior</button><button class="btn btn-primario" id="gSig" ${k === lst.length - 1 ? "disabled" : ""}>Siguiente →</button>`
-          : `<button class="btn btn-sec" id="gAnt" ${k === 0 ? "disabled" : ""}>← Anterior</button>
-            <button class="btn ${Object.keys(a.m).length ? "btn-sec" : "btn-primario"}" id="gSin">Sin novedad${k < lst.length - 1 ? " · siguiente" : ""}</button>
-            ${Object.keys(a.m).length ? `<button class="btn btn-primario" id="gOk">Guardar${k < lst.length - 1 ? " · siguiente" : " y cerrar"}</button>` : ""}`;
-        c.querySelectorAll("[data-g]").forEach((b) => (b.onclick = () => { k = +b.dataset.g; pinta(); }));
-        c.querySelectorAll("[data-nov]").forEach((b) => (b.onclick = () => { const [code, v] = b.dataset.nov.split(":");
-          if (a.m[code] === (v === "1" ? true : v)) delete a.m[code]; else a.m[code] = v === "1" ? true : v;
-          if (a.ok) cambio(); pinta(); }));
-        const avanza = () => { a.ok = true; cambio(); if (k < lst.length - 1) { k = siguiente > k ? siguiente : k + 1; pinta(); } else volver(); };
-        const sn = c.querySelector("#gSin"); if (sn) sn.onclick = () => { a.m = {}; avanza(); };
-        const ok = c.querySelector("#gOk"); if (ok) ok.onclick = avanza;
-        c.querySelector("#gAnt").onclick = () => { k--; pinta(); };
-        const gs = c.querySelector("#gSig"); if (gs) gs.onclick = () => { k++; pinta(); };
-      };
-      pinta();
-    });
+    abrirFichaAves({ lugar: nombrePunto(pt), n: lst.length, k0, ed,
+      filas: (k) => novAplican.map((n) => ({ code: n.code, nombre: `${IND[n.code].num} ${n.txt}`, val: valorNov(lst[k], n.code), ops: n.ops || OPS_NOV })),
+      set: (k, code, v) => { const a = lst[k]; a.n = a.n || {};
+        if (v === "no") { delete a.m[code]; a.n[code] = true; } else { a.m[code] = code === "GA05" ? v : true; delete a.n[code]; }
+        a.ok = novAplican.every((n) => valorNov(Object.assign({}, a, { ok: false }), n.code) != null); cambio(); },
+      normal: (k, solo) => { const a = lst[k]; if (!solo) a.m = {}; a.n = Object.fromEntries(novAplican.filter((n) => !a.m[n.code]).map((n) => [n.code, true])); a.ok = true; cambio(); },
+      guardado: () => (ev.guardado ? "💾 Guardado " + hora(new Date(ev.guardado)) : ""),
+      puntoCompleto: () => estadoPunto(pt) === "hecho", ultimoPunto: ultimo,
+      alCerrar: () => ir(pt), alTerminarPunto: () => (ultimo ? (location.hash = destinoLista(ev)) : ir(pt + 1)) });
   }
 }

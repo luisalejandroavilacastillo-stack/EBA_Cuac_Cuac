@@ -1,0 +1,35 @@
+<div class="encabezado"><div><h1>Asistente de bienestar animal</h1><p>Resuelve dudas sobre su evaluación, su plan de mejora y el cuidado de sus patos y gansos según la norma del ICA.</p></div></div>
+@if (!fincas().length) { <section class="panel"><p class="muted">No tiene fincas asociadas.</p></section> }
+@else if (cx(); as c) {
+<div class="asis">
+  <section class="panel asis-ctx"><h3>Lo que consulta el asistente</h3>
+    <div class="campo"><label for="asF">Finca</label><select id="asF" (change)="ir($any($event.target).value)">@for (x of fincas(); track x.id) { <option [value]="x.id" [selected]="x.id === sel().f?.id">{{ x.nombre }}</option> }</select></div>
+    @if (evals().length) {
+      <div class="campo"><label for="asE">Evaluación</label><select id="asE" (change)="ir($any($event.target).value)">@for (x of evals(); track x.id) { <option [value]="x.id" [selected]="x.id === sel().ev?.id">{{ x.id }} · {{ nombreVisita(x) }} · {{ x.estado }}</option> }</select></div>
+    }
+    @if (!c.ev) { <p class="muted">La finca no tiene evaluaciones registradas todavía. El asistente puede explicarle lo que revisa la norma.</p> }
+    @else {
+      <div class="asis-puntaje"><b [style.color]="c.r.nivel[1]">{{ fmt(c.r.total) }}</b><span class="etiqueta" [style.background]="c.r.nivel[1]" style="color:#fff">{{ c.r.nivel[0] }}</span></div>
+      <p class="muted" style="font-size:13px;margin:0 0 8px">{{ c.ev.id }} · {{ nombreVisita(c.ev) }} · {{ fechaCorta(c.ev.fecha) }} · {{ c.ev.estado }}{{ c.r.provisional ? ' · provisional' : '' }}</p>
+      @if (c.hallazgos.length) { <h4 style="margin:12px 0 0">Indicadores en 0</h4><ul>@for (x of c.hallazgos.slice(0, 6); track x.ind.code) { <li><b>{{ x.ind.num }}</b> {{ x.ind.name }} · {{ fmt(x.score) }}</li> }</ul> }
+      @if (c.mejorables.filter(positivo).length) { <h4 style="margin:12px 0 0">Por mejorar</h4><ul>@for (x of c.mejorables.filter(positivo).slice(0, 5); track x.ind.code) { <li><b>{{ x.ind.num }}</b> {{ x.ind.name }} · {{ fmt(x.score) }}</li> }</ul> }
+      @if (c.alertas.length) { <h4 style="margin:12px 0 0">Alertas por galpón</h4><ul>@for (a of c.alertas; track $index) { <li>⚠ <b>{{ a.ind.num }}</b> galpón {{ a.galpon + 1 }}: {{ fmt(a.score) }}</li> }</ul> }
+      @if (c.plan.length) { <h4 style="margin:12px 0 0">Plan de mejora</h4><ul>@for (x of c.plan; track $index) { <li><b>{{ x.ind?.num }}</b> {{ x.p.accion || '—' }}@if (x.p.plazo) {<br><span class="muted" style="font-size:12px">{{ plazo(x.p.plazo) }}</span>}</li> }</ul> }
+      @if (c.proceso) { <p style="font-size:13px;margin:12px 0 0">Proceso {{ c.proceso.id }}: <span class="etiqueta {{ COLOR_PROCESO[c.proceso.estado] }}">{{ c.proceso.estado }}</span> · {{ c.proceso.usados }} de {{ c.proceso.max }} seguimientos</p> }
+      <a class="btn btn-sec btn-chico" style="margin-top:12px" [routerLink]="['/visitas', c.ev.id, c.ev.estado === 'Finalizada' ? 'resultado' : '']">Ver la evaluación</a>
+    }
+  </section>
+  <section class="panel chat" aria-label="Conversación con el asistente">
+    <div class="chat-cab"><b>Conversación</b><span class="etiqueta" [class.e-gris]="asis.modo() === 'local'" [class.e-info]="asis.modo() !== 'local'">{{ asis.nombreModo() }}</span></div>
+    <div class="chat-msgs" #msgs aria-live="polite">
+      @for (m of mensajes(); track $index) { <div class="msg" [class.msg-u]="m.rol === 'u'" [class.msg-a]="m.rol === 'a'" [innerHTML]="html(m) | html"></div> }
+      @if (ocupado()) { <div class="msg msg-a msg-escribiendo">El asistente está escribiendo…</div> }
+    </div>
+    <div class="chat-sug">@for (s of sugerencias(); track s) { <button type="button" (click)="enviar(s)">{{ s }}</button> }</div>
+    <form class="chat-form" (submit)="$event.preventDefault(); enviar(pregunta.value); pregunta.value = ''"><label class="sr" for="asQ">Escriba su pregunta</label>
+      <textarea #pregunta id="asQ" rows="2" maxlength="800" placeholder="Ej.: ¿por qué me calificaron bajo el jadeo?" (keydown.enter)="tecla($any($event), pregunta)"></textarea>
+      <button class="btn btn-primario" [disabled]="ocupado()">Enviar</button></form>
+    <p class="aviso-asis">Las respuestas son orientativas y se basan en su evaluación y en la norma. No reemplazan la visita del inspector ni la revisión de un médico veterinario.</p>
+  </section>
+</div>
+}

@@ -1,12 +1,23 @@
-%% Estados de una evaluación (visita)
+%% Estados de una evaluación (visita) · v0.25
 stateDiagram-v2
-    [*] --> Programada : Nueva inspección / seguimiento programado al cierre
-    Programada --> Programada : reprogramar(fecha ≥ hoy) [visita > 0]
-    Programada --> EnProceso : primer dato registrado
-    EnProceso --> Finalizada : finalizar() sin pendientes y con firmas
+    [*] --> Programada : el coordinador asigna (inspector y fecha) · seguimiento al aprobar
+    Programada --> Programada : reasignar (coordinador) · reprogramar con motivo [visita > 0]
+    Programada --> EnProceso : primer dato del inspector asignado
+    EnProceso --> PendienteAprobacion : Finalizar y enviar (sin pendientes, con firmas)
+    PendienteAprobacion --> Devuelta : coordinador devuelve con observación
+    Devuelta --> PendienteAprobacion : inspector corrige y reenvía
+    PendienteAprobacion --> Finalizada : coordinador aprueba
     Finalizada --> [*]
+    Programada : Programada («Asignada»)
     EnProceso : En proceso
+    PendienteAprobacion : Pendiente de aprobación
+    Finalizada : Finalizada («Aprobada»)
+    note right of PendienteAprobacion
+        El inspector no la modifica; el productor la ve
+        como «En revisión del ICA», sin puntaje.
+    end note
     note right of Finalizada
-        Resultado provisional si hay documentos pendientes
-        (1 día hábil); definitivo al entregarlos o al vencer.
+        Si cumple: constancia de cumplimiento (1 año).
+        Si no: seguimiento N de M programado.
+        Provisional si hay documentos pendientes.
     end note

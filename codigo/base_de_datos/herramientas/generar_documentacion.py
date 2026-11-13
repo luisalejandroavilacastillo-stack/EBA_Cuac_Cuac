@@ -30,11 +30,11 @@ MODULOS = OrderedDict([
         "version_metodologia", "dimension", "ponderacion_tramo", "rango_clasificacion", "criterio", "indicador",
         "regla_aplicabilidad", "pregunta", "opcion_respuesta", "nivel_escala", "regla_conversion", "regla_condicion", "plantilla_diagnostico"])),
     ("4_evaluacion", ("Evaluación y resultado (RF13–RF23, Vista 5)", "#048C38", [
-        "evaluacion", "transicion_estado", "seccion_evaluacion", "guardado_parcial", "plan_muestreo", "punto_muestreo", "unidad_muestreo",
+        "evaluacion", "transicion_estado", "asignacion_evaluacion", "revision_evaluacion", "seccion_evaluacion", "guardado_parcial", "plan_muestreo", "punto_muestreo", "unidad_muestreo",
         "indicador_evaluado", "respuesta", "observacion", "evidencia", "documento_soporte", "resultado_evaluacion",
         "resultado_dimension", "diagnostico", "item_diagnostico", "hallazgo", "recurso_punto", "novedad_ave"])),
     ("5_seguimiento", ("Seguimiento, reportes y control (RF27–RF36, RF40, Vista 6)", "#745E35", [
-        "plan_mejora", "accion_mejora", "proceso_seguimiento", "reprogramacion", "notificacion", "reporte"])),
+        "plan_mejora", "accion_mejora", "proceso_seguimiento", "reprogramacion", "notificacion", "reporte", "constancia_cumplimiento"])),
     ("6_asistente", ("Asistente de la norma (RF24, RF25, Vista 7)", "#2B6CB0", [
         "configuracion_asistente", "consulta_asistente"])),
 ])
@@ -174,6 +174,9 @@ DESCR = {
     "novedad_ave": "Novedad GA01 a GA07 de un ganso y si recibe tratamiento; sin filas = sin novedad (v0.24).",
     "configuracion_asistente": "Modo del asistente (local o IA) y referencia al secreto de la clave; la clave no se guarda (v0.24).",
     "consulta_asistente": "Registro de consultas al asistente sin el texto de la pregunta (Ley 1581, v0.24).",
+    "asignacion_evaluacion": "Asignación de cada inspección a un inspector con fecha, e historial de reasignaciones (v0.25).",
+    "revision_evaluacion": "Revisión del coordinador: enviada, reenviada, devuelta (con observación) o aprobada; solo el coordinador aprueba (v0.25).",
+    "constancia_cumplimiento": "Constancia de cumplimiento CER-AAAA-NNNNN emitida al aprobar una visita que cumple; vigencia 12 meses (v0.25).",
 }
 assert set(DESCR) == set(cols), set(cols) ^ set(DESCR)
 

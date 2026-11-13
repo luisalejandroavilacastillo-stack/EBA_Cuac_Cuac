@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { EnConstruccion } from '../../compartido/en-construccion';
 
-/** Reportes: Filtros, comparación entre visitas, impresión y CSV sin datos personales. */
+/** Reportes (CU-21): consolidado con filtros, comparación entre visitas, CSV sin datos personales e informe por finca. */
 export const RUTAS_REPORTES: Routes = [
-  { path: '', component: EnConstruccion, data: { titulo: 'Reportes', descripcion: 'Filtros, comparación entre visitas, impresión y CSV sin datos personales.', cu: 'CU-21' } },
+  { path: '', title: 'Reportes · EBA', loadComponent: () => import('./reportes').then((m) => m.Reportes) },
+  { path: 'finca/:id', title: 'Informe de la finca · EBA', loadComponent: () => import('./informe').then((m) => m.InformeFinca) },
 ];

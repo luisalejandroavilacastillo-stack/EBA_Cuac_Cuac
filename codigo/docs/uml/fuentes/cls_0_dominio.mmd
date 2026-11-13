@@ -1,12 +1,27 @@
-%% Modelo de dominio v0.24 (vista general)
+%% Modelo de dominio v0.25 (vista general)
 classDiagram
   direction LR
   class Usuario {
     +nombre
-    +rol
+    +perfil
     +documento
     +correo
     +estado
+  }
+  class Constancia {
+    +codigo
+    +verificacion
+    +vence
+  }
+  class Revision {
+    +accion
+    +por
+    +obs
+  }
+  class Aviso {
+    +para
+    +txt
+    +tipo
   }
   class Finca {
     +id FIN-AAAA-NNNNN
@@ -52,7 +67,10 @@ classDiagram
     +estado
     +visita
     +pobEsp
-    +segFecha
+    +segFecha propuesta
+    +inspector
+    +asignacion
+    +aprobada
   }
   class Respuesta {
     +code
@@ -91,7 +109,11 @@ classDiagram
     +u
     +accion
   }
-  Usuario "1" --> "*" Finca : registra
+  Usuario "1" --> "*" Finca : registra (coordinador, admin)
+  Usuario "1" --> "*" Evaluacion : asignada a (inspector)
+  Evaluacion "1" *-- "*" Revision : enviar, devolver, aprobar
+  Evaluacion "1" *-- "0..1" Constancia : si cumple al aprobar
+  Usuario "1" --> "*" Aviso
   Finca "1" *-- "1" PersonaResponsable
   Finca "1" *-- "1..2" EspecieFinca
   EspecieFinca "1" *-- "*" LoteInventario

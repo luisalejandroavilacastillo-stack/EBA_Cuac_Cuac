@@ -1,0 +1,20 @@
+%% Trabajo sin señal en campo · plataforma 1.0 (CU-33, CU-09 a CU-12)
+flowchart TD
+  A([Inspector abre la plataforma]) --> B{¿Hay señal?}
+  B -- Sí --> C[Carga los datos de la API<br/>y guarda una copia en el equipo]
+  B -- No --> D[La aplicación abre desde el equipo · service worker<br/>con la última copia de sus datos]
+  D --> E[Aviso: «Sin señal: está trabajando<br/>con los datos guardados en este equipo»]
+  C --> F[Apertura · recorrido · indicadores]
+  E --> F
+  F --> G[Cada cambio queda en la copia de trabajo<br/>y en la cola del equipo]
+  G --> H{¿Hay señal?}
+  H -- Sí --> I[Se envía con su versión · «Guardado»]
+  H -- No --> J[«Sin conexión: los cambios quedan en este equipo»<br/>reintento cada 20 s y al volver la señal]
+  J --> H
+  I --> K{¿Otra persona cambió la visita?}
+  K -- Sí · 409 --> L[Se carga la versión de la base y se avisa]
+  K -- No --> M([Listo])
+  F --> N[Finalizar y enviar a aprobación] --> O{¿Hay señal?}
+  O -- No --> P[«Finalice cuando vuelva la señal»<br/>lo registrado sigue guardado]
+  O -- Sí --> Q[Pendiente de aprobación · aviso al coordinador]
+  R([Cerrar sesión]) --> S[Se borra la copia de los datos del equipo]

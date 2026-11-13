@@ -4,7 +4,9 @@ Plataforma para evaluar el bienestar animal en patos y gansos según la **Metodo
 
 El inspector registra en cada indicador lo que observa y la plataforma calcula el nivel con la tabla de la norma. Luego pondera las medidas con la Tabla 1 según el tramo (traspatio o comercial) y clasifica el resultado con la Tabla 2 (Excelente, Alto, Medio o Bajo). El cierre deja un diagnóstico y un plan de mejora acordado con el productor.
 
-> **Estado (v0.18.0):** Fincas es el centro de trabajo: cada finca muestra por especie si la evaluación está por iniciar, en proceso o finalizada (calculado con lo guardado) y la acción que sigue; búsqueda, filtros y contadores. Inicio compacto por perfil, Reportes con filtros, comparación entre visitas, criterios destacados, informe por finca y exportación; avance real en la evaluación con «siguiente pendiente». **v0.17:** datos de la persona responsable de la finca y asistente para el productor. **v0.15.0:** recorrido de campo por galpón, punto y ave (50 aves, 5 por punto), promedio y alertas por galpón y cierre del proceso por cumplimiento. **v0.14.0:** logo propio y procesos con hasta 5 visitas de seguimiento. **v0.13.0:** cálculos revisados contra la norma (162 pruebas), administrador con acceso a todos los módulos y centro de ayuda con la norma, tablas y gráficas. Ver [docs/validacion/INFORME_VALIDACION.md](docs/validacion/INFORME_VALIDACION.md).
+> **Estado (v0.25.2):** perfiles reorganizados. El coordinador registra fincas, asigna cada inspección (inspector y fecha), reasigna y aprueba o devuelve; el inspector solo ve lo asignado, llena patos y gansos con la misma ficha del ave y finaliza a «Pendiente de aprobación»; el productor ve solo lo aprobado y descarga su **constancia de cumplimiento**; el administrador gestiona usuarios y tiene los permisos del coordinador menos aprobar. Avisos dentro de la aplicación. Ver [CHANGELOG.md](CHANGELOG.md).
+>
+> **v0.18.0:** Fincas es el centro de trabajo: cada finca muestra por especie si la evaluación está por iniciar, en proceso o finalizada (calculado con lo guardado) y la acción que sigue; búsqueda, filtros y contadores. Inicio compacto por perfil, Reportes con filtros, comparación entre visitas, criterios destacados, informe por finca y exportación; avance real en la evaluación con «siguiente pendiente». **v0.17:** datos de la persona responsable de la finca y asistente para el productor. **v0.15.0:** recorrido de campo por galpón, punto y ave (50 aves, 5 por punto), promedio y alertas por galpón y cierre del proceso por cumplimiento. **v0.14.0:** logo propio y procesos con hasta 5 visitas de seguimiento. **v0.13.0:** cálculos revisados contra la norma (162 pruebas), administrador con acceso a todos los módulos y centro de ayuda con la norma, tablas y gráficas. Ver [docs/validacion/INFORME_VALIDACION.md](docs/validacion/INFORME_VALIDACION.md).
 >
 > **Semana 12:** prototipo funcional en HTML, CSS y JavaScript sin servidor (guarda en el navegador), diseño UML completo y diseño de la base de datos probado en PostgreSQL.
 
@@ -24,9 +26,9 @@ El inspector registra en cada indicador lo que observa y la plataforma calcula e
 │       └── app.js           enrutador
 ├── base_de_datos/           Diseño de la BD: SQL, diagramas ER, diccionario de datos
 ├── docs/
-│   ├── uml/                 v0.24: casos de uso por actor, 7 flujos, 4 diagramas de estados, 4 secuencias, 8 vistas de clases y paquetes (SVG y PNG)
-│   ├── interfaz/            Mockup de formularios RF01–RF40 y 32 capturas del prototipo
-│   └── requerimientos/      Casos de uso CU-01 a CU-26 y libro unificado: personas, RF, HU-01 a HU-192, RN-01 a RN-190, clases
+│   ├── uml/                 v0.25: casos de uso por actor, 8 flujos, 5 diagramas de estados, 5 secuencias, 8 vistas de clases y paquetes (SVG y PNG)
+│   ├── interfaz/            Mockup de formularios RF01–RF40 y 40 capturas del prototipo
+│   └── requerimientos/      Casos de uso CU-01 a CU-31 y libro unificado: personas, RF, HU-01 a HU-212, RN-01 a RN-208, clases
 ├── pruebas/                 Prueba de extremo a extremo del prototipo (Playwright)
 └── herramientas/            Capturas de pantalla, diagramas (generar_diagramas.sh) y actualización del libro
 ```
@@ -34,7 +36,7 @@ El inspector registra en cada indicador lo que observa y la plataforma calcula e
 ## Cómo ejecutar el prototipo
 
 1. Abrir `src/index.html` en Chrome, Edge o Firefox. No necesita servidor ni instalación.
-2. Elegir un perfil (Inspector, Coordinadora, Productor o Administrador).
+2. Elegir un perfil (Inspector ICA, Coordinador ICA, Productor o Administrador) y escribir el correo del usuario (viene uno de ejemplo; otros: d.ortiz@ica.gov.co, rosa.quintero@correo.co).
 3. Contraseña `Ica2026*` · código de verificación `482073`.
 
 Lo diligenciado se guarda en el navegador. «Restablecer datos de ejemplo» está en *Mi cuenta y seguridad*.

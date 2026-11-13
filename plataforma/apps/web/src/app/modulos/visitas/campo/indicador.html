@@ -1,0 +1,50 @@
+@if (copia(); as ev) { @if (ind(); as i) { @if (f(); as fi) {
+<div class="eval">
+  <nav class="panel indice" [class.solo-pend]="soloPend()" aria-label="Indicadores de la norma">
+    @if (indice(); as x) {
+      <div class="indice-cab"><div class="indice-tit"><b>{{ ev.sp === 'pato' ? 'Patos · numeral 6' : 'Gansos · numeral 7' }}</b>
+          <button type="button" class="btn-lista" [attr.aria-expanded]="listaAbierta()" aria-controls="listaInd" (click)="listaAbierta.set(!listaAbierta())">{{ listaAbierta() ? 'Ocultar lista' : 'Ver lista' }}</button></div>
+        <small>{{ av().hechos }} de {{ av().ap }} calificados · {{ av().ap - av().hechos ? (av().ap - av().hechos) + ' pendiente' + (av().ap - av().hechos > 1 ? 's' : '') : 'ninguno pendiente' }}</small>
+        <div class="avance" role="progressbar" aria-valuemin="0" aria-valuemax="100" [attr.aria-valuenow]="av().pct" aria-label="Avance de la evaluación"><i [style.width.%]="av().pct"></i></div><b class="pct">{{ av().pct }} %</b>
+        <label class="chk-mini"><input type="checkbox" [checked]="soloPend()" (change)="cambiarSoloPend($any($event.target).checked)"> Ver solo pendientes</label></div>
+      <div class="indice-lista" [class.abierta]="listaAbierta()" id="listaInd">
+        <div class="grupo-ind">@for (it of x.inicio; track it.go) { <ng-container *ngTemplateOutlet="item; context: { $implicit: it }" /> }</div>
+        @for (g of x.grupos; track g.titulo) {
+          <div class="grupo-ind"><h4>{{ g.titulo }}</h4>@for (it of g.items; track it.go) { <ng-container *ngTemplateOutlet="item; context: { $implicit: it }" /> }</div>
+        }
+        <div class="grupo-ind"><ng-container *ngTemplateOutlet="item; context: { $implicit: x.fin }" /></div>
+      </div>
+      <p class="leyenda-indice"><span>✓ calificado</span><span>○ pendiente</span><span>– no aplica</span></p>
+    }
+  </nav>
+
+  <article class="ficha">
+    <header class="ficha-cab"><div><div class="num">{{ i.num }}</div><h2>{{ i.name }}</h2><p class="pregunta">{{ i.q }}</p></div>
+      <button type="button" class="btn-ayuda no-imprimir" title="Pregunta, texto de la norma, método, cálculo, escala y notas de interpretación" (click)="abrirFicha()"><span class="q">?</span>Ficha del indicador</button></header>
+    @if (na(); as motivo) {
+      <div style="padding:24px"><div class="na-banda">No aplica en esta finca. {{ motivo }} Se excluye del promedio.
+        @if (ed() && code() === 'PR10') { <div style="margin-top:12px"><button type="button" class="btn btn-primario btn-chico" (click)="huevo(true)">La finca produce huevo: evaluar el nidal</button></div> }</div></div>
+    } @else {
+      <app-captura [ev]="ev" [code]="code()" [finca]="fi" />
+      @if (ed() && code() === 'PR10') { <p class="nota-huevo">¿Se marcó por error? <button type="button" class="btn btn-fantasma btn-chico" (click)="huevo(false)">La finca no produce huevo</button></p> }
+    }
+    @if (pie(); as p) {
+      <footer class="pie-ficha">
+        <a class="btn btn-sec" [routerLink]="['/visitas', ev.id, p.ant.go]" [title]="p.ant.title">{{ p.ant.texto }}</a>
+        <span class="guardado estado-guardado" [class.sin-conexion]="trabajo.estado() === 'sin-conexion'" role="status">{{ textoGuardado() }}</span>
+        <span class="pie-siguiente">
+          @if (p.sec; as s) { <a class="btn btn-sec" [routerLink]="['/visitas', ev.id, s.go]" [title]="s.title">Siguiente</a> }
+          <a class="btn btn-primario" [routerLink]="['/visitas', ev.id, p.prim.go]" [title]="p.prim.title">{{ p.prim.texto }}</a>
+        </span>
+      </footer>
+    }
+  </article>
+</div>
+
+<ng-template #item let-it>
+  <a class="item-ind est-{{ it.est }}" [routerLink]="['/visitas', ev.id, it.go]" [attr.aria-current]="it.go === code() ? 'true' : null" [title]="tituloItem(it)">
+    <span class="marca" [style.--c]="it.color || 'transparent'" aria-hidden="true">{{ it.est === 'hecho' ? '✓' : it.est === 'na' ? '–' : '' }}</span>
+    <span>{{ it.nombre }}@if (it.go === code()) { <small class="actual">actual</small> }</span><span class="n">{{ it.num }}</span>
+    <span class="sr">{{ it.est === 'hecho' ? 'calificado' : it.est === 'na' ? 'no aplica' : 'pendiente' }}</span></a>
+</ng-template>
+} } }

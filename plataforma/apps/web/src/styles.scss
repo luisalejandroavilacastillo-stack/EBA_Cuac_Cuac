@@ -1,65 +1,36 @@
-/* La letra Nunito Sans va incluida en la aplicación (paquete @fontsource): funciona sin internet, como en el campo. */
-/* Identidad visual ICA (Manual de Identidad Visual), igual que el prototipo. */
-:root {
-  --semilla: #317330;      /* menú, encabezados */
-  --campo: #048c38;        /* Excelente, 100 puntos */
-  --siembra: #86b327;      /* Alto */
-  --cosecha: #c6c309;      /* Medio, 55 puntos */
-  --proteccion: #745e35;
-  --arena: #d8caaa;
-  --rojo: #8a3431;         /* Bajo, 0 puntos */
-  --texto: #1f2a1f;
-  --muted: #5b6b5b;
-  --fondo: #f6f7f2;
-  --panel: #ffffff;
-  --borde: #e2e6dc;
-  --radio: 12px;
-}
-* { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; }
-body { font-family: 'Nunito Sans', Arial, sans-serif; color: var(--texto); background: var(--fondo); }
-h1 { font-size: 28px; font-weight: 800; margin: 0 0 6px; }
-.muted { color: var(--muted); }
-.panel { background: var(--panel); border: 1px solid var(--borde); border-radius: var(--radio); padding: 20px; }
-.etiqueta { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 13px; font-weight: 700; }
-.e-ok { background: #e3f3e8; color: var(--campo); }
+:root { --proteccion: #745e35; }
+/* Estilos propios de Angular. La base visual es la del prototipo (src/estilos/eba.css, copia de apps/prototipo/css/estilos.css). */
 .e-pend { background: #f6f3dc; color: #7a7700; }
 .e-error { background: #f6e5e4; color: var(--rojo); }
-
-/* ── Componentes comunes ─────────────────────────────────────────────── */
-a { color: var(--semilla); }
 .chico { font-size: 13px; }
-.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-.encabezado { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
-.volver { display: inline-block; margin-bottom: 10px; font-weight: 700; text-decoration: none; }
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 10px 18px; border-radius: 10px;
-  font: inherit; font-weight: 800; border: 1.5px solid transparent; cursor: pointer; text-decoration: none; }
-.btn-primario { background: var(--semilla); color: #fff; }
-.btn-primario:hover { background: #285f27; }
-.btn-primario:disabled { opacity: .6; cursor: wait; }
-.btn-sec { background: #fff; color: var(--semilla); border-color: var(--semilla); }
-.campo { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; font-weight: 700; font-size: 14px; }
 .campo em { font-weight: 400; font-style: normal; }
-input, select { font: inherit; font-weight: 400; padding: 9px 11px; border: 1.5px solid #cfd6c8; border-radius: 9px; background: #fff; color: var(--texto); min-width: 0; }
-input:focus, select:focus { outline: 3px solid rgba(4, 140, 56, .25); border-color: var(--campo); }
-input:disabled { background: #f1f2ee; }
 .con-error input, .con-error select { border-color: var(--rojo); }
-.error-campo { color: var(--rojo); font-weight: 600; font-size: 13px; min-height: 0; }
-.error-campo:empty { display: none; }
-.chk { display: flex; gap: 8px; align-items: center; font-weight: 700; cursor: pointer; }
-.chk input { width: 18px; height: 18px; accent-color: var(--semilla); }
-.aviso { padding: 10px 14px; border-radius: 10px; font-weight: 700; margin-bottom: 14px; }
 .aviso-error { background: #f6e5e4; color: var(--rojo); }
 .aviso-ok { background: #e3f3e8; color: var(--campo); }
 .e-com { background: #e8f0e0; color: #4d6b15; }
 .e-trasp { background: #f3eedf; color: var(--proteccion); }
-.e-gris { background: #ecece8; color: #5b5b55; }
 .sin-relleno { padding: 0; overflow-x: auto; }
-.tabla { width: 100%; border-collapse: collapse; font-size: 14px; }
-.tabla th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); padding: 12px 16px; border-bottom: 1px solid var(--borde); background: #fafbf7; }
-.tabla td { padding: 12px 16px; border-bottom: 1px solid var(--borde); vertical-align: top; }
-.tabla tr:last-child td { border-bottom: 0; }
 .enlace-fuerte { font-weight: 800; text-decoration: none; }
 .enlace-fuerte:hover { text-decoration: underline; }
 .campo > input, .campo > select { width: 100%; }
 .fila > * { min-width: 0; }
+/* Módulo 1: ingreso real, activación y usuarios */
+.aviso-info { background: #e6eef6; color: #1f4d78; border-radius: 10px; padding: 10px 14px; margin: 0 0 16px; font-size: 15px; }
+.reglas-clave { list-style: none; padding: 0; margin: 6px 0 0; font-size: 14px; display: grid; gap: 3px; }
+.reglas-clave li::before { content: "○ "; color: var(--gris, #8a8f86); }
+.reglas-clave li.cumple { color: var(--campo); }
+.reglas-clave li.cumple::before { content: "✓ "; color: var(--campo); }
+.nowrap { white-space: nowrap; }
+.zona-cuenta { border-top: 1px solid var(--linea, #e2e6dc); margin-top: 6px; padding-top: 12px; }
+.zona-cuenta .acciones-fila { display: flex; gap: 8px; flex-wrap: wrap; }
+/* Módulo 2: inicio y fincas */
+a.item-ley { text-decoration: none; color: inherit; border-radius: 8px; }
+a.item-ley:hover { background: #F2F6EE; }
+.entrada-plan { min-height: 36px; border: 1.5px solid var(--linea); border-radius: 6px; padding: 4px 8px; font: inherit; }
+/* Módulo 4: evaluación en campo */
+.cajon-ficha { z-index: 80; }
+.estado-guardado { font-size: 13px; font-weight: 700; }
+.estado-guardado.sin-conexion { color: var(--rojo); }
+.estado-guardado.pendiente { color: var(--gris); }
+a.item-ind { text-decoration: none; color: inherit; }
+.aviso-sin-senal { background: #fff4d6; color: #6b4e00; border: 1px solid #ead48a; border-radius: 10px; padding: 10px 14px; margin: 0 0 16px; font-weight: 700; font-size: 14px; }

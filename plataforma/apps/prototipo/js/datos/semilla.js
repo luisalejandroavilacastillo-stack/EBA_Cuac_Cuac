@@ -23,10 +23,10 @@ function rellenarEjemplo(ev, semillaN, bueno, salta, ajustes) {
 }
 function sembrar() {
   const noValido = { estado: "No válido", legible: true, sinCorr: true, firmado: false, contenido: true };
-  // Visita inicial del proceso (abril de 2026): finalizada y conservada como histórico
+  // Visita inicial del proceso (abril de 2026): aprobada por la coordinadora y conservada como histórico
   const ev0 = { id: "EVA-2026-00072", finca: "FIN-2026-00417", sp: "pato", fecha: "2026-04-20", inspector: "inspector", estado: "Finalizada", finalizada: "2026-04-20T15:30:00",
     proceso: "PRC-2026-0001", visita: 0, apertura: { hora: "07:30", atiende: "Luis Pérez (mayordomo)", ingreso: "08:10" }, pobConfirmada: 790, resp: {}, obs: {},
-    firmas: { productor: "Hernán Darío Mejía", inspector: "Camilo Andrés Peña" }, guardado: "2026-04-20T15:30:00", obsGeneral: "Primera visita del proceso. Se acuerda plan de mejora en ventilación y documentos del POE." };
+    firmas: { productor: "Hernán Darío Mejía", inspector: "Camilo Andrés Peña" }, guardado: "2026-04-20T15:30:00", aprobada: { por: "coordinador", fecha: "2026-04-21T10:00:00" }, obsGeneral: "Primera visita del proceso. Se acuerda plan de mejora en ventilación y documentos del POE." };
   EVALS = [ev0];
   rellenarEjemplo(ev0, 31, 0.62, [], { auto: { PR09: { 0: true, 1: false, 2: false }, PR04: { 0: 790, 1: 24, 2: 20, 3: true } },
     pct: { PA01: { total: 240, part: 121, g: [{ total: 120, part: 40 }, { total: 120, part: 81 }] }, PA02: { total: 240, part: 12, g: [{ total: 120, part: 5 }, { total: 120, part: 7 }] }, PA10: { total: 5040, part: 640 } },
@@ -46,7 +46,8 @@ function sembrar() {
     doc: { PG04: noValido, PG05: noValido, PG06: { estado: "Pendiente" } } });
   ev.obs.PA01 = "Galpón 1 mejoró con ventiladores (6 de 120). Galpón 2: ventiladores apagados, 74 de 120 aves con jadeo.";
 
-  const ev2 = { id: "EVA-2026-00091", finca: "FIN-2026-00431", sp: "ganso", fecha: "2026-10-17", inspector: "inspector", estado: "Programada",
+  const ev2 = { id: "EVA-2026-00091", finca: "FIN-2026-00431", sp: "ganso", fecha: "2026-10-17", inspector: "inspector2", estado: "Programada",
+    asignacion: { por: "coordinador", fecha: "2026-10-01T09:00:00", inspector: "inspector2", fechaVisita: "2026-10-17" },
     proceso: "PRC-2026-0002", visita: 0, apertura: {}, pobConfirmada: null, resp: {}, obs: {}, firmas: {}, guardado: null };
   EVALS.push(ev2);
 
@@ -57,6 +58,10 @@ function sembrar() {
   EVALS.push(ev3);
   rellenarEjemplo(ev3, 5, 1, [], { auto: { PR04: { 0: 18, 1: 3, 2: 6, 3: false }, PR08: { 0: 18, 1: 2, 2: 9, 3: false }, PR09: { 0: true, 1: true, 2: true } },
     pct: { PA02: { total: 18, part: 0 } }, density: { aves: 18, peso: 2.2, area: 12 } });
+  // v0.25: aprobada por la coordinadora; si cumple los criterios tiene su constancia de cumplimiento.
+  ev3.aprobada = { por: "coordinador", fecha: "2026-09-11T09:00:00" };
+  ev3.revision = [{ accion: "Enviada", por: "inspector", fecha: "2026-09-10T11:20:00", obs: "" }, { accion: "Aprobada", por: "coordinador", fecha: "2026-09-11T09:00:00", obs: "" }];
+  try { if (verificarCumplimiento(ev3).cumple) { const r = resultado(ev3); ev3.constancia = { codigo: "CER-2026-00001", verificacion: "7KQ2-M9XA", emitida: "2026-09-11T09:00:00", vence: "2027-09-10", puntaje: Math.round(r.total * 10) / 10, nivel: r.nivel[0] }; } } catch (e) { }
   return EVALS;
 }
 if (!EVALS) { EVALS = []; EVALS = sembrar(); guardar(); }

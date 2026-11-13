@@ -30,7 +30,7 @@ services:
     build:
       context: .
       dockerfile: apps/api/Dockerfile
-    image: eba-api:0.6.0
+    image: eba-api:1.0.0
     container_name: eba-api
     restart: unless-stopped
     environment:
@@ -45,6 +45,20 @@ services:
       DB_CLAVE: ${DB_CLAVE:-cambie_esta_clave}
       DATOS_EJEMPLO: ${DATOS_EJEMPLO:-si}
       GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      # Ingreso real (módulo 1). Ver .env.example.
+      PUBLICO_URL: ${PUBLICO_URL:-http://localhost:4200}
+      INGRESO_DEMOSTRACION: ${INGRESO_DEMOSTRACION:-si}
+      COOKIE_SEGURA: ${COOKIE_SEGURA:-no}
+      SESION_MINUTOS: ${SESION_MINUTOS:-15}
+      ADMIN_CORREO: ${ADMIN_CORREO:-}
+      ADMIN_NOMBRE: ${ADMIN_NOMBRE:-Administrador EBA}
+      ADMIN_DOCUMENTO: ${ADMIN_DOCUMENTO:-1000000001}
+      CORREO_HOST: ${CORREO_HOST:-mailpit}
+      CORREO_PUERTO: ${CORREO_PUERTO:-1025}
+      CORREO_SEGURO: ${CORREO_SEGURO:-no}
+      CORREO_USUARIO: ${CORREO_USUARIO:-}
+      CORREO_CLAVE: ${CORREO_CLAVE:-}
+      CORREO_REMITENTE: ${CORREO_REMITENTE:-EBA Cuac Cuac <no-responder@eba.local>}
       GEMINI_MODELO: ${GEMINI_MODELO:-gemini-3.8-flash}
       GEMINI_MODELO_RESPALDO: ${GEMINI_MODELO_RESPALDO:-gemini-3.5-flash-lite}
     ports:
@@ -57,7 +71,7 @@ services:
     build:
       context: .
       dockerfile: apps/web/Dockerfile
-    image: eba-web:0.6.0
+    image: eba-web:1.0.0
     container_name: eba-web
     restart: unless-stopped
     ports:

@@ -1,0 +1,26 @@
+%% Secuencia · ingreso con contraseña y código al correo · plataforma 1.0 (CU-01)
+sequenceDiagram
+    autonumber
+    actor U as Usuario
+    participant W as Angular · Ingreso
+    participant A as API · /api/auth
+    participant B as MariaDB
+    participant M as Correo (SMTP)
+    U->>W: correo y contraseña
+    W->>A: POST /auth/ingresar
+    A->>B: usuario por correo · intentos · bloqueo
+    A->>A: scrypt(contraseña) = clave_hash
+    alt contraseña errada
+        A->>B: intentos_fallidos + 1 (a los 5: bloqueado_hasta = +15 min)
+        A-->>W: 401 «Correo o contraseña incorrectos»
+    else correcta
+        A->>B: codigo_verificacion (huella SHA-256, vence en 10 min)
+        A->>M: código de 6 dígitos
+        A-->>W: 200 · pide el código
+        U->>W: código
+        W->>A: POST /auth/verificar
+        A->>B: valida huella y vigencia · crea sesion (huella del token)
+        A-->>W: Set-Cookie eba_sesion (HttpOnly, SameSite=Strict, Secure con https)
+        W-->>U: Inicio según su perfil
+    end
+    Note over W,A: Cada petición lleva la cookie y tras 15 min sin uso la sesión se cierra.

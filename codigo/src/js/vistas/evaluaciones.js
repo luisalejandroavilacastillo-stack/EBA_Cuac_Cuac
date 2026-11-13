@@ -6,19 +6,20 @@
 /* ==========================================================================
    Nueva evaluación o seguimiento
    ========================================================================== */
-/** Ventana «Nueva evaluación o seguimiento». pre = "FIN-…|pato" para dejar elegida la finca y la especie.
- *  Conserva las tres opciones de visita (seguimiento, nuevo proceso retomando, nuevo proceso desde cero) y los avisos del proceso. */
+/** Ventana «Asignar inspección» (solo el coordinador, v0.25). pre = "FIN-…|pato" para dejar elegida la finca y la especie.
+ *  Conserva las tres opciones de visita (seguimiento, nuevo proceso retomando, nuevo proceso desde cero), la fecha de la visita
+ *  y el inspector al que se asigna; el inspector la ve en su lista de trabajo y recibe un aviso. */
 function abrirNuevaEvaluacion(pre) {
-  if (SES.rol === "productor") return toast("Solo el inspector, el coordinador o el administrador crean evaluaciones.");
+  if (!esGestor()) return toast("Solo el coordinador o el administrador asignan las inspecciones.");
   const activas = FINCAS.filter((f) => f.estado === "ACTIVA");
   if (!activas.length) return toast("No hay fincas activas para evaluar.");
   const opciones = activas.flatMap((f) => f.especies.map((e) => `<option value="${f.id}|${e.sp}" ${pre === f.id + "|" + e.sp ? "selected" : ""}>${esc(f.nombre)} · ${nombreSp(e.sp)}</option>`)).join("");
-  modal(`<div class="modal-cab"><h3>Nueva evaluación o seguimiento</h3><p class="muted">La visita se acuerda con el productor con antelación. Si la finca ya tiene un proceso, la visita puede ser de seguimiento y retoma lo registrado en la última evaluación.</p></div>
+  modal(`<div class="modal-cab"><h3>Asignar inspección</h3><p class="muted">Elija el inspector y la fecha acordada con el productor. Si la finca ya tiene un proceso, la visita puede ser de seguimiento y retoma lo registrado en la última evaluación.</p></div>
     <form id="fne" novalidate><div class="modal-cuerpo">
     <div class="campo"><label for="ne1">Finca y especie</label><select id="ne1">${opciones}</select></div>
     <div class="campo"><label>Tipo de visita</label><div id="tipos"></div></div>
     <div class="fila fila-3"><div class="campo"><label for="ne2">Fecha de la visita</label><input id="ne2" type="date" value="${new Date().toISOString().slice(0, 10)}"></div><div class="campo"><label for="ne3">Hora</label><input id="ne3" type="time" value="07:00"></div>
-    <div class="campo"><label for="ne4">Inspector</label><select id="ne4"><option value="inspector">Camilo Andrés Peña · MP 45872</option></select></div></div>
+    <div class="campo"><label for="ne4">Inspector</label><select id="ne4">${inspectores().map(([k, x]) => `<option value="${k}">${esc(x.nombre)}${x.mp ? " · " + x.mp : ""}</option>`).join("")}</select></div></div>
     <div id="prev" class="aplica"></div></div>
     <div class="acciones"><button type="button" class="btn btn-sec" data-c>Cancelar</button><button class="btn btn-primario" id="crear">Crear evaluación</button></div></form>`, (c) => {
     c.querySelector(".modal > div").classList.add("modal-medio");
@@ -26,41 +27,70 @@ function abrirNuevaEvaluacion(pre) {
     const sel = c.querySelector("#ne1");
     const prev = () => { const [fid, sp] = sel.value.split("|"); const f = FINCAS.find((x) => x.id === fid), t = tramoEspecie(f.especies.find((e) => e.sp === sp));
       const n = NORMA.filter((i) => i.sp === sp).length, ok = NORMA.filter((i) => i.sp === sp && !aplica(i, { e: f.especies.find((e) => e.sp === sp), tramo: t, f })).length;
-      const procs = procesosDe(fid, sp), abierta = EVALS.find((x) => x.finca === fid && x.sp === sp && ["En proceso", "Programada"].includes(x.estado));
+      const procs = procesosDe(fid, sp), abierta = EVALS.find((x) => x.finca === fid && x.sp === sp && esAbierta(x));
       const ult = procs[0], ultFin = EVALS.filter((x) => x.finca === fid && x.sp === sp && x.estado === "Finalizada").sort((a, b) => b.fecha.localeCompare(a.fecha))[0];
       const tipos = [];
       if (ult && ult.puedeSeguimiento) tipos.push(["seg", `<b>Visita de seguimiento ${ult.usados + 1} de ${ult.max}</b> del proceso ${ult.id}: retoma ${ult.ultima.id} (${fecha(new Date(ult.ultima.fecha + "T07:00"))}, ${fmt(resultado(ult.ultima).total)} puntos) para mejorar el puntaje o completar lo que faltó.`]);
       if (ultFin) tipos.push(["retoma", `<b>Nuevo proceso retomando la última evaluación</b> (${ultFin.id}): copia lo registrado como punto de partida; la evaluación anterior queda en el histórico.`]);
       tipos.push(["cero", "<b>Nuevo proceso desde cero</b>: lista de chequeo vacía."]);
-      c.querySelector("#tipos").innerHTML = abierta ? `<p class="etiqueta e-medio">Ya hay una evaluación abierta (${abierta.id} · ${nombreVisita(abierta)}). <a href="#/eval/${abierta.id}/${pasoContinuar(abierta)}" data-x>Continuarla</a></p>`
+      const ultIns = EVALS.filter((x) => x.finca === fid && x.sp === sp).sort((a, b) => (b.fecha || "").localeCompare(a.fecha || ""))[0];
+      if (ultIns && USUARIOS[ultIns.inspector]) c.querySelector("#ne4").value = ultIns.inspector;   // por defecto, el inspector que ya conoce la finca
+      c.querySelector("#tipos").innerHTML = abierta ? `<p class="etiqueta e-medio">Ya hay una visita sin aprobar (${abierta.id} · ${nombreVisita(abierta)} · ${etqEstadoEv(abierta.estado).toLowerCase()} · ${esc(nombreInspector(abierta.inspector))}).${abierta.estado === "Programada" ? ` <a href="#" data-reasig="${abierta.id}">Reasignarla</a>` : ""}</p>`
         : (ult && ult.cumplido ? `<p class="etiqueta e-ok" style="margin-bottom:8px">El proceso ${ult.id} está cumplido (${nombreVisita(ult.visitaCumple)}): no requiere seguimientos. Si se necesita, inicie un proceso nuevo.</p>`
           : ult && ult.puedeAmpliar ? `<p class="etiqueta e-medio" style="margin-bottom:8px">El proceso ${ult.id} usó sus ${ult.max} seguimientos sin cumplir: el coordinador puede ampliarlo a ${MAX_SEGUIMIENTOS} desde el resultado de la última visita.</p>`
           : ult && ult.completo ? `<p class="muted" style="font-size:13px">El proceso ${ult.id} se cerró sin cumplir: se inicia un proceso nuevo.</p>` : "") +
           tipos.map(([k, tx], j) => `<label class="chk"><input type="radio" name="tipo" value="${k}" ${j === 0 ? "checked" : ""}><span>${tx}</span></label>`).join("");
-      c.querySelectorAll("[data-x]").forEach((a) => a.addEventListener("click", () => cerrarCapas()));
+      c.querySelectorAll("[data-reasig]").forEach((a) => (a.onclick = (e) => { e.preventDefault(); cerrarCapas(); abrirReasignar(a.dataset.reasig); }));
       c.querySelector("#crear").disabled = !!abierta;
       c.querySelector("#prev").innerHTML = `<span>📋</span><span>${n} indicadores de ${sp === "pato" ? "patos (numeral 6)" : "gansos (numeral 7)"}; aplican ${ok} para esta finca (${t}).<br><b>${tramosTexto(f)}</b> (el tramo y la muestra se calculan por especie, Tabla 3).</span>`; };
     sel.onchange = prev; prev();
     c.querySelector("#fne").onsubmit = (e) => { e.preventDefault(); const [fid, sp] = sel.value.split("|");
-      const tipo = (c.querySelector('input[name="tipo"]:checked') || {}).value, fch = c.querySelector("#ne2").value;
+      const tipo = (c.querySelector('input[name="tipo"]:checked') || {}).value, fch = c.querySelector("#ne2").value, insp = c.querySelector("#ne4").value;
       if (!tipo) return;
+      if (!fch || fch < new Date().toISOString().slice(0, 10)) return toast("La fecha de la visita debe ser hoy o posterior.");
       const ultFin = EVALS.filter((x) => x.finca === fid && x.sp === sp && x.estado === "Finalizada").sort((a, b) => b.fecha.localeCompare(a.fecha))[0];
-      const r = tipo === "seg" ? crearSeguimiento(procesosDe(fid, sp)[0].id) : crearProceso(fid, sp, tipo === "retoma" ? ultFin.id : null, fch);
+      const r = tipo === "seg" ? crearSeguimiento(procesosDe(fid, sp)[0].id, insp) : crearProceso(fid, sp, tipo === "retoma" ? ultFin.id : null, fch, insp);
       if (r.error) { toast(r.error); return; }
-      r.ev.fecha = fch; guardar(); cerrarCapas(); toast(tipo === "seg" ? `Seguimiento creado: se retomó lo registrado en la visita anterior.` : "Evaluación creada.");
-      location.hash = `#/eval/${r.ev.id}`; };
+      r.ev.fecha = fch; r.ev.asignacion.fechaVisita = fch; guardar();
+      const f = FINCAS.find((x) => x.id === fid);
+      log(`Asignación de ${r.ev.id} (${f.nombre} · ${nombreSp(sp)}) a ${nombreInspector(insp)} para el ${fch}`);
+      avisar(insp, `Nueva inspección asignada: ${f.nombre} · ${nombreSp(sp)} (${nombreVisita(r.ev)}) para el ${fecha(new Date(fch + "T07:00"))}`, `#/finca/${fid}`);
+      cerrarCapas(); toast(`Inspección asignada a ${nombreInspector(insp)} para el ${fecha(new Date(fch + "T07:00"))}.`); render(); }; 
+  });
+}
+/** Reasignar una visita que aún no se ha enviado (asignada, en proceso o devuelta): otro inspector y, si no ha empezado, otra fecha. */
+function abrirReasignar(evId, alListo) {
+  const ev = EVALS.find((e) => e.id === evId); if (!ev || !esGestor()) return;
+  if (!["Programada", "En proceso", "Devuelta"].includes(ev.estado)) return toast("Solo se reasigna una visita que aún no se ha enviado a aprobación.");
+  const f = FINCAS.find((x) => x.id === ev.finca), hoyISO = new Date().toISOString().slice(0, 10), noIniciada = ev.estado === "Programada";
+  modal(`<div class="modal-cab"><h3>Reasignar ${nombreVisita(ev).toLowerCase()}</h3><p class="muted">${esc(f.nombre)} · ${nombreSp(ev.sp)} · ${ev.id} · hoy la tiene ${esc(nombreInspector(ev.inspector))}</p></div>
+    <div class="modal-cuerpo"><div class="fila"><div class="campo"><label for="raI">Inspector</label><select id="raI">${inspectores().map(([k, x]) => `<option value="${k}" ${k === ev.inspector ? "selected" : ""}>${esc(x.nombre)}${x.mp ? " · " + x.mp : ""}</option>`).join("")}</select></div>
+      <div class="campo"><label for="raF">Fecha de la visita</label><input type="date" id="raF" min="${hoyISO}" value="${esc(ev.fecha)}" ${noIniciada ? "" : "disabled"}>${noIniciada ? "" : '<span class="ayuda-campo">La visita ya empezó: se conserva la fecha y lo registrado.</span>'}</div></div>
+      <span class="error-campo" id="raErr"></span></div>
+    <div class="acciones"><button class="btn btn-sec" data-c>Cancelar</button><button class="btn btn-primario" data-ok>Guardar</button></div>`, (c) => {
+    c.querySelector("[data-c]").onclick = cerrarCapas;
+    c.querySelector("[data-ok]").onclick = () => { const insp = c.querySelector("#raI").value, fch = c.querySelector("#raF").value, antes = ev.inspector;
+      if (noIniciada && (!fch || fch < hoyISO)) { c.querySelector("#raErr").textContent = "La fecha debe ser hoy o posterior."; return; }
+      if (insp === antes && (!noIniciada || fch === ev.fecha)) { cerrarCapas(); return; }
+      ev.inspector = insp; if (noIniciada) ev.fecha = fch;
+      ev.asignacion = Object.assign({}, ev.asignacion, datosAsignacion(insp, ev.fecha), { anterior: antes !== insp ? antes : (ev.asignacion || {}).anterior });
+      log(`Reasignación de ${ev.id}: ${nombreInspector(antes)} → ${nombreInspector(insp)} · visita ${ev.fecha}`);
+      if (antes !== insp) { avisar(insp, `Inspección reasignada a usted: ${f.nombre} · ${nombreSp(ev.sp)} para el ${fecha(new Date(ev.fecha + "T07:00"))}`, `#/finca/${f.id}`);
+        avisar(antes, `La inspección de ${f.nombre} · ${nombreSp(ev.sp)} se reasignó a ${nombreInspector(insp)}`, "#/inicio"); }
+      else avisar(insp, `Cambió la fecha de la visita a ${f.nombre} · ${nombreSp(ev.sp)}: ${fecha(new Date(ev.fecha + "T07:00"))}`, `#/finca/${f.id}`);
+      guardar(); cerrarCapas(); toast(`Visita asignada a ${nombreInspector(insp)} para el ${fecha(new Date(ev.fecha + "T07:00"))}.`); if (alListo) alListo(); else render(); };
   });
 }
 /** Ruta antigua «#/evaluaciones/nueva»: muestra Fincas y abre la ventana. */
 function vNueva() {
-  if (SES.rol === "productor") return sinPermiso("evaluaciones/nueva");
+  if (!esGestor()) return sinPermiso("evaluaciones/nueva");
   const pre = sessionStorage.getItem("eba.nueva") || ""; try { sessionStorage.removeItem("eba.nueva"); } catch (e) { }
   try { history.replaceState(null, "", "#/fincas"); } catch (e) { }
   vFincas(); abrirNuevaEvaluacion(pre);
 }
 /* ---- apertura y plan de muestreo ---- */
 function vApertura(ev) {
-  const ctx = contexto(ev), f = ctx.f, ed = SES.rol !== "productor" && ev.estado !== "Finalizada";
+  const ctx = contexto(ev), f = ctx.f, ed = puedeEvaluar(ev);
   const ap = ev.apertura;
   const na = lista(ev).filter((i) => aplica(i, ctx));
   shell("fincas", migasEval(ev, "Apertura y muestreo"), `<div class="encabezado"><div><h1>Apertura de la visita</h1><p>${esc(f.nombre)} · ${ev.sp === "pato" ? "Patos" : "Gansos"} · ${esc(ctx.e.proposito)} · <b>${esc(ev.proceso)} · ${nombreVisita(ev)}</b></p></div>

@@ -1,6 +1,6 @@
 {
   "name": "eba-plataforma",
-  "version": "0.6.0",
+  "version": "1.0.0",
   "description": "EBA Cuac Cuac · Plataforma de evaluación del bienestar animal en patos y gansos (Metodología ICA v1.0, 2024)",
   "private": true,
   "workspaces": [

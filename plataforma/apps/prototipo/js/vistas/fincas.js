@@ -49,7 +49,7 @@ function leerTitular(c, traspatio) {
 }
 /** Panel de la ficha con los datos de la persona (enmascarados; se ven completos con un clic que queda en la bitácora). */
 function panelTitular(f, completo) {
-  const t = f.titular, editable = SES.rol !== "productor" || f.productor === USUARIOS[SES.rol].nombre;
+  const t = f.titular, editable = esGestor() || (SES.rol === "productor" && f.productor === yo().nombre);
   if (!t) return `<section class="panel" id="titular"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><h3>Persona responsable</h3>${editable ? '<button class="btn btn-sec btn-chico" id="editT">Completar datos</button>' : ""}</div><p class="muted">Faltan los datos de la persona responsable de la finca.</p></section>`;
   return `<section class="panel" id="titular"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><h3>Persona responsable</h3><div style="display:flex;gap:8px;flex-wrap:wrap">
     ${completo ? "" : '<button class="btn btn-sec btn-chico" id="verT">Ver datos completos</button>'}${editable ? '<button class="btn btn-sec btn-chico" id="editT">Editar</button>' : ""}</div></div>
@@ -61,30 +61,42 @@ function panelTitular(f, completo) {
 /* ==========================================================================
    Fincas: centro de trabajo (estado de la evaluación, acciones, búsqueda y filtros)
    ========================================================================== */
-/** Etiqueta del estado; en una finca inactiva sin evaluación finalizada se muestra «Finca inactiva» (no se programan visitas). */
-const etiquetaFlujo = (s) => s.f.estado !== "ACTIVA" && s.estado !== "Finalizada" ? '<span class="etiqueta e-gris">Finca inactiva</span>' : `<span class="etiqueta ${COLOR_FLUJO[s.estado]}">${s.estado}</span>`;
-/** Línea de una especie: estado calculado, detalle (avance, visita o puntaje) y la acción que corresponde. */
+/** Etiqueta del estado (según quien mira); en una finca inactiva sin visita aprobada se muestra «Finca inactiva». */
+const etiquetaFlujo = (s) => s.f.estado !== "ACTIVA" && s.estado !== "Aprobada" ? '<span class="etiqueta e-gris">Finca inactiva</span>' : `<span class="etiqueta ${COLOR_FLUJO[textoFlujo(s)]}">${textoFlujo(s)}</span>`;
+const fechaV = (e) => fecha(new Date(e.fecha + "T07:00"));
+/** Línea de una especie: estado calculado, detalle (inspector, avance, fecha o puntaje) y la acción que corresponde al perfil. */
 function lineaFlujo(s, conAcciones = true) {
-  const ev = s.ev, a = ev ? avance(ev) : null;
+  const ev = s.ev, ab = s.abierta, prod = esProductor(), quien = ab && !prod ? ` · <span class="muted">${esc(nombreInspector(ab.inspector))}</span>` : "";
   let det;
-  if (s.estado === "En proceso") det = a.hechos ? `<span class="mini-avance" title="${a.hechos} de ${a.ap} indicadores calificados"><i style="width:${a.pct}%"></i></span><span>${nombreVisita(ev)} · <b>${a.pct} %</b></span>`
-    : `<span>${nombreVisita(ev)} · apertura hecha · 0 de ${a.ap} indicadores</span>`;
-  else if (s.estado === "Seguimiento programado") { const r = resultado(s.ultimaFin), venc = s.abierta.fecha < new Date().toISOString().slice(0, 10);
-    det = `<span>${nombreVisita(s.abierta)} · ${fecha(new Date(s.abierta.fecha + "T07:00"))}${venc ? ' <span class="etiqueta e-alerta">Vencido</span>' : ""} · <span class="muted">último resultado ${fmt(r.total)} ${r.nivel[0]}</span></span>`; }
-  else if (s.estado === "Por iniciar") det = s.abierta ? `<span>${nombreVisita(s.abierta)} programada · ${fecha(new Date(s.abierta.fecha + "T07:00"))}</span>` : `<span class="muted">Sin evaluaciones</span>`;
-  else { const r = resultado(ev); det = `<span><b>${fmt(r.total)}</b> · ${r.nivel[0]}${r.provisional ? " (provisional)" : ""} · ${fecha(new Date(ev.fecha + "T07:00"))}${s.proc ? ` · <span class="muted">${s.proc.estado === "En seguimiento" ? `seguimientos ${s.proc.usados} de ${s.proc.max}` : s.proc.estado.toLowerCase()}</span>` : ""}</span>`; }
-  const acc = !conAcciones ? "" : accionFlujo(s) + (s.estado === "Seguimiento programado" && SES.rol !== "productor" && s.f.estado === "ACTIVA" ? ` <button type="button" class="btn btn-sec btn-chico" data-reprog="${s.abierta.id}">Reprogramar</button>` : "");
-  return `<div class="flujo-linea" data-estado="${s.estado}"><span class="flujo-sp">${nombreSp(s.sp)}</span>${etiquetaFlujo(s)}<span class="flujo-det">${det}</span>${conAcciones ? `<span class="flujo-acc">${acc}</span>` : ""}</div>`;
+  if (prod && ab && s.estado !== "Seguimiento programado") det = s.estado === "Pendiente de aprobación" ? `<span>${nombreVisita(ab)} · el ICA revisa el resultado antes de publicarlo</span>` : `<span>${nombreVisita(ab)} · visita del ${fechaV(ab)}</span>`;
+  else if (s.estado === "En proceso" || s.estado === "Devuelta") { const a = avance(ab);
+    det = `${a.hechos ? `<span class="mini-avance" title="${a.hechos} de ${a.ap} indicadores calificados"><i style="width:${a.pct}%"></i></span>` : ""}<span>${nombreVisita(ab)} · <b>${a.pct} %</b>${quien}</span>`; }
+  else if (s.estado === "Pendiente de aprobación") { const r = resultado(ab); det = `<span>${nombreVisita(ab)} · preliminar <b>${fmt(r.total)}</b> ${r.nivel[0]}${quien}</span>`; }
+  else if (s.estado === "Seguimiento programado") { const r = resultado(s.ultimaFin), venc = ab.fecha < new Date().toISOString().slice(0, 10);
+    det = `<span>${nombreVisita(ab)} · ${fechaV(ab)}${venc ? ' <span class="etiqueta e-alerta">Vencido</span>' : ""}${quien} · <span class="muted">último resultado ${fmt(r.total)} ${r.nivel[0]}</span></span>`; }
+  else if (s.estado === "Asignada") det = `<span>${nombreVisita(ab)} · ${fechaV(ab)}${quien}</span>`;
+  else if (s.estado === "Por asignar") det = `<span class="muted">${s.ultimaFin ? "Sin visita programada" : "Sin evaluaciones"}</span>`;
+  else { const r = resultado(ev), c = ev.constancia; det = `<span>${c ? `<span class="etiqueta ${constanciaVigente(c) ? "e-ok" : "e-gris"}" title="Constancia ${c.codigo}">✔ ${constanciaVigente(c) ? "Certificada" : "Constancia vencida"}</span> ` : ""}<b>${fmt(r.total)}</b> · ${r.nivel[0]}${r.provisional ? " (provisional)" : ""} · ${fechaV(ev)}${s.proc ? ` · <span class="muted">${s.proc.estado === "En seguimiento" ? `seguimientos ${s.proc.usados} de ${s.proc.max}` : s.proc.estado.toLowerCase()}</span>` : ""}</span>`; }
+  const acc = !conAcciones ? "" : accionFlujo(s);
+  return `<div class="flujo-linea" data-estado="${textoFlujo(s)}"><span class="flujo-sp">${nombreSp(s.sp)}</span>${etiquetaFlujo(s)}<span class="flujo-det">${det}</span>${conAcciones ? `<span class="flujo-acc">${acc}</span>` : ""}</div>`;
 }
-/** Acción de la columna Evaluación: una sola por especie según el estado. Seguimientos y procesos nuevos están dentro de «Ver resultados». */
+/** Botón de una acción: enlace, asignar (abre la ventana del coordinador) o reasignar. */
+function botonAccion(a, sec) {
+  const cls = `btn ${sec || a.sec ? "btn-sec" : "btn-primario"} btn-chico btn-accion`;
+  return a.asignar ? `<button type="button" class="${cls}" data-nueva="${a.asignar}">${a.texto}</button>`
+    : a.reasignar ? `<button type="button" class="${cls}" data-reasignar="${a.reasignar}">${a.texto}</button>`
+    : a.reprog ? `<button type="button" class="${cls}" data-reprog="${a.reprog}">${a.texto}</button>` : `<a class="${cls}" href="${a.href}">${a.texto}</a>`;
+}
+/** Acción de la columna Evaluación según el perfil (v0.25). */
 function accionFlujo(s) {
-  if (s.f.estado !== "ACTIVA") return '<span class="accion-texto">Finca inactiva</span>';
-  if (!s.principal) return `<span class="accion-texto">${s.estado === "Por iniciar" ? "Pendiente de visita" : "—"}</span>`;
-  const cls = `btn ${s.estado === "Finalizada" || (s.estado === "Seguimiento programado" && SES.rol === "productor") ? "btn-sec" : "btn-primario"} btn-chico btn-accion`;
-  return s.principal.nueva ? `<button type="button" class="${cls}" data-nueva="${s.principal.nueva}">${s.principal.texto}</button>` : `<a class="${cls}" href="${s.principal.href}">${s.principal.texto}</a>`;
+  if (s.f.estado !== "ACTIVA" && !s.principal) return '<span class="accion-texto">Finca inactiva</span>';
+  if (!s.principal) return `<span class="accion-texto">${s.nota || (esProductor() && s.abierta ? "En manos del ICA" : "—")}</span>`;
+  return botonAccion(s.principal) + (s.secundaria ? " " + botonAccion(s.secundaria, false) : "");
 }
-/** Conecta los botones que abren la ventana de nueva evaluación o seguimiento. */
-const enlazarNueva = (cont) => cont.querySelectorAll("[data-nueva]").forEach((b) => (b.onclick = () => abrirNuevaEvaluacion(b.dataset.nueva)));
+/** Conecta los botones de asignar y reasignar (solo el coordinador los ve). */
+const enlazarNueva = (cont) => { cont.querySelectorAll("[data-nueva]").forEach((b) => (b.onclick = () => abrirNuevaEvaluacion(b.dataset.nueva)));
+  cont.querySelectorAll("[data-reasignar]").forEach((b) => (b.onclick = () => abrirReasignar(b.dataset.reasignar)));
+  enlazarReprogramar(cont, () => render()); };
 
 const FILTRO_FINCAS = { estado: "", q: "", scroll: 0, volver: false, ultima: null };
 /** Departamentos del catálogo DIVIPOLA que está en la base de datos (llegan con los datos de la API).
@@ -94,24 +106,26 @@ function departamentosRegistro() {
   return bd && bd.length ? bd : ["Boyacá", "Cundinamarca", "Santander", "Tolima"];
 }
 function vFincas(estadoInicial) {
-  const u = USUARIOS[SES.rol], fs = fincasVisibles();
+  const u = yo(), fs = fincasVisibles();
   if (estadoInicial != null) FILTRO_FINCAS.estado = estadoInicial;
   const n = contarEstados(fs);
   const opt = (k, t, v) => `<option value="${k}" ${FILTRO_FINCAS.estado === k ? "selected" : ""}>${t} (${v})</option>`;
-  shell("fincas", "<b>Fincas</b>", `<div class="encabezado"><div><h1>${SES.rol === "productor" ? "Mis fincas" : "Fincas"}</h1><p>${SES.rol === "productor" ? "Sus fincas las registra el ICA (inspector, coordinador o administrador). Aquí ve, por especie, el estado de su inspección y sus resultados." : "Cada finca muestra, por especie, el estado de su inspección y la acción que sigue."}</p></div>
-    ${SES.rol === "productor" ? "" : '<button class="btn btn-primario" id="nueva">Registrar finca</button>'}</div>
+  shell("fincas", "<b>Fincas</b>", `<div class="encabezado"><div><h1>${SES.rol === "productor" ? "Mis fincas" : SES.rol === "inspector" ? "Mis fincas asignadas" : "Fincas"}</h1><p>${SES.rol === "productor" ? "Aquí ve, por especie, el estado de su inspección. El resultado aparece cuando el coordinador del ICA lo aprueba."
+      : SES.rol === "inspector" ? "Solo aparecen las fincas que el coordinador le asignó. Diligencie la visita y finalícela: el coordinador la revisa y la aprueba."
+      : "Asigne cada inspección a un inspector y apruebe o devuelva las que le envían."}</p></div>
+    ${esGestor() ? '<button class="btn btn-primario" id="nueva">Registrar finca</button>' : ""}</div>
     <section class="panel"><div class="barra-filtros"><div class="buscar"><label class="sr" for="qf">Buscar finca</label><input id="qf" type="search" placeholder="Buscar por nombre de la finca" value="${esc(FILTRO_FINCAS.q)}" autocomplete="off"></div>
-      <label class="filtro-estado"><span class="sr">Filtrar por estado</span><select id="fe">${opt("", "Todos los estados", fs.length)}${ESTADOS_FLUJO.map((e) => opt(e, e === "Finalizada" ? "Finalizadas" : e, n[e])).join("")}</select></label></div>
+      <label class="filtro-estado"><span class="sr">Filtrar por estado</span><select id="fe">${opt("", "Todos los estados", fs.length)}${estadosLista().map((e) => opt(e, e, n[e])).join("")}</select></label></div>
       <div class="envoltura-tabla"><table class="tabla tabla-fincas"><thead><tr><th>Finca</th><th>Responsable</th><th class="num">Aves</th><th>Especie</th><th>Estado</th><th class="col-eval">Evaluación</th></tr></thead></table></div></section>`);
   const pinta = () => {
     const q = FILTRO_FINCAS.q.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-    const filas = fs.filter((f) => (!q || f.nombre.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").includes(q)) && (!FILTRO_FINCAS.estado || (f.estado === "ACTIVA" && estadosFinca(f).some((s) => s.estado === FILTRO_FINCAS.estado))));
+    const filas = fs.filter((f) => (!q || f.nombre.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").includes(q)) && (!FILTRO_FINCAS.estado || (f.estado === "ACTIVA" && estadosFinca(f).some((s) => textoFlujo(s) === FILTRO_FINCAS.estado))));
     const html = filas.length ? filas.map((f) => { const p = poblacion(f), est = estadosFinca(f), k = est.length;
       const fija = `<td data-l="Finca" rowspan="${k}" class="c-finca"><a class="enlace-finca" href="#/finca/${f.id}" data-ficha="${f.id}">${esc(f.nombre)}</a>${f.estado === "ACTIVA" ? "" : ' <span class="etiqueta e-gris">Inactiva</span>'}<span class="sub">${esc(f.mpio)}, ${esc(f.depto)} · ${f.id}</span></td>
         <td data-l="Responsable" rowspan="${k}">${f.titular ? `${esc(f.titular.nombre)}<span class="sub">${esc(f.titular.tipoDoc)} ${enmascara(f.titular.doc)}</span>` : '<span class="muted">Sin registrar</span>'}</td>
         <td data-l="Aves" rowspan="${k}" class="num">${p}<span class="sub">${tramo(p) === "comercial" ? "Comercial" : "Traspatio"}</span></td>`;
       return `<tbody class="grupo-finca ${f.estado === "ACTIVA" ? "" : "inactiva"} ${FILTRO_FINCAS.ultima === f.id ? "resaltada" : ""}" data-finca="${f.id}">${est.map((s, j) => `<tr>${j === 0 ? fija : ""}
-        <td data-l="Especie" class="c-esp">${nombreSp(s.sp)}</td><td data-l="Estado"><span class="etiqueta ${COLOR_FLUJO[s.estado]}">${s.estado}</span></td><td data-l="Evaluación" class="col-eval">${accionFlujo(s)}</td></tr>`).join("")}</tbody>`; }).join("")
+        <td data-l="Especie" class="c-esp">${nombreSp(s.sp)}</td><td data-l="Estado"><span class="etiqueta ${COLOR_FLUJO[textoFlujo(s)]}">${textoFlujo(s)}</span>${s.abierta && !esProductor() && s.estado !== "Por asignar" ? `<span class="sub">${esc(nombreInspector(s.abierta.inspector))}</span>` : ""}</td><td data-l="Evaluación" class="col-eval">${accionFlujo(s)}</td></tr>`).join("")}</tbody>`; }).join("")
       : `<tbody><tr><td colspan="6"><p class="muted" style="margin:6px 0">No hay fincas que coincidan${FILTRO_FINCAS.q ? ` con «${esc(FILTRO_FINCAS.q)}»` : ""}${FILTRO_FINCAS.estado ? ` en estado «${FILTRO_FINCAS.estado}»` : ""}.</p></td></tr></tbody>`;
     /* un <tbody> por finca: las filas de sus especies quedan juntas */
     const tabla = raiz.querySelector(".tabla-fincas");
@@ -124,7 +138,7 @@ function vFincas(estadoInicial) {
   pinta();
   if (FILTRO_FINCAS.volver) { FILTRO_FINCAS.volver = false; requestAnimationFrame(() => scrollTo(0, FILTRO_FINCAS.scroll || 0)); }
   else FILTRO_FINCAS.ultima = null;
-  /* Solo el ICA registra fincas (decisión del 7 de noviembre de 2026: RN-51 y CU-04); el productor no ve el botón. */
+  /* v0.25: registran fincas el coordinador y el administrador; el inspector y el productor no (las cuentas las crea el ICA). */
   const btnNueva = raiz.querySelector("#nueva");
   if (btnNueva) btnNueva.onclick = () => modal(`<div class="modal-cab"><h3>Registrar finca</h3><p class="muted">La población total de patos y gansos define si la finca es de traspatio (menos de 200 aves) o comercial.</p></div><form id="fn" novalidate><div class="modal-cuerpo"><div class="form-2col">
     <fieldset class="grupo-campos"><legend>Datos de la finca</legend>
@@ -165,12 +179,12 @@ function vFincas(estadoInicial) {
 }
 function vFinca(id, verCompleto) {
   const f = FINCAS.find((x) => x.id === id); if (!f) return vFincas();
-  if (SES.rol === "productor" && f.productor !== USUARIOS[SES.rol].nombre) return sinPermiso("fincas");
+  if (SES.rol === "productor" && f.productor !== yo().nombre) return sinPermiso("fincas");
   const evs = EVALS.filter((e) => e.finca === id);
   const esp = f.especies.map((e, k) => `<section class="panel"><h3>${nombreSp(e.sp)} · ${esc(e.proposito)}${e.sistema ? " · " + esc(e.sistema) : ""}</h3>
     <div class="envoltura-tabla"><table class="tabla"><thead><tr><th>Categoría</th><th class="num">Cantidad</th><th class="num">Edad (semanas)</th><th class="num">Peso (kg)</th></tr></thead><tbody>
-    ${e.inventario.map((c, j) => `<tr><td>${esc(c.cat)}</td><td class="num"><input aria-label="Cantidad ${esc(c.cat)}" type="number" min="0" value="${c.n}" data-k="${k}" data-j="${j}" class="entrada-num"></td><td class="num">${c.edad}</td><td class="num">${fmt(c.peso, 2)}</td></tr>`).join("")}</tbody></table></div></section>`).join("");
-  const p = poblacion(f), puedeBaja = SES.rol !== "productor";
+    ${e.inventario.map((c, j) => `<tr><td>${esc(c.cat)}</td><td class="num"><input aria-label="Cantidad ${esc(c.cat)}" type="number" min="0" value="${c.n}" data-k="${k}" data-j="${j}" class="entrada-num" ${esGestor() ? "" : "disabled"}></td><td class="num">${c.edad}</td><td class="num">${fmt(c.peso, 2)}</td></tr>`).join("")}</tbody></table></div></section>`).join("");
+  const p = poblacion(f), puedeBaja = esGestor();
   shell("fincas", `<a href="#/fincas">Fincas</a> / <b>${esc(f.nombre)}</b>`, `<a class="volver" href="#/fincas" id="volverF">← Volver a fincas</a><div class="encabezado"><div><h1>${esc(f.nombre)} ${f.estado === "ACTIVA" ? "" : '<span class="etiqueta e-gris">Inactiva</span>'}</h1><p>${esc(f.vereda ? "Vereda " + f.vereda + ", " : "")}${esc(f.mpio)}, ${esc(f.depto)} · ${f.id}</p></div>
     ${puedeBaja ? `<div class="no-imprimir">${f.estado === "ACTIVA" ? '<button class="btn-texto btn-texto-peligro" id="baja">Eliminar o inactivar</button>' : '<button class="btn btn-sec" id="react">Reactivar</button>'}</div>` : ""}</div>
     <section class="panel panel-flujo"><h3>Evaluación</h3>${estadosFinca(f).map((s) => lineaFlujo(s)).join("")}</section>
@@ -230,8 +244,8 @@ function historialFinca(f) {
     const puntos = fins.map((x) => { const r = resultado(x); return [`${x.fecha.slice(8, 10)}/${x.fecha.slice(5, 7)}/${x.fecha.slice(2, 4)}`, r.total, r.provisional]; });
     const tablas = procs.map((st) => `<h4 class="titulo-proceso">${esc(st.id)} · ${st.usados} de ${st.max} seguimientos · <span class="etiqueta ${COLOR_ESTADO_PROC[st.estado]}">${st.estado}</span>${st.final ? ` · resultado final ${fmt(resultado(st.final).total)}` : ""}</h4>
       <div class="envoltura-tabla"><table class="tabla"><thead><tr><th>Visita</th><th>Fecha</th><th>Estado</th><th class="num">Puntaje</th><th>Nivel</th><th></th></tr></thead><tbody>
-      ${st.visitas.map((x) => { const r = resultado(x); return `<tr><td>${nombreVisita(x)}<br><span class="muted" style="font-size:12px">${x.id}</span></td><td>${fecha(new Date(x.fecha + "T07:00"))}</td><td>${x.estado}</td><td class="num">${x.estado === "Programada" ? "—" : fmt(r.total)}</td><td>${x.estado === "Programada" ? "—" : r.nivel[0]}</td>
-        <td class="num"><a class="btn btn-sec btn-chico" href="#/eval/${x.id}${x.estado === "Finalizada" ? "/resultado" : ""}">${x.estado === "Finalizada" ? "Ver resultados" : "Abrir"}</a></td></tr>`; }).join("")}</tbody></table></div>`).join("");
+      ${st.visitas.filter(enHistorial).map((x) => { const r = resultado(x); return `<tr><td>${nombreVisita(x)}<br><span class="muted" style="font-size:12px">${x.id}</span></td><td>${fecha(new Date(x.fecha + "T07:00"))}</td><td>${etqEstadoEv(x.estado)}${x.constancia ? `<br><a class="enlace-constancia" href="#/eval/${x.id}/constancia">✔ ${x.constancia.codigo}</a>` : ""}${x.estado === "Finalizada" || esProductor() ? "" : `<br><span class="muted" style="font-size:12px">${esc(nombreInspector(x.inspector))}</span>`}</td><td class="num">${x.estado === "Programada" || (esProductor() && x.estado !== "Finalizada") ? "—" : fmt(r.total)}</td><td>${x.estado === "Programada" || (esProductor() && x.estado !== "Finalizada") ? "—" : r.nivel[0]}</td>
+        <td class="num">${puedeVerEval(x) ? `<a class="btn btn-sec btn-chico" href="#/eval/${x.id}${puedeEvaluar(x) ? "" : "/resultado"}">${x.estado === "Finalizada" ? "Ver resultados" : puedeEvaluar(x) ? "Abrir" : "Ver"}</a>` : ""}</td></tr>`; }).join("")}</tbody></table></div>`).join("");
     return `<section class="panel"><h3>Historial · ${nombreSp(e.sp)}</h3>
       <div class="rejilla r-hist"><div>${tablas || '<p class="muted">Sin evaluaciones en la plataforma.</p>'}</div><div class="hist-graf"><h4>Evolución de los puntajes</h4>${puntos.length ? evolucionSVG(puntos) + tendenciaHTML(fins) : '<p class="vacio-tab">Aún no hay resultados históricos disponibles: la gráfica aparece con la primera evaluación finalizada.</p>'}</div></div></section>`;
   }).join("");

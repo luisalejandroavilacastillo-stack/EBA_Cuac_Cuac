@@ -1,24 +1,24 @@
-%% Secuencia: finalizar una visita que no cumple y programar el seguimiento
+%% Secuencia v0.25: el inspector finaliza; el coordinador aprueba una visita que no cumple y se programa el seguimiento
 sequenceDiagram
     autonumber
     actor I as Inspector
+    actor C as Coordinador
     participant V as resultado.js
     participant S as seguimiento.js
+    participant A as Avisos
     participant D as localStorage (eba7.*)
-    participant B as Bitácora
     I->>V: abrir cierre
     V->>S: verificarCumplimiento(ev)
     S-->>V: cumple = false
     V->>S: fechaSugeridaSeguimiento(ev)
-    S-->>V: plazo más lejano + 1 día (o +30)
-    I->>V: ajustar fecha acordada con el productor
-    V->>S: avisoFechaSeguimiento(ev, fecha)
-    S-->>V: aviso no bloqueante (si es antes del plazo)
-    I->>V: Finalizar (firmas completas)
-    V->>D: ev.estado = Finalizada
-    V->>S: programarSeguimiento(proceso, fecha)
-    S->>S: estadoProceso(pid) · ¿puedeSeguimiento?
-    S->>S: evaluacionDesde(ultima) · visita N, estado Programada
+    I->>V: proponer fecha (ev.segFecha) · Finalizar y enviar
+    V->>D: ev.estado = Pendiente de aprobación · revision += Enviada
+    V->>A: avisar(coordinador, «por aprobar», tipo aprobar)
+    C->>V: Revisar y aprobar
+    V-->>C: puntaje automático · no cumple · fecha propuesta
+    C->>V: Aprobar (confirma fecha e inspector)
+    V->>D: ev.estado = Finalizada · aprobada · revision += Aprobada
+    V->>S: programarSeguimiento(proceso, fecha, inspector)
+    S->>S: evaluacionDesde(ultima) · visita N Programada · asignacion
     S->>D: guardar EVALS
-    S->>B: «Seguimiento N programado para …»
-    V-->>I: «Seguimiento N de M programado» + Reprogramar
+    V->>A: avisar(inspector) · avisar(productor «plan de mejora»)

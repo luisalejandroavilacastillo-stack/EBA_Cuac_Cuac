@@ -1,0 +1,21 @@
+%% Cuenta y contraseña · plataforma 1.0 (CU-24, CU-32, CU-01, CU-02)
+flowchart LR
+  subgraph ADM [Administrador]
+    A([Crear usuario:<br/>datos y perfil, sin contraseña]) --> B[El servidor crea la cuenta<br/>y envía el enlace · 48 h]
+    R[Reenviar enlace] --> B
+  end
+  subgraph PER [La persona]
+    C[Abre «Active su cuenta»<br/>en su correo] --> D{¿Enlace válido?}
+    D -- Vencido o usado --> X[«Pida un enlace nuevo»] --> R
+    D -- Sí --> E[Crea su contraseña:<br/>10+ caracteres, letras y números,<br/>sin su correo ni documento]
+    E --> F[Cuenta activa · enlace invalidado]
+    F --> G[Ingreso: correo y contraseña]
+    G --> H{¿Contraseña correcta?}
+    H -- No --> I{¿5 intentos?} -- Sí --> J[Bloqueo de 15 minutos]
+    I -- No --> G
+    H -- Sí --> K[Código de 6 dígitos al correo · 10 min] --> L{¿Código correcto?}
+    L -- No --> K
+    L -- Sí --> M[Sesión en cookie HttpOnly<br/>se cierra tras 15 min sin uso]
+    G -. ¿Olvidó su contraseña? .-> N[Enlace de 30 min · misma respuesta<br/>exista o no el correo] --> O[Contraseña nueva ·<br/>se cierran sus sesiones] --> G
+  end
+  B --> C

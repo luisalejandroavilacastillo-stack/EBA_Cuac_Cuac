@@ -23,7 +23,7 @@ const IND_PUNTO = ["PR02", "PR05", "PR07", "PR10"];
 const CC_TXT = { 1: "Delgado", 2: "Adecuada", 3: "Ideal", 4: "Musculoso", 5: "Sobrepeso" };
 
 function vRecorrido(ev, pt, av) {
-  const ctx = contexto(ev), plan = ctx.plan, ed = SES.rol !== "productor" && ev.estado !== "Finalizada";
+  const ctx = contexto(ev), plan = ctx.plan, ed = puedeEvaluar(ev);
   pt = Math.min(plan.puntos - 1, Math.max(0, +pt || 0)); av = Math.max(0, +av || 0);
   const nAves = plan.reparto[pt]; if (av >= nAves) av = Math.max(0, nAves - 1);
   try { history.replaceState(null, "", `#/eval/${ev.id}/recorrido/${pt}/${av}`); } catch (e) { }
@@ -61,8 +61,8 @@ function vRecorrido(ev, pt, av) {
   const leyenda = `<p class="leyenda-puntos"><span><i class="lp est-pend"></i>Pendiente</span><span><i class="lp est-proceso"></i>En proceso</span><span><i class="lp est-hecho"></i>Evaluado</span><span><i class="lp actual"></i>Punto actual</span></p>`;
   const previos = ["PA01", "PA02"].filter(aplicaInd).map((c) => IND[c]).map((i) => { const c = calcular(i, ev.resp[i.code], ctx);
     return `<button type="button" class="btn btn-sec btn-chico" data-flot="${i.code}" title="${i.num} ${esc(i.name)}">${c.done ? "✓ " : ""}${esc(i.name)}${c.done ? ` · ${fmt(c.score)}` : ""}</button>`; }).join(" ");
-  const opc = (code) => (code === "PA11" ? [1, 2, 3, 4, 5].map((s) => [s, `${CC_TXT[s]} · ${ccNivel(s, ctx.e.proposito)} pts`]) : IND[code].escala.map(([p]) => [p, CORTO[code]?.[p] || ""]).filter((x, k, a) => a.findIndex((y) => y[0] === x[0]) === k));
-  const botones = (attr, actual, code) => `<div class="niveles-campo">${opc(code).map(([v, t]) => `<button type="button" class="nv ${actual === v ? "sel" : ""}" style="--c:${COL[code === "PA11" ? ccNivel(v, ctx.e.proposito) : v]}" ${attr(v)} ${dis}><b>${v}</b><span>${esc(t)}</span></button>`).join("")}</div>`;
+  const opc = (code) => (code === "PA11" ? [1, 2, 3, 4, 5].map((s) => [s, `${s} · ${CC_TXT[s]}`]) : IND[code].escala.map(([p]) => [p, CORTO[code]?.[p] || ""]).filter((x, k, a) => a.findIndex((y) => y[0] === x[0]) === k));
+  const botones = (attr, actual, code) => `<div class="niveles-campo">${opc(code).map(([v, t]) => `<button type="button" class="nv ${actual === v ? "sel" : ""}" style="--c:${COL[code === "PA11" ? ccNivel(v, ctx.e.proposito) : v]}" ${attr(v)} ${dis}><span>${esc(t)}</span></button>`).join("")}</div>`;
   const filaNiveles = (code, i) => botones((v) => `data-set="${code}:${i}:${v}"`, valor(code, i), code);
   // recursos más cercanos al punto
   const unidadTxt = { PR02: "Puñado de cama", PR05: "Bebedero", PR10: "Nidal" };
@@ -85,11 +85,12 @@ function vRecorrido(ev, pt, av) {
   const avesHechas = estAves.filter((e) => e === "hecho").length, avesMedias = estAves.filter((e) => e === "proceso").length;
   /** Indicadores del animal calificados en el ave k del punto. */
   const avanceAve = (k) => ({ hechos: indAve.filter((i) => valor(i.code, idxAve(k)) != null).length, total: indAve.length });
-  const tarjetaAve = (k) => { const e = estadoAve(k), a = avanceAve(k), pct = Math.round((a.hechos / Math.max(1, a.total)) * 100);
-    return `<button type="button" class="tarjeta-ave est-${e}" data-av="${k}" aria-label="Ave ${k + 1}: ${e === "hecho" ? "completa" : e === "proceso" ? `${a.hechos} de ${a.total} indicadores` : "sin empezar"}">
-      <b>${e === "hecho" ? "✓ " : ""}Ave ${k + 1}</b><span>${e === "hecho" ? "Completa" : e === "proceso" ? `${a.hechos} de ${a.total}` : "Sin empezar"}</span><i class="barra-ave"><i style="width:${pct}%"></i></i></button>`; };
+  const esHallazgo = (code, v) => v != null && (code === "PA11" ? ccNivel(v, ctx.e.proposito) : v) < 100;
+  const hallAve = (k) => indAve.filter((i) => esHallazgo(i.code, valor(i.code, idxAve(k)))).length;
+  const tarjetaAve = (k) => { const e = estadoAve(k), a = avanceAve(k), h = hallAve(k);
+    return `<button type="button" class="tarjeta-ave est-${e}" data-av="${k}"><b>${e === "hecho" ? "✓ " : ""}Ave ${k + 1}${h ? '<i class="punto-hall" aria-hidden="true"></i>' : ""}</b><span>${e === "hecho" ? (h ? plural(h, "hallazgo", "hallazgos") : "Sin hallazgos") : e === "proceso" ? `${a.hechos} de ${a.total}` : "Sin revisar"}</span></button>`; };
   const sigAve = estAves.findIndex((e) => e !== "hecho");
-  const textoAves = !ed ? "Ver aves del punto" : sigAve < 0 ? "Revisar aves del punto" : estAves[sigAve] === "proceso" ? `Continuar con el Ave ${sigAve + 1}` : `Evaluar el Ave ${sigAve + 1}`;
+  const textoAves = !ed ? "Ver aves del punto" : sigAve < 0 ? "Revisar aves del punto" : `Revisar el Ave ${sigAve + 1}`;
   const recursosListos = flex.every((i) => puntoListo(porPuntoGuardado(i)[pt])) && (!comedero || valor("PR07", gal) != null);
   // hallazgos en 0 del punto que necesitan observación (recursos en la pantalla; aves en su ventana)
   const enCero = (i) => { if (flex.includes(i)) { const e = entrada(i.code)[pt]; return !!e && (e.nohay || (e.mismo == null && e.v.includes(0))); }
@@ -110,7 +111,7 @@ function vRecorrido(ev, pt, av) {
       ${ctx.tramo === "traspatio" && aplicaInd("PR05") ? '<p class="muted" style="margin-top:10px">En traspatio los bebederos y comederos se califican todos en su propia pantalla (6.1.5 y 6.1.7).</p>' : ""}
       <h3 class="paso-punto"><span class="paso-n">${recursos ? 2 : 1}</span>Aves del punto <span class="resumen-aves">${avesHechas} de ${nAves} completas${avesMedias ? ` · ${avesMedias} a medias` : ""}</span></h3>
       ${nAves ? `<div class="tarjetas-aves" id="avesPunto">${Array.from({ length: nAves }, (_, k) => tarjetaAve(k)).join("")}</div>
-        <div class="evaluar-aves"><button type="button" class="btn ${sigAve >= 0 && ed ? "btn-primario" : "btn-sec"}" id="evalAves">${textoAves}${sigAve >= 0 && ed ? " →" : ""}</button></div>` : '<p class="muted">Este punto no tiene aves asignadas (la especie tiene menos aves que la muestra).</p>'}
+        <div class="evaluar-aves">${ed && sigAve >= 0 ? `<button type="button" class="btn btn-sec" id="restoSin" title="Deja normal lo que falta en las aves del punto">${avesHechas || avesMedias ? "Las aves restantes, sin hallazgos" : "Todas las aves del punto, sin hallazgos"}</button>` : ""}<button type="button" class="btn ${sigAve >= 0 && ed ? "btn-primario" : "btn-sec"}" id="evalAves">${textoAves}${sigAve >= 0 && ed ? " →" : ""}</button></div>` : '<p class="muted">Este punto no tiene aves asignadas (la especie tiene menos aves que la muestra).</p>'}
       <div class="acciones" style="justify-content:space-between;margin-top:18px"><button class="btn btn-sec" id="prev" ${pt === 0 ? "disabled" : ""}>${pt === 0 ? "Punto anterior" : `Punto anterior: ${nombrePunto(pt - 1)}`}</button>
         <button class="btn btn-primario" id="next">${!ultimoPunto ? `Siguiente punto: ${nombrePunto(pt + 1)}` : "Continuar con la evaluación por indicador"}</button></div></section>
       ${obsHTML}</div></div>`);
@@ -122,45 +123,21 @@ function vRecorrido(ev, pt, av) {
   // jadeo y amontonamiento: se califican en una ventana flotante sin salir del recorrido
   raiz.querySelectorAll("[data-flot]").forEach((b) => (b.onclick = () => abrirIndicadorFlotante(ev, b.dataset.flot, () => ir(pt, av))));
 
-  /* Aves del punto en una ventana flotante: pestañas por ave, los indicadores del animal, «sin hallazgos» y observaciones.
+  /* Aves del punto en la ficha del ave (la misma de gansos): un renglón por indicador y «Sin hallazgos · siguiente ave».
      Todo se guarda al instante; al cerrar se vuelve al mismo punto con los colores actualizados. */
-  const estAvesAhora = () => Array.from({ length: nAves }, (_, k) => estadoAve(k));
-  const abrirAves = (k0) => {
-    let k = Math.min(Math.max(0, k0), nAves - 1);
-    modal(`<div class="modal-cab"><div class="cab-aves"><div><small class="muted">${nombrePunto(pt)}</small><h3 id="avTit"></h3><p id="avInfo" class="info-ave"></p></div><button type="button" class="btn btn-sec btn-chico" id="avCerrar">Cerrar</button></div><div class="chips" id="avTabs"></div></div>
-      <div class="modal-cuerpo" id="avCuerpo"></div><div class="acciones" id="avPie"></div>`, (c) => {
-      c.querySelector(".modal > div").classList.add("modal-ancho", "modal-aves");
-      c.querySelector(".modal > div").setAttribute("aria-label", `Aves de ${nombrePunto(pt)}`);
-      const volver = () => { cerrarCapas(); ir(pt, k); };
-      c.querySelector("#avCerrar").onclick = volver;
-      c.querySelector(".modal").addEventListener("click", (e) => { if (e.target.classList.contains("modal")) ir(pt, k); });
-      const pinta = (arriba) => {
-        const cuerpo = c.querySelector("#avCuerpo"), top = cuerpo.scrollTop, iA = idxAve(k), ultima = k >= nAves - 1;
-        const cerosAve = indAve.filter(enCero);
-        const a = avanceAve(k);
-        c.querySelector("#avTit").textContent = `Ave ${k + 1} de ${nAves}`;
-        c.querySelector("#avInfo").innerHTML = a.hechos === a.total ? `<b class="ok">✓ Completa</b> · ${a.total} de ${a.total} indicadores calificados` : `<b>${a.hechos} de ${a.total}</b> indicadores calificados · faltan ${a.total - a.hechos} (marcados en la lista)`;
-        c.querySelector("#avTabs").innerHTML = Array.from({ length: nAves }, (_, j) => chipAve(j, k)).join("");
-        cuerpo.innerHTML = `${ed ? `<div class="sin-hallazgos"><button class="btn btn-primario" id="sinHallazgos">✓ Ave ${k + 1} sin hallazgos</button> <span class="muted texto-chico">Marca todo en 100 y condición corporal 3; luego cambie solo lo anormal.</span></div>` : ""}
-          ${indAve.map((i) => { const falta = valor(i.code, iA) == null; return `<div class="fila-campo ${falta ? "fila-falta" : ""}"><div><b>${i.num} ${esc(i.name)}</b> ${btnFicha(i.code)}${falta ? ' <span class="etiqueta-falta">Falta</span>' : ""}</div>${filaNiveles(i.code, iA)}</div>`; }).join("")}
-          ${cerosAve.length ? `<div class="obs-aves"><h4>Hallazgos en 0 en las aves de este punto</h4><p class="muted texto-chico">Describa lo observado (queda en la observación del indicador).</p>${obsDe(cerosAve)}</div>` : ""}`;
-        c.querySelector("#avPie").innerHTML = `<span class="guardado" style="margin-right:auto">${ev.guardado ? "💾 Guardado " + hora(new Date(ev.guardado)) : ""}</span>
-          <button class="btn btn-sec" id="avPrev" ${k === 0 ? "disabled" : ""}>Ave anterior</button>
-          ${ultima ? (puntoCompleto(pt) ? `<button class="btn btn-primario" id="avFin" data-sig="1">${ultimoPunto ? "Recorrido completo · Continuar con la evaluación por indicador" : "Punto completo · Ir al siguiente punto →"}</button>`
-            : `<button class="btn btn-primario" id="avFin">Volver al punto${ed && avanceAve(k).hechos === indAve.length && estAvesAhora().every((e) => e === "hecho") ? " (faltan recursos)" : ""}</button>`) : `<button class="btn btn-primario" id="avNext">Siguiente ave: ${k + 2} →</button>`}`;
-        cuerpo.scrollTop = arriba ? 0 : top;
-        c.querySelectorAll("#avTabs [data-av]").forEach((b) => (b.onclick = () => { k = +b.dataset.av; pinta(true); }));
-        c.querySelector("#avPrev").onclick = () => { k--; pinta(true); };
-        const nx = c.querySelector("#avNext"); if (nx) nx.onclick = () => { k++; pinta(true); };
-        const fin = c.querySelector("#avFin"); if (fin) fin.onclick = () => { if (!fin.dataset.sig) return volver(); cerrarCapas(); if (ultimoPunto) location.hash = destinoLista(ev); else ir(pt + 1, 0); };
-        if (!ed) return;
-        c.querySelectorAll("#avCuerpo [data-set]").forEach((b) => (b.onclick = () => { const [code, i, v] = b.dataset.set.split(":"); resp(code).units[+i] = +v; cambio(); pinta(false); }));
-        c.querySelector("#sinHallazgos").onclick = () => { indAve.forEach((i) => { resp(i.code).units[iA] = i.code === "PA11" ? 3 : 100; }); cambio(); if (!ultima) k++; pinta(true); };
-        c.querySelectorAll("#avCuerpo [data-obs]").forEach((t) => (t.oninput = () => { ev.obs[t.dataset.obs] = t.value; cambio(); }));
-      };
-      pinta(true);
-    });
-  };
+  const normalAve = (k, soloFaltantes) => { const iA = idxAve(k); indAve.forEach((i) => { if (!soloFaltantes || valor(i.code, iA) == null) resp(i.code).units[iA] = i.code === "PA11" ? 3 : 100; }); };
+  const abrirAves = (k0) => abrirFichaAves({ lugar: nombrePunto(pt), n: nAves, k0, ed,
+    filas: (k) => indAve.map((i) => ({ code: i.code, nombre: `${i.num} ${i.name}`, val: valor(i.code, idxAve(k)),
+      ops: opc(i.code).map(([v, t]) => [v, t, i.code === "PA11" ? ccNivel(v, ctx.e.proposito) : v]) })),
+    set: (k, code, v) => { resp(code).units[idxAve(k)] = v; cambio(); },
+    normal: (k, solo) => { normalAve(k, solo); cambio(); },
+    extra: () => { const ceros = indAve.filter(enCero); return ceros.length ? `<div class="obs-aves"><h4>Hallazgos graves en las aves de este punto</h4><p class="muted texto-chico">Describa lo observado (queda en la observación del indicador).</p>${obsDe(ceros)}</div>` : ""; },
+    enlazarExtra: (c) => c.querySelectorAll("#faCuerpo [data-obs]").forEach((t) => (t.oninput = () => { ev.obs[t.dataset.obs] = t.value; cambio(); })),
+    guardado: () => (ev.guardado ? "💾 Guardado " + hora(new Date(ev.guardado)) : ""),
+    puntoCompleto: () => puntoCompleto(pt), ultimoPunto,
+    alCerrar: (k) => ir(pt, k), alTerminarPunto: () => (ultimoPunto ? (location.hash = destinoLista(ev)) : ir(pt + 1, 0)) });
+  const rs = raiz.querySelector("#restoSin");
+  if (rs) rs.onclick = () => { for (let k = 0; k < nAves; k++) normalAve(k, true); cambio(); toast("Aves del punto completas: solo se llenó lo que faltaba."); ir(pt, 0); };
   const ea = raiz.querySelector("#evalAves");
   if (ea) ea.onclick = () => abrirAves(Math.max(0, sigAve));
   raiz.querySelectorAll("#avesPunto [data-av]").forEach((b) => (b.onclick = () => abrirAves(+b.dataset.av)));

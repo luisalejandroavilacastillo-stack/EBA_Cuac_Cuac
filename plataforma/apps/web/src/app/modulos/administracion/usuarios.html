@@ -1,0 +1,85 @@
+<div class="encabezado"><div><h1>Usuarios</h1>
+  <p>Cree las cuentas y asigne el perfil de cada persona. No se asigna contraseña: cada persona la crea con el enlace que le llega al correo.
+    Un usuario con historial no se elimina: se inactiva y se conserva todo. Los documentos y correos se muestran enmascarados.</p></div>
+  <button type="button" class="btn btn-primario" (click)="abrir(null)">Crear usuario</button></div>
+
+<section class="panel">
+  <div class="barra-filtros">
+    <div class="buscar"><label class="sr" for="qu">Buscar usuario</label>
+      <input id="qu" type="search" placeholder="Buscar por nombre o correo" autocomplete="off" [ngModel]="q()" (ngModelChange)="q.set($event)"></div>
+    <label class="filtro-estado"><span class="sr">Filtrar por perfil</span>
+      <select [ngModel]="filtro()" (ngModelChange)="filtro.set($event)">
+        <option value="">Todos los perfiles ({{ lista().length }})</option>
+        @for (p of perfiles; track p.valor) { <option [value]="p.valor">{{ p.texto }} ({{ cuenta(p.valor) }})</option> }
+      </select></label>
+  </div>
+  <div class="envoltura-tabla"><table class="tabla tabla-usuarios">
+    <thead><tr><th>Nombre</th><th>Perfil</th><th>Documento</th><th>Correo</th><th>Estado</th><th>Acceso</th><th class="num">Acciones</th></tr></thead>
+    <tbody>
+      @for (u of filas(); track u.clave) {
+        <tr [attr.data-usuario]="u.clave">
+          <td><b>{{ u.nombre }}</b>@if (esYo(u)) { <span class="etiqueta e-info">Usted</span> }</td>
+          <td>{{ u.rol }}</td>
+          <td class="nowrap">{{ u.tipoDocumento }} {{ docOculto(u.documento) }}</td>
+          <td>{{ correoOculto(u.correo) }}</td>
+          <td><span class="etiqueta" [class.e-ok]="u.estado === 'Activo'" [class.e-gris]="u.estado !== 'Activo'">{{ u.estado }}</span></td>
+          <td><span class="etiqueta" [class]="'etiqueta ' + claseAcceso(u)">{{ textoAcceso(u) }}</span></td>
+          <td class="num acciones-fila">
+            <button type="button" class="btn btn-sec btn-chico" (click)="abrir(u)">Editar</button>
+            @if (u.estado === 'Activo' && u.activacion !== 'Activa') {
+              <button type="button" class="btn btn-sec btn-chico" (click)="enviarEnlace(u)">{{ u.activacion === 'Sin enlace' ? 'Enviar enlace' : 'Reenviar enlace' }}</button>
+            }
+          </td>
+        </tr>
+      } @empty {
+        <tr><td colspan="7" class="muted">{{ cargando() ? 'Cargando…' : 'No hay usuarios que coincidan.' }}</td></tr>
+      }
+    </tbody>
+  </table></div>
+</section>
+
+@if (editando(); as ed) {
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="titU" (keydown.escape)="cerrar()">
+    <div class="modal-medio">
+      <div class="modal-cab"><h3 id="titU">{{ ed === 'nuevo' ? 'Crear usuario' : 'Editar usuario · ' + ed.nombre }}</h3>
+        <p class="muted">{{ ed === 'nuevo' ? 'No se asigna contraseña: la persona recibe en su correo un enlace (válido 48 horas) para crear la suya.' : 'Los cambios de perfil quedan en la bitácora y cierran las sesiones abiertas de la persona.' }}</p></div>
+      <form novalidate (ngSubmit)="guardar()"><div class="modal-cuerpo">
+        <div class="campo"><label for="un">Nombre completo</label>
+          <input id="un" name="un" autocomplete="off" [ngModel]="form().nombre" (ngModelChange)="cambiar('nombre', $event)"><span class="error-campo">{{ errores()['nombre'] }}</span></div>
+        <div class="fila">
+          <div class="campo"><label for="ut">Tipo de documento</label>
+            <select id="ut" name="ut" [ngModel]="form().tipoDocumento" (ngModelChange)="cambiar('tipoDocumento', $event)">
+              @for (t of tipos; track t.codigo) { <option [value]="t.codigo">{{ t.nombre }}</option> }
+            </select><span class="error-campo">{{ errores()['tipoDocumento'] }}</span></div>
+          <div class="campo"><label for="ud">Número de documento</label>
+            <input id="ud" name="ud" inputmode="numeric" [ngModel]="form().documento" (ngModelChange)="cambiar('documento', $event)"><span class="error-campo">{{ errores()['documento'] }}</span></div>
+        </div>
+        <div class="fila">
+          <div class="campo"><label for="uc">Correo electrónico</label>
+            <input id="uc" name="uc" type="email" autocomplete="off" [ngModel]="form().correo" (ngModelChange)="cambiar('correo', $event)"><span class="error-campo">{{ errores()['correo'] }}</span></div>
+          <div class="campo"><label for="uf">Teléfono <span class="muted">(opcional)</span></label>
+            <input id="uf" name="uf" type="tel" inputmode="tel" placeholder="3XX XXX XXXX" [ngModel]="form().telefono" (ngModelChange)="cambiar('telefono', $event)"><span class="error-campo">{{ errores()['telefono'] }}</span></div>
+        </div>
+        <div class="campo"><label for="up">Perfil</label>
+          <select id="up" name="up" [disabled]="ed !== 'nuevo' && esYo(ed)" [ngModel]="form().perfil" (ngModelChange)="cambiar('perfil', $event)">
+            @for (p of perfiles; track p.valor) { <option [value]="p.valor">{{ p.texto }}</option> }
+          </select>
+          <span class="ayuda-campo">{{ ed !== 'nuevo' && esYo(ed) ? 'No puede cambiar su propio perfil.' : ayuda[form().perfil] }}</span>
+          <span class="error-campo">{{ errores()['perfil'] }}</span></div>
+      </div>
+      @if (ed !== 'nuevo' && !esYo(ed)) {
+        <div class="zona-cuenta">
+          <p class="muted chico">{{ ed.estado === 'Activo' ? 'Inactivar: no podrá ingresar ni recibir asignaciones; su historial se conserva.' : 'La cuenta está inactiva: no puede ingresar.' }}
+            @if (ed.activacion !== 'Activa') { Eliminar: solo cuentas sin historial (nunca ingresó ni tiene visitas). }</p>
+          <div class="acciones-fila">
+            <button type="button" class="btn btn-sec btn-chico" (click)="cambiarEstado(ed)">{{ ed.estado === 'Activo' ? 'Inactivar cuenta' : 'Reactivar cuenta' }}</button>
+            @if (ed.activacion !== 'Activa') { <button type="button" class="btn btn-sec btn-chico" (click)="eliminar(ed)">Eliminar cuenta</button> }
+          </div>
+        </div>
+      }
+      <div class="acciones"><button type="button" class="btn btn-sec" (click)="cerrar()">Cancelar</button>
+        <button class="btn btn-primario" [disabled]="guardando()">{{ ed === 'nuevo' ? 'Crear usuario y enviar enlace' : 'Guardar cambios' }}</button></div>
+      </form>
+    </div>
+  </div>
+}

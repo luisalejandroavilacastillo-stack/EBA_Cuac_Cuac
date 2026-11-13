@@ -1,4 +1,6 @@
 EBA Cuac Cuac · carpeta de trabajo
-- Prototipo_EBA_Cuac_Cuac.html: abrir con doble clic (o F5 si ya está abierto) para ver la última versión.
-- codigo/: código fuente, pruebas y documentos del proyecto (codigo/src/index.html abre la versión por archivos).
+- plataforma/: la plataforma 1.0 (Angular + API + MariaDB con Docker). Empiece por plataforma/README.md.
+- Prototipo_EBA_Cuac_Cuac.html: el prototipo en un solo archivo; abrir con doble clic (o F5 si ya está abierto).
+- codigo/: prototipo por archivos, pruebas y toda la documentación (casos de uso, UML, requerimientos, base de datos).
 - _sincronizacion/: paquete que Claude usa para actualizar esta carpeta; no hace falta abrirlo.
+- _to_delete/: archivos que ya no se usan; puede borrar esta carpeta cuando quiera.

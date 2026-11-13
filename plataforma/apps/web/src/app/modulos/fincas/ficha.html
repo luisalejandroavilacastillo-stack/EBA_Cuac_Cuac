@@ -1,0 +1,112 @@
+@if (datos.cargando()) { <p class="muted">Cargando…</p> }
+@else if (!f()) {
+  <div class="panel bloqueo"><div class="icono">🔎</div><h2>La finca no existe</h2><p class="muted">Puede que la hayan eliminado.</p><a class="btn btn-primario" routerLink="/fincas">Volver a fincas</a></div>
+}
+@else if (!permitida()) {
+  <div class="panel bloqueo"><div class="icono">🔒</div><h2>No tiene permiso para ver esta finca</h2>
+    <p class="muted" style="max-width:52ch;margin:10px auto 18px">{{ sesion.perfil() === 'productor' ? 'Solo puede ver las fincas registradas a su nombre.' : 'Solo puede ver las fincas que le asignaron.' }}</p>
+    <a class="btn btn-primario" routerLink="/fincas">Volver a fincas</a></div>
+}
+@else {
+  @let finca = f()!;
+  <a class="volver" routerLink="/fincas">← Volver a fincas</a>
+  <div class="encabezado"><div><h1>{{ finca.nombre }} @if (finca.estado !== 'ACTIVA') { <span class="etiqueta e-gris">Inactiva</span> }</h1>
+      <p>{{ finca.vereda ? 'Vereda ' + finca.vereda + ', ' : '' }}{{ finca.mpio }}, {{ finca.depto }} · {{ finca.id }}</p></div>
+    @if (gestor()) {
+      <div class="no-imprimir">
+        @if (finca.estado === 'ACTIVA') { <button type="button" class="btn-texto btn-texto-peligro" (click)="baja()">Eliminar o inactivar</button> }
+        @else { <button type="button" class="btn btn-sec" (click)="reactivar()">Reactivar</button> }
+      </div>
+    }
+  </div>
+
+  <section class="panel panel-flujo"><h3>Evaluación</h3>@for (s of lineas(); track s.sp) { <app-linea-flujo [s]="s" /> }</section>
+
+  <div class="rejilla r-2">
+    <section class="panel"><h3>Datos de la finca</h3>
+      @if (resumen(); as r) {
+        <dl class="datos-persona datos-finca">
+          <div><dt>Aves{{ finca.especies.length > 1 ? ' (patos + gansos)' : '' }}</dt><dd>{{ r.aves }}</dd></div>
+          <div><dt>Tramo según la norma</dt><dd>{{ r.tramo }}</dd></div>
+          <div><dt>Especies</dt><dd>{{ r.especies }}</dd></div>
+          <div><dt>Evaluaciones</dt><dd>{{ evs().length }}</dd></div>
+        </dl>
+        <p class="texto-chico">@for (x of r.explicacion; track x.titulo) { <b>{{ x.titulo }}</b> {{ x.texto }}<br><span class="muted">{{ x.muestra }}</span>@if (!$last) { <br> } }</p>
+      }
+    </section>
+    <section class="panel" id="titular">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><h3>Persona responsable</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          @if (finca.titular && !verCompleto()) { <button type="button" class="btn btn-sec btn-chico" (click)="mostrarCompleto()">Ver datos completos</button> }
+          @if (editaTitular()) { <button type="button" class="btn btn-sec btn-chico" (click)="abrirTitular()">{{ finca.titular ? 'Editar' : 'Completar datos' }}</button> }
+        </div></div>
+      @if (finca.titular; as t) {
+        <dl class="datos-persona">
+          <div><dt>Nombre</dt><dd>{{ t.nombre }}</dd></div>
+          <div><dt>Documento</dt><dd>{{ t.tipoDoc }} {{ verCompleto() ? t.doc : enmascara(t.doc) }}</dd></div>
+          <div><dt>Correo</dt><dd>{{ !t.correo ? 'Sin correo (traspatio)' : verCompleto() ? t.correo : enmascaraC(t.correo) }}</dd></div>
+          <div><dt>Teléfono</dt><dd>{{ verCompleto() ? formatoTel(t.tel) : enmascaraTel(t.tel) }}</dd></div>
+        </dl>
+        <p class="muted" style="font-size:12px;margin:8px 0 0">Datos tratados según la Ley 1581 de 2012{{ t.autoriza ? ' · autorización registrada' : '' }}.@if (verCompleto()) { La consulta quedó en la bitácora. }</p>
+      } @else { <p class="muted">Faltan los datos de la persona responsable de la finca.</p> }
+    </section>
+  </div>
+
+  @for (h of historial(); track h.sp) {
+    <section class="panel"><h3>Historial · {{ nombreEspecie(h.sp) }}</h3>
+      <div class="rejilla r-hist"><div>
+        @for (p of h.procs; track p.st.id) {
+          <h4 class="titulo-proceso">{{ p.st.id }} · {{ p.st.usados }} de {{ p.st.max }} seguimientos · <span [class]="'etiqueta ' + colorProceso[p.st.estado]">{{ p.st.estado }}</span>@if (p.final) { · resultado final {{ p.final }} }</h4>
+          <div class="envoltura-tabla"><table class="tabla"><thead><tr><th>Visita</th><th>Fecha</th><th>Estado</th><th class="num">Puntaje</th><th>Nivel</th><th></th></tr></thead><tbody>
+            @for (v of p.visitas; track v.x.id) {
+              <tr><td>{{ v.nombre }}<br><span class="muted" style="font-size:12px">{{ v.x.id }}</span></td><td>{{ v.fecha }}</td>
+                <td>{{ v.estado }}@if (v.constancia) { <br><app-enlace-visita [id]="v.x.id" paso="constancia" clase="enlace-constancia">✔ {{ v.constancia }}</app-enlace-visita> }
+                  @if (v.inspector) { <br><span class="muted" style="font-size:12px">{{ v.inspector }}</span> }</td>
+                <td class="num">{{ v.puntaje }}</td><td>{{ v.nivel }}</td>
+                <td class="num">@if (v.boton) { <app-enlace-visita [id]="v.x.id" [paso]="v.boton.paso" clase="btn btn-sec btn-chico">{{ v.boton.texto }}</app-enlace-visita> }</td></tr>
+            }
+          </tbody></table></div>
+        } @empty { <p class="muted">Sin evaluaciones en la plataforma.</p> }
+      </div>
+      <div class="hist-graf"><h4>Evolución de los puntajes</h4>
+        @if (h.puntos.length) {
+          <app-evolucion [puntos]="h.puntos" />
+          @if (h.tendencia; as t) { <p [class]="'tendencia ' + t.clase">{{ t.flecha }} {{ t.texto }}</p> }
+        } @else { <p class="vacio-tab">Aún no hay resultados históricos disponibles: la gráfica aparece con la primera evaluación finalizada.</p> }
+      </div></div>
+    </section>
+  }
+
+  <h2 class="titulo-seccion">Población</h2>
+  <div class="rejilla" [class.r-2]="finca.especies.length > 1">
+    @for (e of finca.especies; track e.sp; let k = $index) {
+      <section class="panel"><h3>{{ nombreEspecie(e.sp) }} · {{ e.proposito }}{{ e.sistema ? ' · ' + e.sistema : '' }}</h3>
+        <div class="envoltura-tabla"><table class="tabla"><thead><tr><th>Categoría</th><th class="num">Cantidad</th><th class="num">Edad (semanas)</th><th class="num">Peso (kg)</th></tr></thead><tbody>
+          @for (c of e.inventario; track $index; let j = $index) {
+            <tr><td>{{ c.cat }}</td>
+              <td class="num"><input [attr.aria-label]="'Cantidad ' + c.cat" type="number" min="0" class="entrada-num" [value]="c.n" [disabled]="!gestor()" (input)="cambiarCantidad(k, j, $any($event.target).value)"></td>
+              <td class="num">{{ c.edad }}</td><td class="num">{{ fmt(c.peso ?? 0, 2) }}</td></tr>
+          }
+        </tbody></table></div>
+      </section>
+    }
+  </div>
+
+  @if (editandoT()) {
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="titT" (keydown.escape)="editandoT.set(false)">
+      <div class="modal-medio"><div class="modal-cab"><h3 id="titT">Persona responsable · {{ finca.nombre }}</h3></div>
+        <form novalidate (ngSubmit)="guardarTitular()"><div class="modal-cuerpo"><app-campos-titular [(t)]="titular" [errores]="errT()" [traspatio]="traspatio()" /></div>
+          <div class="acciones"><button type="button" class="btn btn-sec" (click)="editandoT.set(false)">Cancelar</button><button class="btn btn-primario">Guardar</button></div></form>
+      </div>
+    </div>
+  }
+  @if (bajando()) {
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="titB" (keydown.escape)="bajando.set(false)">
+      <div><h3 id="titB">No se puede eliminar esta finca</h3>
+        <p>Tiene {{ evs().length }} evaluación{{ evs().length > 1 ? 'es' : '' }} registrada{{ evs().length > 1 ? 's' : '' }}. Para conservar el historial, puede inactivarla.</p>
+        <div class="campo"><label for="mot">Motivo</label><select id="mot" [value]="motivo()" (change)="motivo.set($any($event.target).value)">@for (m of motivos; track m) { <option [value]="m">{{ m }}</option> }</select></div>
+        <div class="acciones"><button type="button" class="btn btn-sec" (click)="bajando.set(false)">Cancelar</button><button type="button" class="btn btn-peligro" (click)="inactivar()">Inactivar</button></div>
+      </div>
+    </div>
+  }
+}

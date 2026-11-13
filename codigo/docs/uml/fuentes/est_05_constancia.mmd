@@ -1,0 +1,9 @@
+%% Estados de la constancia de cumplimiento · v0.25 (CU-30)
+stateDiagram-v2
+    [*] --> Vigente : el coordinador aprueba una visita que cumple · CER-AAAA-NNNNN
+    Vigente --> Vencida : pasa 1 año (vence = emisión + 12 meses − 1 día)
+    Vencida --> [*] : se requiere una nueva inspección
+    note right of Vigente
+        Productor: «Certificada» y «Descargar constancia».
+        Una visita posterior que no cumpla no la anula.
+    end note
